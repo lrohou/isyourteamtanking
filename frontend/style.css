@@ -1,0 +1,659 @@
+/* ==========================================================================
+   IsYourTeamTanking - Professional Theme
+   Palette: #fffcf2, #ccc5b9, #403d39, #252422, #eb5e28
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap');
+
+:root {
+  /* Main Palette */
+  --bg-primary: #252422;
+  --bg-secondary: #403d39;
+  --text-primary: #fffcf2;
+  --text-secondary: #ccc5b9;
+  --accent: #eb5e28;
+
+  /* Card Backgrounds */
+  --bg-card: #403d39;
+  --bg-card-hover: #4a4742;
+  --border-color: rgba(204, 197, 185, 0.15);
+
+  /* Status colors (professional tones) */
+  --color-green: #4caf50;
+  --color-yellow: #fbc02d;
+  --color-red: #e53935;
+
+  /* Gauge */
+  --gauge-size: 200px;
+  --gauge-stroke: 14;
+
+  /* Spacing */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 40px;
+  --space-2xl: 64px;
+
+  /* Borders */
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-full: 9999px;
+
+  /* Transitions */
+  --transition-fast: 0.15s ease-in-out;
+  --transition-base: 0.25s ease-in-out;
+}
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  min-height: 100vh;
+  line-height: 1.6;
+}
+
+.app-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: var(--space-lg) var(--space-md);
+  position: relative;
+}
+
+/* ---- Header ---- */
+.header {
+  text-align: center;
+  padding: var(--space-xl) 0 var(--space-xl);
+  position: relative;
+}
+
+.home-btn {
+  position: absolute;
+  left: 0;
+  top: var(--space-xl);
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+  padding: 8px 16px;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  font-size: 0.9rem;
+  transition: var(--transition-base);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.home-btn:hover {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border-color: var(--text-secondary);
+}
+
+.header__icon {
+  font-size: 3rem;
+  margin-bottom: var(--space-sm);
+  display: block;
+}
+
+.header__title {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 800;
+  font-size: 2.8rem;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+  margin-bottom: var(--space-xs);
+}
+
+.header__subtitle {
+  font-size: 1.05rem;
+  color: var(--text-secondary);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.header__season {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: var(--space-md);
+  padding: 4px 12px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-full);
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.header__season .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+/* ---- Search Bar ---- */
+.search-section {
+  margin-bottom: var(--space-xl);
+}
+
+.search-wrapper {
+  position: relative;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.search-input {
+  width: 100%;
+  padding: 14px 20px 14px 48px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  color: var(--text-primary);
+  font-size: 1rem;
+  font-family: 'Inter', sans-serif;
+  outline: none;
+  transition: var(--transition-base);
+}
+
+.search-input::placeholder {
+  color: var(--text-secondary);
+  opacity: 0.7;
+}
+
+.search-input:focus {
+  border-color: var(--accent);
+  background: var(--bg-card-hover);
+}
+
+.search-icon {
+  position: absolute;
+  left: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+}
+
+/* ---- Autocomplete ---- */
+.autocomplete-list {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  z-index: 100;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  display: none;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.autocomplete-list.visible {
+  display: block;
+}
+
+.autocomplete-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: 12px 16px;
+  cursor: pointer;
+  border-bottom: 1px solid var(--border-color);
+  transition: background var(--transition-fast);
+}
+
+.autocomplete-item:last-child {
+  border-bottom: none;
+}
+
+.autocomplete-item:hover,
+.autocomplete-item.active {
+  background: var(--bg-card-hover);
+}
+
+.autocomplete-item__logo {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+}
+
+.autocomplete-item__name {
+  font-weight: 500;
+  color: var(--text-primary);
+  font-size: 0.95rem;
+}
+
+.autocomplete-item__record {
+  margin-left: auto;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+/* ---- Result Card ---- */
+.result-section {
+  display: none;
+}
+
+.result-section.visible {
+  display: block;
+}
+
+.result-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-xl);
+  padding: var(--space-xl);
+}
+
+.result-card__header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-lg);
+  margin-bottom: var(--space-xl);
+  padding-bottom: var(--space-md);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.result-card__logo {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+}
+
+.result-card__team-info {
+  flex: 1;
+}
+
+.result-card__team-name {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  font-size: 1.8rem;
+  color: var(--text-primary);
+}
+
+.result-card__record {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+}
+
+.result-card__status-badge {
+  padding: 6px 16px;
+  border-radius: var(--radius-full);
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.status-competing {
+  background: rgba(76, 175, 80, 0.15);
+  color: var(--color-green);
+}
+
+.status-soft_tanking {
+  background: rgba(251, 192, 45, 0.15);
+  color: var(--color-yellow);
+}
+
+.status-hard_tanking {
+  background: rgba(229, 57, 53, 0.15);
+  color: var(--color-red);
+}
+
+/* ---- Gauge Section ---- */
+.gauge-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: var(--space-lg) 0 var(--space-xl);
+}
+
+.gauge-container {
+  position: relative;
+  width: var(--gauge-size);
+  height: var(--gauge-size);
+}
+
+.gauge-svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.gauge-bg {
+  fill: none;
+  stroke: var(--border-color);
+  stroke-width: var(--gauge-stroke);
+}
+
+.gauge-fill {
+  fill: none;
+  stroke-width: var(--gauge-stroke);
+  stroke-linecap: round;
+  transition: stroke-dashoffset 1s ease-out, stroke 0.3s ease;
+}
+
+.gauge-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.gauge-value {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  font-size: 3rem;
+  color: var(--text-primary);
+  line-height: 1;
+}
+
+.gauge-label {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 4px;
+}
+
+/* ---- Pillars Section ---- */
+.pillars-title {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 600;
+  font-size: 1.2rem;
+  margin-bottom: var(--space-md);
+  color: var(--text-primary);
+}
+
+.pillars-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-md);
+}
+
+.pillar-card {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  position: relative;
+}
+
+.pillar-card__header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-sm);
+}
+
+.pillar-card__icon {
+  width: 24px;
+  height: 24px;
+}
+
+.pillar-card__name-wrapper {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.pillar-card__name {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+.pillar-card__weight {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.pillar-card__score {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  font-size: 1.2rem;
+}
+
+.pillar-card__bar-track {
+  width: 100%;
+  height: 6px;
+  background: var(--border-color);
+  border-radius: 4px;
+  margin-bottom: var(--space-sm);
+  overflow: hidden;
+}
+
+.pillar-card__bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 1s ease-out;
+  width: 0;
+}
+
+.pillar-card__description {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-sm);
+}
+
+.pillar-card__details {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  opacity: 0.8;
+}
+
+/* ---- Rankings Table ---- */
+.rankings-section {
+  margin-top: var(--space-xl);
+}
+
+.rankings-title {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  font-size: 1.5rem;
+  margin-bottom: var(--space-sm);
+  color: var(--text-primary);
+}
+
+.rankings-subtitle {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  margin-bottom: var(--space-lg);
+}
+
+.rankings-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ranking-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: 12px 16px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.ranking-item:hover {
+  background: var(--bg-card-hover);
+}
+
+.ranking-item__rank {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--text-secondary);
+  width: 24px;
+}
+
+.ranking-item__logo {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+}
+
+.ranking-item__name {
+  flex: 1;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.ranking-item__record {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-right: var(--space-md);
+}
+
+.ranking-item__bar-wrapper {
+  width: 100px;
+}
+
+.ranking-item__bar-track {
+  width: 100%;
+  height: 6px;
+  background: var(--border-color);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.ranking-item__bar-fill {
+  height: 100%;
+  border-radius: 4px;
+}
+
+.ranking-item__score {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  font-size: 1rem;
+  width: 40px;
+  text-align: right;
+}
+
+/* ---- Footer ---- */
+.footer {
+  text-align: center;
+  padding: var(--space-xl) 0;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  margin-top: var(--space-xl);
+  border-top: 1px solid var(--border-color);
+}
+
+.footer a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.footer a:hover {
+  text-decoration: underline;
+}
+
+.footer__disclaimer {
+  margin-top: 8px;
+  font-size: 0.75rem;
+  opacity: 0.8;
+}
+
+/* ---- Loading / Error ---- */
+.loading-spinner,
+.error-message {
+  text-align: center;
+  padding: var(--space-xl);
+  color: var(--text-secondary);
+}
+
+/* ---- Utility Classes ---- */
+.score-green {
+  color: var(--color-green);
+}
+
+.score-yellow {
+  color: var(--color-yellow);
+}
+
+.score-red {
+  color: var(--color-red);
+}
+
+.bar-green {
+  background: var(--color-green);
+}
+
+.bar-yellow {
+  background: var(--color-yellow);
+}
+
+.bar-red {
+  background: var(--color-red);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .home-btn {
+    position: static;
+    display: inline-flex;
+    margin-bottom: var(--space-md);
+  }
+
+  .header {
+    padding-top: var(--space-md);
+  }
+
+  .ranking-item__bar-wrapper {
+    display: none;
+  }
+
+  .pillars-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .result-card {
+    padding: var(--space-md);
+  }
+
+  .result-card__header {
+    flex-direction: column;
+    text-align: center;
+    gap: var(--space-md);
+  }
+
+  .header__title {
+    font-size: 2.2rem;
+  }
+
+  :root {
+    --gauge-size: 160px;
+  }
+
+  .gauge-value {
+    font-size: 2.5rem;
+  }
+}

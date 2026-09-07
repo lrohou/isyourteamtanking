@@ -1,0 +1,2072 @@
+[
+  {
+    "team_id": 1610612764,
+    "team_name": "Washington Wizards",
+    "team_abbreviation": "WAS",
+    "tanking_score": 89,
+    "status": "hard_tanking",
+    "status_label": "Hard Tanking Detected!",
+    "season": "2024-25",
+    "last_updated": "2026-09-07T16:41:03.110476",
+    "pillars": [
+      {
+        "id": "vet_minutes",
+        "name": "Veteran Minutes Drop",
+        "icon": "⏱️",
+        "weight": 0.3,
+        "score": 92,
+        "weighted_score": 27.6,
+        "description": "Significant drop in veteran playing time detected.",
+        "details": "Veteran minutes score: 92/100.",
+        "data": {
+          "score_raw": 92
+        }
+      },
+      {
+        "id": "dnp_suspects",
+        "name": "DNP / Injury Suspects",
+        "icon": "🏥",
+        "weight": 0.2,
+        "score": 85,
+        "weighted_score": 17.0,
+        "description": "Key players are missing a suspicious number of games.",
+        "details": "DNP suspect score: 85/100.",
+        "data": {
+          "score_raw": 85
+        }
+      },
+      {
+        "id": "young_lineups",
+        "name": "Young Lineup Usage",
+        "icon": "👶",
+        "weight": 0.25,
+        "score": 88,
+        "weighted_score": 22.0,
+        "description": "Lineup is very young - heavy youth development focus.",
+        "details": "Youth lineup score: 88/100.",
+        "data": {
+          "score_raw": 88
+        }
+      },
+      {
+        "id": "clutch_collapse",
+        "name": "Clutch Collapse (Q4)",
+        "icon": "📉",
+        "weight": 0.25,
+        "score": 90,
+        "weighted_score": 22.5,
+        "description": "Significant 4th quarter collapse detected.",
+        "details": "Clutch collapse score: 90/100.",
+        "data": {
+          "score_raw": 90
+        }
+      }
+    ],
+    "record": {
+      "wins": 19,
+      "losses": 63,
+      "pct": 0.232
+    }
+  },
+  {
+    "team_id": 1610612751,
+    "team_name": "Brooklyn Nets",
+    "team_abbreviation": "BKN",
+    "tanking_score": 80,
+    "status": "hard_tanking",
+    "status_label": "Hard Tanking Detected!",
+    "season": "2024-25",
+    "last_updated": "2026-09-07T16:41:03.110476",
+    "pillars": [
+      {
+        "id": "vet_minutes",
+        "name": "Veteran Minutes Drop",
+        "icon": "⏱️",
+        "weight": 0.3,
+        "score": 82,
+        "weighted_score": 24.6,
+        "description": "Significant drop in veteran playing time detected.",
+        "details": "Veteran minutes score: 82/100.",
+        "data": {
+          "score_raw": 82
+        }
+      },
+      {
+        "id": "dnp_suspects",
+        "name": "DNP / Injury Suspects",
+        "icon": "🏥",
+        "weight": 0.2,
+        "score": 78,
+        "weighted_score": 15.6,
+        "description": "Key players are missing a suspicious number of games.",
+        "details": "DNP suspect score: 78/100.",
+        "data": {
+          "score_raw": 78
+        }
+      },
+      {
+        "id": "young_lineups",
+        "name": "Young Lineup Usage",
+        "icon": "👶",
+        "weight": 0.25,
+        "score": 85,
+        "weighted_score": 21.2,
+        "description": "Lineup is very young - heavy youth development focus.",
+        "details": "Youth lineup score: 85/100.",
+        "data": {
+          "score_raw": 85
+        }
+      },
+      {
+        "id": "clutch_collapse",
+        "name": "Clutch Collapse (Q4)",
+        "icon": "📉",
+        "weight": 0.25,
+        "score": 74,
+        "weighted_score": 18.5,
+        "description": "Significant 4th quarter collapse detected.",
+        "details": "Clutch collapse score: 74/100.",
+        "data": {
+          "score_raw": 74
+        }
+      }
+    ],
+    "record": {
+      "wins": 22,
+      "losses": 60,
+      "pct": 0.268
+    }
+  },
+  {
+    "team_id": 1610612757,
+    "team_name": "Portland Trail Blazers",
+    "team_abbreviation": "POR",
+    "tanking_score": 74,
+    "status": "hard_tanking",
+    "status_label": "Hard Tanking Detected!",
+    "season": "2024-25",
+    "last_updated": "2026-09-07T16:41:03.110476",
+    "pillars": [
+      {
+        "id": "vet_minutes",
+        "name": "Veteran Minutes Drop",
+        "icon": "⏱️",
+        "weight": 0.3,
+        "score": 70,
+        "weighted_score": 21.0,
+        "description": "Significant drop in veteran playing time detected.",
+        "details": "Veteran minutes score: 70/100.",
+        "data": {
+          "score_raw": 70
+        }
+      },
+      {
+        "id": "dnp_suspects",
+        "name": "DNP / Injury Suspects",
+        "icon": "🏥",
+        "weight": 0.2,
+        "score": 62,
+        "weighted_score": 12.4,
+        "description": "Some key players have elevated absence rates.",
+        "details": "DNP suspect score: 62/100.",
+        "data": {
+          "score_raw": 62
+        }
+      },
+      {
+        "id": "young_lineups",
+        "name": "Young Lineup Usage",
+        "icon": "👶",
+        "weight": 0.25,
+        "score": 90,
+        "weighted_score": 22.5,
+        "description": "Lineup is very young - heavy youth development focus.",
+        "details": "Youth lineup score: 90/100.",
+        "data": {
+          "score_raw": 90
+        }
+      },
+      {
+        "id": "clutch_collapse",
+        "name": "Clutch Collapse (Q4)",
+        "icon": "📉",
+        "weight": 0.25,
+        "score": 72,
+        "weighted_score": 18.0,
+        "description": "Significant 4th quarter collapse detected.",
+        "details": "Clutch collapse score: 72/100.",
+        "data": {
+          "score_raw": 72
+        }
+      }
+    ],
+    "record": {
+      "wins": 24,
+      "losses": 58,
+      "pct": 0.293
+    }
+  },
+  {
+    "team_id": 1610612761,
+    "team_name": "Toronto Raptors",
+    "team_abbreviation": "TOR",
+    "tanking_score": 68,
+    "status": "hard_tanking",
+    "status_label": "Hard Tanking Detected!",
+    "season": "2024-25",
+    "last_updated": "2026-09-07T16:41:03.110476",
+    "pillars": [
+      {
+        "id": "vet_minutes",
+        "name": "Veteran Minutes Drop",
+        "icon": "⏱️",
+        "weight": 0.3,
+        "score": 65,
+        "weighted_score": 19.5,
+        "description": "Veterans are playing fewer minutes than expected.",
+        "details": "Veteran minutes score: 65/100.",
+        "data": {
+          "score_raw": 65
+        }
+      },
+      {
+        "id": "dnp_suspects",
+        "name": "DNP / Injury Suspects",
+        "icon": "🏥",
+        "weight": 0.2,
+        "score": 72,
+        "weighted_score": 14.4,
+        "description": "Key players are missing a suspicious number of games.",
+        "details": "DNP suspect score: 72/100.",
+        "data": {
+          "score_raw": 72
+        }
+      },
+      {
+        "id": "young_lineups",
+        "name": "Young Lineup Usage",
+        "icon": "👶",
+        "weight": 0.25,
+        "score": 78,
+        "weighted_score": 19.5,
+        "description": "Lineup is very young - heavy youth development focus.",
+        "details": "Youth lineup score: 78/100.",
+        "data": {
+          "score_raw": 78
+        }
+      },
+      {
+        "id": "clutch_collapse",
+        "name": "Clutch Collapse (Q4)",
+        "icon": "📉",
+        "weight": 0.25,
+        "score": 58,
+        "weighted_score": 14.5,
+        "description": "Team performance dips noticeably in 4th quarters.",
+        "details": "Clutch collapse score: 58/100.",
+        "data": {
+          "score_raw": 58
+        }
+      }
+    ],
+    "record": {
+      "wins": 25,
+      "losses": 57,
+      "pct": 0.305
+    }
+  },
+  {
+    "team_id": 1610612762,
+    "team_name": "Utah Jazz",
+    "team_abbreviation": "UTA",
+    "tanking_score": 64,
+    "status": "soft_tanking",
+    "status_label": "Soft Tanking / Gray Zone",
+    "season": "2024-25",
+    "last_updated": "2026-09-07T16:41:03.110476",
+    "pillars": [
+      {
+        "id": "vet_minutes",
+        "name": "Veteran Minutes Drop",
+        "icon": "⏱️",
+        "weight": 0.3,
+        "score": 58,
+        "weighted_score": 17.4,
+        "description": "Veterans are playing fewer minutes than expected.",
+        "details": "Veteran minutes score: 58/100.",
+        "data": {
+          "score_raw": 58
+        }
+      },
+      {
+        "id": "dnp_suspects",
+        "name": "DNP / Injury Suspects",
+        "icon": "🏥",
+        "weight": 0.2,
+        "score": 55,
+        "weighted_score": 11.0,
+        "description": "Some key players have elevated absence rates.",
+        "details": "DNP suspect score: 55/100.",
+        "data": {
+          "score_raw": 55
+        }
+      },
+      {
+        "id": "young_lineups",
+        "name": "Young Lineup Usage",
+        "icon": "👶",
+        "weight": 0.25,
+        "score": 82,
+        "weighted_score": 20.5,
+        "description": "Lineup is very young - heavy youth development focus.",
+        "details": "Youth lineup score: 82/100.",
+        "data": {
+          "score_raw": 82
+        }
+      },
+      {
+        "id": "clutch_collapse",
+        "name": "Clutch Collapse (Q4)",
+        "icon": "📉",
+        "weight": 0.25,
+        "score": 60,
+        "weighted_score": 15.0,
+        "description": "Team performance dips noticeably in 4th quarters.",
+        "details": "Clutch collapse score: 60/100.",
+        "data": {
+          "score_raw": 60
+        }
+      }
+    ],
+    "record": {
+      "wins": 27,
+      "losses": 55,
+      "pct": 0.329
+    }
+  },
+  {
+    "team_id": 1610612766,
+    "team_name": "Charlotte Hornets",
+    "team_abbreviation": "CHA",
+    "tanking_score": 60,
+    "status": "soft_tanking",
+    "status_label": "Soft Tanking / Gray Zone",
+    "season": "2024-25",
+    "last_updated": "2026-09-07T16:41:03.110476",
+    "pillars": [
+      {
+        "id": "vet_minutes",
+        "name": "Veteran Minutes Drop",
+        "icon": "⏱️",
+        "weight": 0.3,
+        "score": 48,
+        "weighted_score": 14.4,
+        "description": "Veterans are playing fewer minutes than expected.",
+        "details": "Veteran minutes score: 48/100.",
+        "data": {
+          "score_raw": 48
+        }
+      },
+      {
+        "id": "dnp_suspects",
+        "name": "DNP / Injury Suspects",
+        "icon": "🏥",
+        "weight": 0.2,
+        "score": 78,
+        "weighted_score": 15.6,
+        "description": "Key players are missing a suspicious number of games.",
+        "details": "DNP suspect score: 78/100.",
+        "data": {
+          "score_raw": 78
+        }
+      },
+      {
+        "id": "young_lineups",
+        "name": "Young Lineup Usage",
+        "icon": "👶",
+        "weight": 0.25,
+        "score": 72,
+        "weighted_score": 18.0,
+        "description": "Lineup is very young - heavy youth development focus.",
+        "details": "Youth lineup score: 72/100.",
+        "data": {
+          "score_raw": 72
+        }
+      },
+      {
+        "id": "clutch_collapse",
+        "name": "Clutch Collapse (Q4)",
+        "icon": "📉",
+        "weight": 0.25,
+        "score": 42,
+        "weighted_score": 10.5,
+        "description": "Team performance dips noticeably in 4th quarters.",
+        "details": "Clutch collapse score: 42/100.",
+        "data": {
+          "score_raw": 42
+        }
+      }
+    ],
+    "record": {
+      "wins": 26,
+      "losses": 56,
+      "pct": 0.317
+    }
+  },
+  {
+    "team_id": 1610612740,
+    "team_name": "New Orleans Pelicans",
+    "team_abbreviation": "NOP",
+    "tanking_score": 52,
+    "status": "soft_tanking",
+    "status_label": "Soft Tanking / Gray Zone",
+    "season": "2024-25",
+    "last_updated": "2026-09-07T16:41:03.110476",
+    "pillars": [
+      {
+        "id": "vet_minutes",
+        "name": "Veteran Minutes Drop",
+        "icon": "⏱️",
+        "weight": 0.3,
+        "score": 40,
+        "weighted_score": 12.0,
+        "description": "Veterans are playing fewer minutes than expected.",
+        "details": "Veteran minutes score: 40/100.",
+        "data": {
+          "score_raw": 40
+        }
+      },
+      {
+        "id": "dnp_suspects",
+        "name": "DNP / Injury Suspects",
+        "icon": "🏥",
+        "weight": 0.2,
+        "score": 68,
+        "weighted_score": 13.6,
+        "description": "Some key players have elevated absence rates.",
+        "details": "DNP suspect score: 68/100.",
+        "data": {
+          "score_raw": 68
+        }
+      },
+      {
+        "id": "young_lineups",
+        "name": "Young Lineup Usage",
+        "icon": "👶",
+        "weight": 0.25,
+        "score": 55,
+        "weighted_score": 13.8,
+        "description": "Team is trending younger than the league average.",
+        "details": "Youth lineup score: 55/100.",
+        "data": {
+          "score_raw": 55
+        }
+      },
+      {
+        "id": "clutch_collapse",
+        "name": "Clutch Collapse (Q4)",
+        "icon": "📉",
+        "weight": 0.25,
+        "score": 48,
+        "weighted_score": 12.0,
+        "description": "Team performance dips noticeably in 4th quarters.",
+        "details": "Clutch collapse score: 48/100.",
+        "data": {
+          "score_raw": 48
+        }
+      }
+    ],
+    "record": {
+      "wins": 29,
+      "losses": 53,
+      "pct": 0.354
+    }
+  },
+  {
+    "team_id": 1610612765,
+    "team_name": "Detroit Pistons",
+    "team_abbreviation": "DET",
+    "tanking_score": 48,
+    "status": "soft_tanking",
+    "status_label": "Soft Tanking / Gray Zone",
+    "season": "2024-25",
+    "last_updated": "2026-09-07T16:41:03.110476",
+    "pillars": [
+      {
+        "id": "vet_minutes",
+        "name": "Veteran Minutes Drop",
+        "icon": "⏱️",
+        "weight": 0.3,
+        "score": 38,
+        "weighted_score": 11.4,
+        "description": "Veteran minutes are within normal range.",
+        "details": "Veteran minutes score: 38/100.",
+        "data": {
+          "score_raw": 38
+        }
+      },
+      {
+        "id": "dnp_suspects",
+        "name": "DNP / Injury Suspects",
+        "icon": "🏥",
+        "weight": 0.2,
+        "score": 42,
+        "weighted_score": 8.4,
+        "description": "Some key players have elevated absence rates.",
+        "details": "DNP suspect score: 42/100.",
+        "data": {
+          "score_raw": 42
+        }
+      },
+      {
+        "id": "young_lineups",
+        "name": "Young Lineup Usage",
+        "icon": "👶",
+        "weight": 0.25,
+        "score": 75,
+        "weighted_score": 18.8,
+        "description": "Lineup is very young - heavy youth development focus.",
+        "details": "Youth lineup score: 75/100.",
+        "data": {
+          "score_raw": 75
+        }
+      },
+      {
+        "id": "clutch_collapse",
+        "name": "Clutch Collapse (Q4)",
+        "icon": "📉",
+        "weight": 0.25,
+        "score": 38,
+        "weighted_score": 9.5,
+        "description": "4th quarter performance is consistent with overall play.",
+        "details": "Clutch collapse score: 38/100.",
+        "data": {
+          "score_raw": 38
+        }
+      }
+    ],
+    "record": {
+      "wins": 30,
+      "losses": 52,
+      "pct": 0.366
+    }
+  },
+  {
+    "team_id": 1610612755,
+    "team_name": "Philadelphia 76ers",
+    "team_abbreviation": "PHI",
+    "tanking_score": 45,
+    "status": "soft_tanking",
+    "status_label": "Soft Tanking / Gray Zone",
+    "season": "2024-25",
+    "last_updated": "2026-09-07T16:41:03.110476",
+    "pillars": [
+      {
+        "id": "vet_minutes",
+        "name": "Veteran Minutes Drop",
+        "icon": "⏱️",
+        "weight": 0.3,
+        "score": 35,
+        "weighted_score": 10.5,
+        "description": "Veteran minutes are within normal range.",
+        "details": "Veteran minutes score: 35/100.",
+        "data": {
+          "score_raw": 35
+        }
+      },
+      {
+        "id": "dnp_suspects",
+        "name": "DNP / Injury Suspects",
+        "icon": "🏥",
+        "weight": 0.2,
+        "score": 72,
+        "weighted_score": 14.4,
+        "description": "Key players are missing a suspicious number of games.",
+        "details": "DNP suspect score: 72/100.",
+        "data": {
+          "score_raw": 72
+        }
+      },
+      {
+        "id": "young_lineups",
+        "name": "Young Lineup Usage",
+        "icon": "👶",
+        "weight": 0.25,
+        "score": 30,
+        "weighted_score": 7.5,
+        "description": "Team age profile is within normal NBA range.",
+        "details": "Youth lineup score: 30/100.",
+        "data": {
+          "score_raw": 30
+        }
+      },
+      {
+        "id": "clutch_collapse",
+        "name": "Clutch Collapse (Q4)",
+        "icon": "📉",
+        "weight": 0.25,
+        "score": 42,
+        "weighted_score": 10.5,
+        "description": "Team performance dips noticeably in 4th quarters.",
+        "details": "Clutch collapse score: 42/100.",
+        "data": {
+          "score_raw": 42
+        }
+      }
+    ],
+    "record": {
+      "wins": 28,
+      "losses": 54,
+      "pct": 0.341
+    }
+  },
+  {
+    "team_id": 1610612741,
+    "team_name": "Chicago Bulls",
+    "team_abbreviation": "CHI",
+    "tanking_score": 42,
+    "status": "soft_tanking",
+    "status_label": "Soft Tanking / Gray Zone",
+    "season": "2024-25",
+    "last_updated": "2026-09-07T16:41:03.110476",
+    "pillars": [
+      {
+        "id": "vet_minutes",
+        "name": "Veteran Minutes Drop",
+        "icon": "⏱️",
+        "weight": 0.3,
+        "score": 45,
+        "weighted_score": 13.5,
+        "description": "Veterans are playing fewer minutes than expected.",
+        "details": "Veteran minutes score: 45/100.",
+        "data": {
+          "score_raw": 45
+        }
+      },
+      {
+        "id": "dnp_suspects",
+        "name": "DNP / Injury Suspects",
+        "icon": "🏥",
+        "weight": 0.2,
+        "score": 38,
+        "weighted_score": 7.6,
+        "description": "Key player availability is within normal range.",
+        "details": "DNP suspect score: 38/100.",
+        "data": {
+          "score_raw": 38
+        }
+      },
+      {
+        "id": "young_lineups",
+        "name": "Young Lineup Usage",
+        "icon": "👶",
+        "weight": 0.25,
+        "score": 45,
+        "weighted_score": 11.2,
+        "description": "Team is trending younger than the league average.",
+        "details": "Youth lineup score: 45/100.",
+        "data": {
+          "score_raw": 45
+        }
+      },
+      {
+        "id": "clutch_collapse",
+        "name": "Clutch Collapse (Q4)",
+        "icon": "📉",
+        "weight": 0.25,
+        "score": 40,
+        "weighted_score": 10.0,
+        "description": "Team performance dips noticeably in 4th quarters.",
+        "details": "Clutch collapse score: 40/100.",
+        "data": {
+          "score_raw": 40
+        }
+      }
+    ],
+    "record": {
+      "wins": 31,
+      "losses": 51,
+      "pct": 0.378
+    }
+  },
+  {
+    "team_id": 1610612746,
+    "team_name": "LA Clippers",
+    "team_abbreviation": "LAC",
+    "tanking_score": 38,
+    "status": "soft_tanking",
+    "status_label": "Soft Tanking / Gray Zone",
+    "season": "2024-25",
+    "last_updated": "2026-09-07T16:41:03.110476",
+    "pillars": [
+      {
+        "id": "vet_minutes",
+        "name": "Veteran Minutes Drop",
+        "icon": "⏱️",
+        "weight": 0.3,
+        "score": 42,
+        "weighted_score": 12.6,
+        "description": "Veterans are playing fewer minutes than expected.",
+        "details": "Veteran minutes score: 42/100.",
+        "data": {
+          "score_raw": 42
+        }
+      },
+      {
+        "id": "dnp_suspects",
+        "name": "DNP / Injury Suspects",
+        "icon": "🏥",
+        "weight": 0.2,
+        "score": 45,
+        "weighted_score": 9.0,
+        "description": "Some key players have elevated absence rates.",
+        "details": "DNP suspect score: 45/100.",
+        "data": {
+          "score_raw": 45
+        }
+      },
+      {
+        "id": "young_lineups",
+        "name": "Young Lineup Usage",
+        "icon": "👶",
+        "weight": 0.25,
+        "score": 28,
+        "weighted_score": 7.0,
+        "description": "Team age profile is within normal NBA range.",
+        "details": "Youth lineup score: 28/100.",
+        "data": {
+          "score_raw": 28
+        }
+      },
+      {
+        "id": "clutch_collapse",
+        "name": "Clutch Collapse (Q4)",
+        "icon": "📉",
+        "weight": 0.25,
+        "score": 35,
+        "weighted_score": 8.8,
+        "description": "4th quarter performance is consistent with overall play.",
+        "details": "Clutch collapse score: 35/100.",
+        "data": {
+          "score_raw": 35
+        }
+      }
+    ],
+    "record": {
+      "wins": 33,
+      "losses": 49,
+      "pct": 0.402
+    }
+  },
+  {
+    "team_id": 1610612759,
+    "team_name": "San Antonio Spurs",
+    "team_abbreviation": "SAS",
+    "tanking_score": 35,
+    "status": "soft_tanking",
+    "status_label": "Soft Tanking / Gray Zone",
+    "season": "2024-25",
+    "last_updated": "2026-09-07T16:41:03.110476",
+    "pillars": [
+      {
+        "id": "vet_minutes",
+        "name": "Veteran Minutes Drop",
+        "icon": "⏱️",
+        "weight": 0.3,
+        "score": 25,
+        "weighted_score": 7.5,
+        "description": "Veteran minutes are within normal range.",
+        "details": "Veteran minutes score: 25/100.",
+        "data": {
+          "score_raw": 25
+        }
+      },
+      {
+        "id": "dnp_suspects",
+        "name": "DNP / Injury Suspects",
+        "icon": "🏥",
+        "weight": 0.2,
+        "score": 28,
+        "weighted_score": 5.6,
+        "description": "Key player availability is within normal range.",
+        "details": "DNP suspect score: 28/100.",
+        "data": {
+          "score_raw": 28
+        }
+      },
+      {
+        "id": "young_lineups",
+        "name": "Young Lineup Usage",
+        "icon": "👶",
+        "weight": 0.25,
+        "score": 68,
+        "weighted_score": 17.0,
+        "description": "Team is trending younger than the league average.",
+        "details": "Youth lineup score: 68/100.",
+        "data": {
+          "score_raw": 68
+        }
+      },
+      {
+        "id": "clutch_collapse",
+        "name": "Clutch Collapse (Q4)",
+        "icon": "📉",
+        "weight": 0.25,
+        "score": 20,
+        "weighted_score": 5.0,
+        "description": "4th quarter performance is consistent with overall play.",
+        "details": "Clutch collapse score: 20/100.",
+        "data": {
+          "score_raw": 20
+        }
+      }
+    ],
+    "record": {
+      "wins": 34,
+      "losses": 48,
+      "pct": 0.415
+    }
+  },
+  {
+    "team_id": 1610612737,
+    "team_name": "Atlanta Hawks",
+    "team_abbreviation": "ATL",
+    "tanking_score": 30,
+    "status": "competing",
+    "status_label": "Actively Competing",
+    "season": "2024-25",
+    "last_updated": "2026-09-07T16:41:03.110476",
+    "pillars": [
+      {
+        "id": "vet_minutes",
+        "name": "Veteran Minutes Drop",
+        "icon": "⏱️",
+        "weight": 0.3,
+        "score": 32,
+        "weighted_score": 9.6,
+        "description": "Veteran minutes are within normal range.",
+        "details": "Veteran minutes score: 32/100.",
+        "data": {
+          "score_raw": 32
+        }
+      },
+      {
+        "id": "dnp_suspects",
+        "name": "DNP / Injury Suspects",
+        "icon": "🏥",
+        "weight": 0.2,
+        "score": 25,
+        "weighted_score": 5.0,
+        "description": "Key player availability is within normal range.",
+        "details": "DNP suspect score: 25/100.",
+        "data": {
+          "score_raw": 25
+        }
+      },
+      {
+        "id": "young_lineups",
+        "name": "Young Lineup Usage",
+        "icon": "👶",
+        "weight": 0.25,
+        "score": 38,
+        "weighted_score": 9.5,
+        "description": "Team age profile is within normal NBA range.",
+        "details": "Youth lineup score: 38/100.",
+        "data": {
+          "score_raw": 38
+        }
+      },
+      {
+        "id": "clutch_collapse",
+        "name": "Clutch Collapse (Q4)",
+        "icon": "📉",
+        "weight": 0.25,
+        "score": 25,
+        "weighted_score": 6.2,
+        "description": "4th quarter performance is consistent with overall play.",
+        "details": "Clutch collapse score: 25/100.",
+        "data": {
+          "score_raw": 25
+        }
+      }
+    ],
+    "record": {
+      "wins": 36,
+      "losses": 46,
+      "pct": 0.439
+    }
+  },
+  {
+    "team_id": 1610612747,
+    "team_name": "Los Angeles Lakers",
+    "team_abbreviation": "LAL",
+    "tanking_score": 28,
+    "status": "competing",
+    "status_label": "Actively Competing",
+    "season": "2024-25",
+    "last_updated": "2026-09-07T16:41:03.110476",
+    "pillars": [
+      {
+        "id": "vet_minutes",
+        "name": "Veteran Minutes Drop",
+        "icon": "⏱️",
+        "weight": 0.3,
+        "score": 30,
+        "weighted_score": 9.0,
+        "description": "Veteran minutes are within normal range.",
+        "details": "Veteran minutes score: 30/100.",
+        "data": {
+          "score_raw": 30
+        }
+      },
+      {
+        "id": "dnp_suspects",
+        "name": "DNP / Injury Suspects",
+        "icon": "🏥",
+        "weight": 0.2,
+        "score": 35,
+        "weighted_score": 7.0,
+        "description": "Key player availability is within normal range.",
+        "details": "DNP suspect score: 35/100.",
+        "data": {
+          "score_raw": 35
+        }
+      },
+      {
+        "id": "young_lineups",
+        "name": "Young Lineup Usage",
+        "icon": "👶",
+        "weight": 0.25,
+        "score": 15,
+        "weighted_score": 3.8,
+        "description": "Team age profile is within normal NBA range.",
+        "details": "Youth lineup score: 15/100.",
+        "data": {
+          "score_raw": 15
+        }
+      },
+      {
+        "id": "clutch_collapse",
+        "name": "Clutch Collapse (Q4)",
+        "icon": "📉",
+        "weight": 0.25,
+        "score": 32,
+        "weighted_score": 8.0,
+        "description": "4th quarter performance is consistent with overall play.",
+        "details": "Clutch collapse score: 32/100.",
+        "data": {
+          "score_raw": 32
+        }
+      }
+    ],
+    "record": {
+      "wins": 38,
+      "losses": 44,
+      "pct": 0.463
+    }
+  },
+  {
+    "team_id": 1610612744,
+    "team_name": "Golden State Warriors",
+    "team_abbreviation": "GSW",
+    "tanking_score": 25,
+    "status": "competing",
+    "status_label": "Actively Competing",
+    "season": "2024-25",
+    "last_updated": "2026-09-07T16:41:03.110476",
+    "pillars": [
+      {
+        "id": "vet_minutes",
+        "name": "Veteran Minutes Drop",
+        "icon": "⏱️",
+        "weight": 0.3,
+        "score": 28,
+        "weighted_score": 8.4,
+        "description": "Veteran minutes are within normal range.",
+        "details": "Veteran minutes score: 28/100.",
+        "data": {
+          "score_raw": 28
+        }
+      },
+      {
+        "id": "dnp_suspects",
+        "name": "DNP / Injury Suspects",
+        "icon": "🏥",
+        "weight": 0.2,
+        "score": 22,
+        "weighted_score": 4.4,
+        "description": "Key player availability is within normal range.",
+        "details": "DNP suspect score: 22/100.",
+        "data": {
+          "score_raw": 22
+        }
+      },
+      {
+        "id": "young_lineups",
+        "name": "Young Lineup Usage",
+        "icon": "👶",
+        "weight": 0.25,
+        "score": 18,
+        "weighted_score": 4.5,
+        "description": "Team age profile is within normal NBA range.",
+        "details": "Youth lineup score: 18/100.",
+        "data": {
+          "score_raw": 18
+        }
+      },
+      {
+        "id": "clutch_collapse",
+        "name": "Clutch Collapse (Q4)",
+        "icon": "📉",
+        "weight": 0.25,
+        "score": 30,
+        "weighted_score": 7.5,
+        "description": "4th quarter performance is consistent with overall play.",
+        "details": "Clutch collapse score: 30/100.",
+        "data": {
+          "score_raw": 30
+        }
+      }
+    ],
+    "record": {
+      "wins": 39,
+      "losses": 43,
+      "pct": 0.476
+    }
+  },
+  {
+    "team_id": 1610612758,
+    "team_name": "Sacramento Kings",
+    "team_abbreviation": "SAC",
+    "tanking_score": 24,
+    "status": "competing",
+    "status_label": "Actively Competing",
+    "season": "2024-25",
+    "last_updated": "2026-09-07T16:41:03.110476",
+    "pillars": [
+      {
+        "id": "vet_minutes",
+        "name": "Veteran Minutes Drop",
+        "icon": "⏱️",
+        "weight": 0.3,
+        "score": 22,
+        "weighted_score": 6.6,
+        "description": "Veteran minutes are within normal range.",
+        "details": "Veteran minutes score: 22/100.",
+        "data": {
+          "score_raw": 22
+        }
+      },
+      {
+        "id": "dnp_suspects",
+        "name": "DNP / Injury Suspects",
+        "icon": "🏥",
+        "weight": 0.2,
+        "score": 18,
+        "weighted_score": 3.6,
+        "description": "Key player availability is within normal range.",
+        "details": "DNP suspect score: 18/100.",
+        "data": {
+          "score_raw": 18
+        }
+      },
+      {
+        "id": "young_lineups",
+        "name": "Young Lineup Usage",
+        "icon": "👶",
+        "weight": 0.25,
+        "score": 30,
+        "weighted_score": 7.5,
+        "description": "Team age profile is within normal NBA range.",
+        "details": "Youth lineup score: 30/100.",
+        "data": {
+          "score_raw": 30
+        }
+      },
+      {
+        "id": "clutch_collapse",
+        "name": "Clutch Collapse (Q4)",
+        "icon": "📉",
+        "weight": 0.25,
+        "score": 25,
+        "weighted_score": 6.2,
+        "description": "4th quarter performance is consistent with overall play.",
+        "details": "Clutch collapse score: 25/100.",
+        "data": {
+          "score_raw": 25
+        }
+      }
+    ],
+    "record": {
+      "wins": 37,
+      "losses": 45,
+      "pct": 0.451
+    }
+  },
+  {
+    "team_id": 1610612745,
+    "team_name": "Houston Rockets",
+    "team_abbreviation": "HOU",
+    "tanking_score": 22,
+    "status": "competing",
+    "status_label": "Actively Competing",
+    "season": "2024-25",
+    "last_updated": "2026-09-07T16:41:03.110476",
+    "pillars": [
+      {
+        "id": "vet_minutes",
+        "name": "Veteran Minutes Drop",
+        "icon": "⏱️",
+        "weight": 0.3,
+        "score": 18,
+        "weighted_score": 5.4,
+        "description": "Veteran minutes are within normal range.",
+        "details": "Veteran minutes score: 18/100.",
+        "data": {
+          "score_raw": 18
+        }
+      },
+      {
+        "id": "dnp_suspects",
+        "name": "DNP / Injury Suspects",
+        "icon": "🏥",
+        "weight": 0.2,
+        "score": 15,
+        "weighted_score": 3.0,
+        "description": "Key player availability is within normal range.",
+        "details": "DNP suspect score: 15/100.",
+        "data": {
+          "score_raw": 15
+        }
+      },
+      {
+        "id": "young_lineups",
+        "name": "Young Lineup Usage",
+        "icon": "👶",
+        "weight": 0.25,
+        "score": 55,
+        "weighted_score": 13.8,
+        "description": "Team is trending younger than the league average.",
+        "details": "Youth lineup score: 55/100.",
+        "data": {
+          "score_raw": 55
+        }
+      },
+      {
+        "id": "clutch_collapse",
+        "name": "Clutch Collapse (Q4)",
+        "icon": "📉",
+        "weight": 0.25,
+        "score": 5,
+        "weighted_score": 1.2,
+        "description": "4th quarter performance is consistent with overall play.",
+        "details": "Clutch collapse score: 5/100.",
+        "data": {
+          "score_raw": 5
+        }
+      }
+    ],
+    "record": {
+      "wins": 41,
+      "losses": 41,
+      "pct": 0.5
+    }
+  },
+  {
+    "team_id": 1610612763,
+    "team_name": "Memphis Grizzlies",
+    "team_abbreviation": "MEM",
+    "tanking_score": 20,
+    "status": "competing",
+    "status_label": "Actively Competing",
+    "season": "2024-25",
+    "last_updated": "2026-09-07T16:41:03.110476",
+    "pillars": [
+      {
+        "id": "vet_minutes",
+        "name": "Veteran Minutes Drop",
+        "icon": "⏱️",
+        "weight": 0.3,
+        "score": 15,
+        "weighted_score": 4.5,
+        "description": "Veteran minutes are within normal range.",
+        "details": "Veteran minutes score: 15/100.",
+        "data": {
+          "score_raw": 15
+        }
+      },
+      {
+        "id": "dnp_suspects",
+        "name": "DNP / Injury Suspects",
+        "icon": "🏥",
+        "weight": 0.2,
+        "score": 28,
+        "weighted_score": 5.6,
+        "description": "Key player availability is within normal range.",
+        "details": "DNP suspect score: 28/100.",
+        "data": {
+          "score_raw": 28
+        }
+      },
+      {
+        "id": "young_lineups",
+        "name": "Young Lineup Usage",
+        "icon": "👶",
+        "weight": 0.25,
+        "score": 22,
+        "weighted_score": 5.5,
+        "description": "Team age profile is within normal NBA range.",
+        "details": "Youth lineup score: 22/100.",
+        "data": {
+          "score_raw": 22
+        }
+      },
+      {
+        "id": "clutch_collapse",
+        "name": "Clutch Collapse (Q4)",
+        "icon": "📉",
+        "weight": 0.25,
+        "score": 15,
+        "weighted_score": 3.8,
+        "description": "4th quarter performance is consistent with overall play.",
+        "details": "Clutch collapse score: 15/100.",
+        "data": {
+          "score_raw": 15
+        }
+      }
+    ],
+    "record": {
+      "wins": 40,
+      "losses": 42,
+      "pct": 0.488
+    }
+  },
+  {
+    "team_id": 1610612748,
+    "team_name": "Miami Heat",
+    "team_abbreviation": "MIA",
+    "tanking_score": 18,
+    "status": "competing",
+    "status_label": "Actively Competing",
+    "season": "2024-25",
+    "last_updated": "2026-09-07T16:41:03.110476",
+    "pillars": [
+      {
+        "id": "vet_minutes",
+        "name": "Veteran Minutes Drop",
+        "icon": "⏱️",
+        "weight": 0.3,
+        "score": 15,
+        "weighted_score": 4.5,
+        "description": "Veteran minutes are within normal range.",
+        "details": "Veteran minutes score: 15/100.",
+        "data": {
+          "score_raw": 15
+        }
+      },
+      {
+        "id": "dnp_suspects",
+        "name": "DNP / Injury Suspects",
+        "icon": "🏥",
+        "weight": 0.2,
+        "score": 18,
+        "weighted_score": 3.6,
+        "description": "Key player availability is within normal range.",
+        "details": "DNP suspect score: 18/100.",
+        "data": {
+          "score_raw": 18
+        }
+      },
+      {
+        "id": "young_lineups",
+        "name": "Young Lineup Usage",
+        "icon": "👶",
+        "weight": 0.25,
+        "score": 12,
+        "weighted_score": 3.0,
+        "description": "Team age profile is within normal NBA range.",
+        "details": "Youth lineup score: 12/100.",
+        "data": {
+          "score_raw": 12
+        }
+      },
+      {
+        "id": "clutch_collapse",
+        "name": "Clutch Collapse (Q4)",
+        "icon": "📉",
+        "weight": 0.25,
+        "score": 28,
+        "weighted_score": 7.0,
+        "description": "4th quarter performance is consistent with overall play.",
+        "details": "Clutch collapse score: 28/100.",
+        "data": {
+          "score_raw": 28
+        }
+      }
+    ],
+    "record": {
+      "wins": 40,
+      "losses": 42,
+      "pct": 0.488
+    }
+  },
+  {
+    "team_id": 1610612756,
+    "team_name": "Phoenix Suns",
+    "team_abbreviation": "PHX",
+    "tanking_score": 16,
+    "status": "competing",
+    "status_label": "Actively Competing",
+    "season": "2024-25",
+    "last_updated": "2026-09-07T16:41:03.110476",
+    "pillars": [
+      {
+        "id": "vet_minutes",
+        "name": "Veteran Minutes Drop",
+        "icon": "⏱️",
+        "weight": 0.3,
+        "score": 18,
+        "weighted_score": 5.4,
+        "description": "Veteran minutes are within normal range.",
+        "details": "Veteran minutes score: 18/100.",
+        "data": {
+          "score_raw": 18
+        }
+      },
+      {
+        "id": "dnp_suspects",
+        "name": "DNP / Injury Suspects",
+        "icon": "🏥",
+        "weight": 0.2,
+        "score": 15,
+        "weighted_score": 3.0,
+        "description": "Key player availability is within normal range.",
+        "details": "DNP suspect score: 15/100.",
+        "data": {
+          "score_raw": 15
+        }
+      },
+      {
+        "id": "young_lineups",
+        "name": "Young Lineup Usage",
+        "icon": "👶",
+        "weight": 0.25,
+        "score": 10,
+        "weighted_score": 2.5,
+        "description": "Team age profile is within normal NBA range.",
+        "details": "Youth lineup score: 10/100.",
+        "data": {
+          "score_raw": 10
+        }
+      },
+      {
+        "id": "clutch_collapse",
+        "name": "Clutch Collapse (Q4)",
+        "icon": "📉",
+        "weight": 0.25,
+        "score": 22,
+        "weighted_score": 5.5,
+        "description": "4th quarter performance is consistent with overall play.",
+        "details": "Clutch collapse score: 22/100.",
+        "data": {
+          "score_raw": 22
+        }
+      }
+    ],
+    "record": {
+      "wins": 42,
+      "losses": 40,
+      "pct": 0.512
+    }
+  },
+  {
+    "team_id": 1610612754,
+    "team_name": "Indiana Pacers",
+    "team_abbreviation": "IND",
+    "tanking_score": 15,
+    "status": "competing",
+    "status_label": "Actively Competing",
+    "season": "2024-25",
+    "last_updated": "2026-09-07T16:41:03.110476",
+    "pillars": [
+      {
+        "id": "vet_minutes",
+        "name": "Veteran Minutes Drop",
+        "icon": "⏱️",
+        "weight": 0.3,
+        "score": 12,
+        "weighted_score": 3.6,
+        "description": "Veteran minutes are within normal range.",
+        "details": "Veteran minutes score: 12/100.",
+        "data": {
+          "score_raw": 12
+        }
+      },
+      {
+        "id": "dnp_suspects",
+        "name": "DNP / Injury Suspects",
+        "icon": "🏥",
+        "weight": 0.2,
+        "score": 10,
+        "weighted_score": 2.0,
+        "description": "Key player availability is within normal range.",
+        "details": "DNP suspect score: 10/100.",
+        "data": {
+          "score_raw": 10
+        }
+      },
+      {
+        "id": "young_lineups",
+        "name": "Young Lineup Usage",
+        "icon": "👶",
+        "weight": 0.25,
+        "score": 18,
+        "weighted_score": 4.5,
+        "description": "Team age profile is within normal NBA range.",
+        "details": "Youth lineup score: 18/100.",
+        "data": {
+          "score_raw": 18
+        }
+      },
+      {
+        "id": "clutch_collapse",
+        "name": "Clutch Collapse (Q4)",
+        "icon": "📉",
+        "weight": 0.25,
+        "score": 20,
+        "weighted_score": 5.0,
+        "description": "4th quarter performance is consistent with overall play.",
+        "details": "Clutch collapse score: 20/100.",
+        "data": {
+          "score_raw": 20
+        }
+      }
+    ],
+    "record": {
+      "wins": 43,
+      "losses": 39,
+      "pct": 0.524
+    }
+  },
+  {
+    "team_id": 1610612749,
+    "team_name": "Milwaukee Bucks",
+    "team_abbreviation": "MIL",
+    "tanking_score": 14,
+    "status": "competing",
+    "status_label": "Actively Competing",
+    "season": "2024-25",
+    "last_updated": "2026-09-07T16:41:03.110476",
+    "pillars": [
+      {
+        "id": "vet_minutes",
+        "name": "Veteran Minutes Drop",
+        "icon": "⏱️",
+        "weight": 0.3,
+        "score": 15,
+        "weighted_score": 4.5,
+        "description": "Veteran minutes are within normal range.",
+        "details": "Veteran minutes score: 15/100.",
+        "data": {
+          "score_raw": 15
+        }
+      },
+      {
+        "id": "dnp_suspects",
+        "name": "DNP / Injury Suspects",
+        "icon": "🏥",
+        "weight": 0.2,
+        "score": 18,
+        "weighted_score": 3.6,
+        "description": "Key player availability is within normal range.",
+        "details": "DNP suspect score: 18/100.",
+        "data": {
+          "score_raw": 18
+        }
+      },
+      {
+        "id": "young_lineups",
+        "name": "Young Lineup Usage",
+        "icon": "👶",
+        "weight": 0.25,
+        "score": 5,
+        "weighted_score": 1.2,
+        "description": "Team age profile is within normal NBA range.",
+        "details": "Youth lineup score: 5/100.",
+        "data": {
+          "score_raw": 5
+        }
+      },
+      {
+        "id": "clutch_collapse",
+        "name": "Clutch Collapse (Q4)",
+        "icon": "📉",
+        "weight": 0.25,
+        "score": 18,
+        "weighted_score": 4.5,
+        "description": "4th quarter performance is consistent with overall play.",
+        "details": "Clutch collapse score: 18/100.",
+        "data": {
+          "score_raw": 18
+        }
+      }
+    ],
+    "record": {
+      "wins": 44,
+      "losses": 38,
+      "pct": 0.537
+    }
+  },
+  {
+    "team_id": 1610612753,
+    "team_name": "Orlando Magic",
+    "team_abbreviation": "ORL",
+    "tanking_score": 12,
+    "status": "competing",
+    "status_label": "Actively Competing",
+    "season": "2024-25",
+    "last_updated": "2026-09-07T16:41:03.110476",
+    "pillars": [
+      {
+        "id": "vet_minutes",
+        "name": "Veteran Minutes Drop",
+        "icon": "⏱️",
+        "weight": 0.3,
+        "score": 10,
+        "weighted_score": 3.0,
+        "description": "Veteran minutes are within normal range.",
+        "details": "Veteran minutes score: 10/100.",
+        "data": {
+          "score_raw": 10
+        }
+      },
+      {
+        "id": "dnp_suspects",
+        "name": "DNP / Injury Suspects",
+        "icon": "🏥",
+        "weight": 0.2,
+        "score": 15,
+        "weighted_score": 3.0,
+        "description": "Key player availability is within normal range.",
+        "details": "DNP suspect score: 15/100.",
+        "data": {
+          "score_raw": 15
+        }
+      },
+      {
+        "id": "young_lineups",
+        "name": "Young Lineup Usage",
+        "icon": "👶",
+        "weight": 0.25,
+        "score": 20,
+        "weighted_score": 5.0,
+        "description": "Team age profile is within normal NBA range.",
+        "details": "Youth lineup score: 20/100.",
+        "data": {
+          "score_raw": 20
+        }
+      },
+      {
+        "id": "clutch_collapse",
+        "name": "Clutch Collapse (Q4)",
+        "icon": "📉",
+        "weight": 0.25,
+        "score": 5,
+        "weighted_score": 1.2,
+        "description": "4th quarter performance is consistent with overall play.",
+        "details": "Clutch collapse score: 5/100.",
+        "data": {
+          "score_raw": 5
+        }
+      }
+    ],
+    "record": {
+      "wins": 44,
+      "losses": 38,
+      "pct": 0.537
+    }
+  },
+  {
+    "team_id": 1610612742,
+    "team_name": "Dallas Mavericks",
+    "team_abbreviation": "DAL",
+    "tanking_score": 10,
+    "status": "competing",
+    "status_label": "Actively Competing",
+    "season": "2024-25",
+    "last_updated": "2026-09-07T16:41:03.110476",
+    "pillars": [
+      {
+        "id": "vet_minutes",
+        "name": "Veteran Minutes Drop",
+        "icon": "⏱️",
+        "weight": 0.3,
+        "score": 8,
+        "weighted_score": 2.4,
+        "description": "Veteran minutes are within normal range.",
+        "details": "Veteran minutes score: 8/100.",
+        "data": {
+          "score_raw": 8
+        }
+      },
+      {
+        "id": "dnp_suspects",
+        "name": "DNP / Injury Suspects",
+        "icon": "🏥",
+        "weight": 0.2,
+        "score": 12,
+        "weighted_score": 2.4,
+        "description": "Key player availability is within normal range.",
+        "details": "DNP suspect score: 12/100.",
+        "data": {
+          "score_raw": 12
+        }
+      },
+      {
+        "id": "young_lineups",
+        "name": "Young Lineup Usage",
+        "icon": "👶",
+        "weight": 0.25,
+        "score": 8,
+        "weighted_score": 2.0,
+        "description": "Team age profile is within normal NBA range.",
+        "details": "Youth lineup score: 8/100.",
+        "data": {
+          "score_raw": 8
+        }
+      },
+      {
+        "id": "clutch_collapse",
+        "name": "Clutch Collapse (Q4)",
+        "icon": "📉",
+        "weight": 0.25,
+        "score": 12,
+        "weighted_score": 3.0,
+        "description": "4th quarter performance is consistent with overall play.",
+        "details": "Clutch collapse score: 12/100.",
+        "data": {
+          "score_raw": 12
+        }
+      }
+    ],
+    "record": {
+      "wins": 46,
+      "losses": 36,
+      "pct": 0.561
+    }
+  },
+  {
+    "team_id": 1610612750,
+    "team_name": "Minnesota Timberwolves",
+    "team_abbreviation": "MIN",
+    "tanking_score": 9,
+    "status": "competing",
+    "status_label": "Actively Competing",
+    "season": "2024-25",
+    "last_updated": "2026-09-07T16:41:03.110476",
+    "pillars": [
+      {
+        "id": "vet_minutes",
+        "name": "Veteran Minutes Drop",
+        "icon": "⏱️",
+        "weight": 0.3,
+        "score": 8,
+        "weighted_score": 2.4,
+        "description": "Veteran minutes are within normal range.",
+        "details": "Veteran minutes score: 8/100.",
+        "data": {
+          "score_raw": 8
+        }
+      },
+      {
+        "id": "dnp_suspects",
+        "name": "DNP / Injury Suspects",
+        "icon": "🏥",
+        "weight": 0.2,
+        "score": 8,
+        "weighted_score": 1.6,
+        "description": "Key player availability is within normal range.",
+        "details": "DNP suspect score: 8/100.",
+        "data": {
+          "score_raw": 8
+        }
+      },
+      {
+        "id": "young_lineups",
+        "name": "Young Lineup Usage",
+        "icon": "👶",
+        "weight": 0.25,
+        "score": 10,
+        "weighted_score": 2.5,
+        "description": "Team age profile is within normal NBA range.",
+        "details": "Youth lineup score: 10/100.",
+        "data": {
+          "score_raw": 10
+        }
+      },
+      {
+        "id": "clutch_collapse",
+        "name": "Clutch Collapse (Q4)",
+        "icon": "📉",
+        "weight": 0.25,
+        "score": 10,
+        "weighted_score": 2.5,
+        "description": "4th quarter performance is consistent with overall play.",
+        "details": "Clutch collapse score: 10/100.",
+        "data": {
+          "score_raw": 10
+        }
+      }
+    ],
+    "record": {
+      "wins": 47,
+      "losses": 35,
+      "pct": 0.573
+    }
+  },
+  {
+    "team_id": 1610612743,
+    "team_name": "Denver Nuggets",
+    "team_abbreviation": "DEN",
+    "tanking_score": 8,
+    "status": "competing",
+    "status_label": "Actively Competing",
+    "season": "2024-25",
+    "last_updated": "2026-09-07T16:41:03.110476",
+    "pillars": [
+      {
+        "id": "vet_minutes",
+        "name": "Veteran Minutes Drop",
+        "icon": "⏱️",
+        "weight": 0.3,
+        "score": 5,
+        "weighted_score": 1.5,
+        "description": "Veteran minutes are within normal range.",
+        "details": "Veteran minutes score: 5/100.",
+        "data": {
+          "score_raw": 5
+        }
+      },
+      {
+        "id": "dnp_suspects",
+        "name": "DNP / Injury Suspects",
+        "icon": "🏥",
+        "weight": 0.2,
+        "score": 10,
+        "weighted_score": 2.0,
+        "description": "Key player availability is within normal range.",
+        "details": "DNP suspect score: 10/100.",
+        "data": {
+          "score_raw": 10
+        }
+      },
+      {
+        "id": "young_lineups",
+        "name": "Young Lineup Usage",
+        "icon": "👶",
+        "weight": 0.25,
+        "score": 8,
+        "weighted_score": 2.0,
+        "description": "Team age profile is within normal NBA range.",
+        "details": "Youth lineup score: 8/100.",
+        "data": {
+          "score_raw": 8
+        }
+      },
+      {
+        "id": "clutch_collapse",
+        "name": "Clutch Collapse (Q4)",
+        "icon": "📉",
+        "weight": 0.25,
+        "score": 10,
+        "weighted_score": 2.5,
+        "description": "4th quarter performance is consistent with overall play.",
+        "details": "Clutch collapse score: 10/100.",
+        "data": {
+          "score_raw": 10
+        }
+      }
+    ],
+    "record": {
+      "wins": 48,
+      "losses": 34,
+      "pct": 0.585
+    }
+  },
+  {
+    "team_id": 1610612752,
+    "team_name": "New York Knicks",
+    "team_abbreviation": "NYK",
+    "tanking_score": 6,
+    "status": "competing",
+    "status_label": "Actively Competing",
+    "season": "2024-25",
+    "last_updated": "2026-09-07T16:41:03.110476",
+    "pillars": [
+      {
+        "id": "vet_minutes",
+        "name": "Veteran Minutes Drop",
+        "icon": "⏱️",
+        "weight": 0.3,
+        "score": 5,
+        "weighted_score": 1.5,
+        "description": "Veteran minutes are within normal range.",
+        "details": "Veteran minutes score: 5/100.",
+        "data": {
+          "score_raw": 5
+        }
+      },
+      {
+        "id": "dnp_suspects",
+        "name": "DNP / Injury Suspects",
+        "icon": "🏥",
+        "weight": 0.2,
+        "score": 8,
+        "weighted_score": 1.6,
+        "description": "Key player availability is within normal range.",
+        "details": "DNP suspect score: 8/100.",
+        "data": {
+          "score_raw": 8
+        }
+      },
+      {
+        "id": "young_lineups",
+        "name": "Young Lineup Usage",
+        "icon": "👶",
+        "weight": 0.25,
+        "score": 5,
+        "weighted_score": 1.2,
+        "description": "Team age profile is within normal NBA range.",
+        "details": "Youth lineup score: 5/100.",
+        "data": {
+          "score_raw": 5
+        }
+      },
+      {
+        "id": "clutch_collapse",
+        "name": "Clutch Collapse (Q4)",
+        "icon": "📉",
+        "weight": 0.25,
+        "score": 8,
+        "weighted_score": 2.0,
+        "description": "4th quarter performance is consistent with overall play.",
+        "details": "Clutch collapse score: 8/100.",
+        "data": {
+          "score_raw": 8
+        }
+      }
+    ],
+    "record": {
+      "wins": 50,
+      "losses": 32,
+      "pct": 0.61
+    }
+  },
+  {
+    "team_id": 1610612739,
+    "team_name": "Cleveland Cavaliers",
+    "team_abbreviation": "CLE",
+    "tanking_score": 5,
+    "status": "competing",
+    "status_label": "Actively Competing",
+    "season": "2024-25",
+    "last_updated": "2026-09-07T16:41:03.115335",
+    "pillars": [
+      {
+        "id": "vet_minutes",
+        "name": "Veteran Minutes Drop",
+        "icon": "⏱️",
+        "weight": 0.3,
+        "score": 3,
+        "weighted_score": 0.9,
+        "description": "Veteran minutes are within normal range.",
+        "details": "Veteran minutes score: 3/100.",
+        "data": {
+          "score_raw": 3
+        }
+      },
+      {
+        "id": "dnp_suspects",
+        "name": "DNP / Injury Suspects",
+        "icon": "🏥",
+        "weight": 0.2,
+        "score": 5,
+        "weighted_score": 1.0,
+        "description": "Key player availability is within normal range.",
+        "details": "DNP suspect score: 5/100.",
+        "data": {
+          "score_raw": 5
+        }
+      },
+      {
+        "id": "young_lineups",
+        "name": "Young Lineup Usage",
+        "icon": "👶",
+        "weight": 0.25,
+        "score": 5,
+        "weighted_score": 1.2,
+        "description": "Team age profile is within normal NBA range.",
+        "details": "Youth lineup score: 5/100.",
+        "data": {
+          "score_raw": 5
+        }
+      },
+      {
+        "id": "clutch_collapse",
+        "name": "Clutch Collapse (Q4)",
+        "icon": "📉",
+        "weight": 0.25,
+        "score": 5,
+        "weighted_score": 1.2,
+        "description": "4th quarter performance is consistent with overall play.",
+        "details": "Clutch collapse score: 5/100.",
+        "data": {
+          "score_raw": 5
+        }
+      }
+    ],
+    "record": {
+      "wins": 55,
+      "losses": 27,
+      "pct": 0.671
+    }
+  },
+  {
+    "team_id": 1610612738,
+    "team_name": "Boston Celtics",
+    "team_abbreviation": "BOS",
+    "tanking_score": 4,
+    "status": "competing",
+    "status_label": "Actively Competing",
+    "season": "2024-25",
+    "last_updated": "2026-09-07T16:41:03.110476",
+    "pillars": [
+      {
+        "id": "vet_minutes",
+        "name": "Veteran Minutes Drop",
+        "icon": "⏱️",
+        "weight": 0.3,
+        "score": 3,
+        "weighted_score": 0.9,
+        "description": "Veteran minutes are within normal range.",
+        "details": "Veteran minutes score: 3/100.",
+        "data": {
+          "score_raw": 3
+        }
+      },
+      {
+        "id": "dnp_suspects",
+        "name": "DNP / Injury Suspects",
+        "icon": "🏥",
+        "weight": 0.2,
+        "score": 5,
+        "weighted_score": 1.0,
+        "description": "Key player availability is within normal range.",
+        "details": "DNP suspect score: 5/100.",
+        "data": {
+          "score_raw": 5
+        }
+      },
+      {
+        "id": "young_lineups",
+        "name": "Young Lineup Usage",
+        "icon": "👶",
+        "weight": 0.25,
+        "score": 5,
+        "weighted_score": 1.2,
+        "description": "Team age profile is within normal NBA range.",
+        "details": "Youth lineup score: 5/100.",
+        "data": {
+          "score_raw": 5
+        }
+      },
+      {
+        "id": "clutch_collapse",
+        "name": "Clutch Collapse (Q4)",
+        "icon": "📉",
+        "weight": 0.25,
+        "score": 3,
+        "weighted_score": 0.8,
+        "description": "4th quarter performance is consistent with overall play.",
+        "details": "Clutch collapse score: 3/100.",
+        "data": {
+          "score_raw": 3
+        }
+      }
+    ],
+    "record": {
+      "wins": 52,
+      "losses": 30,
+      "pct": 0.634
+    }
+  },
+  {
+    "team_id": 1610612760,
+    "team_name": "Oklahoma City Thunder",
+    "team_abbreviation": "OKC",
+    "tanking_score": 3,
+    "status": "competing",
+    "status_label": "Actively Competing",
+    "season": "2024-25",
+    "last_updated": "2026-09-07T16:41:03.110476",
+    "pillars": [
+      {
+        "id": "vet_minutes",
+        "name": "Veteran Minutes Drop",
+        "icon": "⏱️",
+        "weight": 0.3,
+        "score": 2,
+        "weighted_score": 0.6,
+        "description": "Veteran minutes are within normal range.",
+        "details": "Veteran minutes score: 2/100.",
+        "data": {
+          "score_raw": 2
+        }
+      },
+      {
+        "id": "dnp_suspects",
+        "name": "DNP / Injury Suspects",
+        "icon": "🏥",
+        "weight": 0.2,
+        "score": 2,
+        "weighted_score": 0.4,
+        "description": "Key player availability is within normal range.",
+        "details": "DNP suspect score: 2/100.",
+        "data": {
+          "score_raw": 2
+        }
+      },
+      {
+        "id": "young_lineups",
+        "name": "Young Lineup Usage",
+        "icon": "👶",
+        "weight": 0.25,
+        "score": 8,
+        "weighted_score": 2.0,
+        "description": "Team age profile is within normal NBA range.",
+        "details": "Youth lineup score: 8/100.",
+        "data": {
+          "score_raw": 8
+        }
+      },
+      {
+        "id": "clutch_collapse",
+        "name": "Clutch Collapse (Q4)",
+        "icon": "📉",
+        "weight": 0.25,
+        "score": 2,
+        "weighted_score": 0.5,
+        "description": "4th quarter performance is consistent with overall play.",
+        "details": "Clutch collapse score: 2/100.",
+        "data": {
+          "score_raw": 2
+        }
+      }
+    ],
+    "record": {
+      "wins": 57,
+      "losses": 25,
+      "pct": 0.695
+    }
+  }
+]

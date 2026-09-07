@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- SEO -->
+  <title>Is Your Team Tanking? - NBA Tanking Detector</title>
+  <meta name="description"
+    content="Real-time NBA tanking detection. Find out if your favorite team is tanking this season, backed by statistical evidence: veteran minutes, DNP patterns, lineup age, and clutch performance." />
+  <meta name="keywords" content="NBA, tanking, tank, basketball, statistics, analysis, draft, lottery" />
+  <meta name="author" content="IsYourTeamTanking" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Is Your Team Tanking? - NBA Tanking Detector" />
+  <meta property="og:description" content="Real-time NBA tanking detection backed by 4 statistical pillars." />
+  <meta property="og:type" content="website" />
+
+  <!-- Favicon (basketball emoji as SVG) -->
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏀</text></svg>" />
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="/static/style.css?v=4" />
+</head>
+
+<body>
+  <div class="app-container">
+
+    <!-- ---- Header ---- -->
+    <header class="header">
+      <button id="home-btn" class="home-btn" aria-label="Retour à l'accueil" style="display:none;">
+        ← Home
+      </button>
+      <span class="header__icon" aria-hidden="true">🏀</span>
+      <h1 class="header__title">Is Your Team Tanking?</h1>
+      <p class="header__subtitle">
+        Statistical detection of NBA tanking - find out if your team is competing or quietly chasing the #1 pick.
+      </p>
+      <span class="header__season">
+        <span class="dot"></span>
+        2024-25 Season
+      </span>
+    </header>
+
+    <!-- ---- Search ---- -->
+    <section class="search-section" aria-label="Search for a team">
+      <div class="search-wrapper">
+        <input type="text" id="search-input" class="search-input"
+          placeholder="Search a team... (e.g. Wizards, Portland, LAL)" autocomplete="off"
+          aria-label="Search NBA team" />
+        <span class="search-icon" aria-hidden="true">🔍</span>
+        <div id="autocomplete-list" class="autocomplete-list" role="listbox"></div>
+      </div>
+    </section>
+
+    <!-- ---- Loading ---- -->
+    <div id="loading" class="loading-spinner" style="display:none;">
+      <div class="spinner"></div>
+      <span class="loading-text">Loading tanking data...</span>
+    </div>
+
+    <!-- ---- Error ---- -->
+    <div id="error" class="error-message" style="display:none;"></div>
+
+    <!-- ---- Result Card (dynamically rendered) ---- -->
+    <section class="result-section" aria-label="Team tanking result"></section>
+
+    <!-- ---- Rankings ---- -->
+    <section class="rankings-section" aria-label="Tanking rankings">
+      <h2 class="rankings-title">🏆 Tanking Power Rankings</h2>
+      <p class="rankings-subtitle">All 30 teams ranked by Tanking Score - click any team for details</p>
+      <div id="rankings-list" class="rankings-list"></div>
+    </section>
+
+    <!-- ---- Footer ---- -->
+    <footer class="footer">
+      <p>
+        Built with 🏀 &amp; data from
+        <a href="https://www.nba.com/stats" target="_blank" rel="noopener">NBA Stats</a>
+        ·
+        <a href="https://github.com/swar/nba_api" target="_blank" rel="noopener">nba_api</a>
+      </p>
+      <p class="footer__disclaimer">
+        This tool is for entertainment purposes only. "Tanking" is inferred from publicly
+        available statistical patterns and does not reflect any official NBA designation.
+      </p>
+    </footer>
+
+  </div>
+
+  <!-- Scroll to top -->
+  <button id="scroll-top-btn" class="scroll-top-btn" aria-label="Scroll to top">↑</button>
+
+  <!-- Scripts -->
+  <script src="/static/teams.js?v=5"></script>
+  <script src="/static/app.js?v=4"></script>
+</body>
+
+</html>
