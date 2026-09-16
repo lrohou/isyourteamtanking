@@ -7,7 +7,7 @@
     "status": "hard_tanking",
     "status_label": "Hard Tanking Detected!",
     "season": "2025-26",
-    "last_updated": "2026-09-16T09:30:12.804001",
+    "last_updated": "2026-09-16T10:12:49.853313",
     "conference": "East",
     "pillars": [
       {
@@ -114,6 +114,44 @@
         "home": true
       }
     ],
+    "tanking_history": [
+      {
+        "month": "Oct",
+        "score": 22
+      },
+      {
+        "month": "Nov",
+        "score": 29
+      },
+      {
+        "month": "Dec",
+        "score": 37
+      },
+      {
+        "month": "Jan",
+        "score": 46
+      },
+      {
+        "month": "Feb",
+        "score": 59
+      },
+      {
+        "month": "Mar",
+        "score": 64
+      },
+      {
+        "month": "Apr",
+        "score": 72
+      },
+      {
+        "month": "May",
+        "score": 81
+      },
+      {
+        "month": "Jun",
+        "score": 92
+      }
+    ],
     "standings_rank": 15,
     "standings_total": 15
   },
@@ -125,7 +163,7 @@
     "status": "hard_tanking",
     "status_label": "Hard Tanking Detected!",
     "season": "2025-26",
-    "last_updated": "2026-09-16T09:30:12.804001",
+    "last_updated": "2026-09-16T10:12:49.853313",
     "conference": "East",
     "pillars": [
       {
@@ -189,27 +227,27 @@
     "recent_games": [
       {
         "date": "09/04/26",
-        "opponent": "MIL",
+        "opponent": "MEM",
         "home": true,
         "result": "W",
-        "team_score": 99,
-        "opponent_score": 84
+        "team_score": 98,
+        "opponent_score": 86
       },
       {
         "date": "11/04/26",
-        "opponent": "DEN",
+        "opponent": "SAS",
         "home": false,
         "result": "L",
-        "team_score": 117,
-        "opponent_score": 124
+        "team_score": 96,
+        "opponent_score": 101
       },
       {
         "date": "13/04/26",
-        "opponent": "BOS",
+        "opponent": "MEM",
         "home": true,
         "result": "L",
         "team_score": 116,
-        "opponent_score": 130
+        "opponent_score": 129
       }
     ],
     "upcoming_games": [
@@ -232,6 +270,44 @@
         "home": false
       }
     ],
+    "tanking_history": [
+      {
+        "month": "Oct",
+        "score": 26
+      },
+      {
+        "month": "Nov",
+        "score": 30
+      },
+      {
+        "month": "Dec",
+        "score": 34
+      },
+      {
+        "month": "Jan",
+        "score": 41
+      },
+      {
+        "month": "Feb",
+        "score": 50
+      },
+      {
+        "month": "Mar",
+        "score": 55
+      },
+      {
+        "month": "Apr",
+        "score": 67
+      },
+      {
+        "month": "May",
+        "score": 72
+      },
+      {
+        "month": "Jun",
+        "score": 85
+      }
+    ],
     "standings_rank": 14,
     "standings_total": 15
   },
@@ -243,7 +319,7 @@
     "status": "hard_tanking",
     "status_label": "Hard Tanking Detected!",
     "season": "2025-26",
-    "last_updated": "2026-09-16T09:30:12.804001",
+    "last_updated": "2026-09-16T10:12:49.853313",
     "conference": "East",
     "pillars": [
       {
@@ -307,27 +383,27 @@
     "recent_games": [
       {
         "date": "09/04/26",
-        "opponent": "DEN",
-        "home": false,
+        "opponent": "SAC",
+        "home": true,
         "result": "L",
-        "team_score": 104,
-        "opponent_score": 108
+        "team_score": 105,
+        "opponent_score": 112
       },
       {
         "date": "11/04/26",
-        "opponent": "LAL",
-        "home": true,
-        "result": "L",
-        "team_score": 98,
-        "opponent_score": 107
+        "opponent": "DAL",
+        "home": false,
+        "result": "W",
+        "team_score": 120,
+        "opponent_score": 117
       },
       {
         "date": "13/04/26",
-        "opponent": "OKC",
-        "home": true,
+        "opponent": "BOS",
+        "home": false,
         "result": "L",
-        "team_score": 99,
-        "opponent_score": 112
+        "team_score": 116,
+        "opponent_score": 122
       }
     ],
     "upcoming_games": [
@@ -350,6 +426,44 @@
         "home": false
       }
     ],
+    "tanking_history": [
+      {
+        "month": "Oct",
+        "score": 25
+      },
+      {
+        "month": "Nov",
+        "score": 30
+      },
+      {
+        "month": "Dec",
+        "score": 34
+      },
+      {
+        "month": "Jan",
+        "score": 45
+      },
+      {
+        "month": "Feb",
+        "score": 57
+      },
+      {
+        "month": "Mar",
+        "score": 69
+      },
+      {
+        "month": "Apr",
+        "score": 77
+      },
+      {
+        "month": "May",
+        "score": 87
+      },
+      {
+        "month": "Jun",
+        "score": 78
+      }
+    ],
     "standings_rank": 13,
     "standings_total": 15
   },
@@ -361,7 +475,7 @@
     "status": "hard_tanking",
     "status_label": "Hard Tanking Detected!",
     "season": "2025-26",
-    "last_updated": "2026-09-16T09:30:12.804570",
+    "last_updated": "2026-09-16T10:12:49.854389",
     "conference": "West",
     "pillars": [
       {
@@ -425,27 +539,27 @@
     "recent_games": [
       {
         "date": "09/04/26",
-        "opponent": "DET",
+        "opponent": "CHI",
         "home": true,
         "result": "L",
-        "team_score": 96,
-        "opponent_score": 101
+        "team_score": 101,
+        "opponent_score": 113
       },
       {
         "date": "11/04/26",
-        "opponent": "ORL",
-        "home": true,
+        "opponent": "SAS",
+        "home": false,
         "result": "L",
-        "team_score": 117,
-        "opponent_score": 127
+        "team_score": 106,
+        "opponent_score": 119
       },
       {
         "date": "13/04/26",
         "opponent": "OKC",
-        "home": false,
+        "home": true,
         "result": "L",
-        "team_score": 109,
-        "opponent_score": 116
+        "team_score": 102,
+        "opponent_score": 108
       }
     ],
     "upcoming_games": [
@@ -468,6 +582,44 @@
         "home": false
       }
     ],
+    "tanking_history": [
+      {
+        "month": "Oct",
+        "score": 26
+      },
+      {
+        "month": "Nov",
+        "score": 33
+      },
+      {
+        "month": "Dec",
+        "score": 41
+      },
+      {
+        "month": "Jan",
+        "score": 55
+      },
+      {
+        "month": "Feb",
+        "score": 64
+      },
+      {
+        "month": "Mar",
+        "score": 70
+      },
+      {
+        "month": "Apr",
+        "score": 76
+      },
+      {
+        "month": "May",
+        "score": 86
+      },
+      {
+        "month": "Jun",
+        "score": 74
+      }
+    ],
     "standings_rank": 8,
     "standings_total": 15
   },
@@ -479,7 +631,7 @@
     "status": "hard_tanking",
     "status_label": "Hard Tanking Detected!",
     "season": "2025-26",
-    "last_updated": "2026-09-16T09:30:12.804570",
+    "last_updated": "2026-09-16T10:12:49.854389",
     "conference": "West",
     "pillars": [
       {
@@ -543,27 +695,27 @@
     "recent_games": [
       {
         "date": "09/04/26",
-        "opponent": "WAS",
-        "home": true,
+        "opponent": "BKN",
+        "home": false,
         "result": "W",
-        "team_score": 108,
-        "opponent_score": 105
+        "team_score": 124,
+        "opponent_score": 120
       },
       {
         "date": "11/04/26",
-        "opponent": "GSW",
-        "home": false,
+        "opponent": "TOR",
+        "home": true,
         "result": "W",
-        "team_score": 115,
-        "opponent_score": 113
+        "team_score": 121,
+        "opponent_score": 118
       },
       {
         "date": "13/04/26",
-        "opponent": "IND",
+        "opponent": "HOU",
         "home": false,
-        "result": "W",
-        "team_score": 121,
-        "opponent_score": 115
+        "result": "L",
+        "team_score": 99,
+        "opponent_score": 102
       }
     ],
     "upcoming_games": [
@@ -586,6 +738,44 @@
         "home": false
       }
     ],
+    "tanking_history": [
+      {
+        "month": "Oct",
+        "score": 22
+      },
+      {
+        "month": "Nov",
+        "score": 19
+      },
+      {
+        "month": "Dec",
+        "score": 28
+      },
+      {
+        "month": "Jan",
+        "score": 28
+      },
+      {
+        "month": "Feb",
+        "score": 27
+      },
+      {
+        "month": "Mar",
+        "score": 31
+      },
+      {
+        "month": "Apr",
+        "score": 38
+      },
+      {
+        "month": "May",
+        "score": 41
+      },
+      {
+        "month": "Jun",
+        "score": 68
+      }
+    ],
     "standings_rank": 2,
     "standings_total": 15
   },
@@ -597,7 +787,7 @@
     "status": "soft_tanking",
     "status_label": "Soft Tanking / Gray Zone",
     "season": "2025-26",
-    "last_updated": "2026-09-16T09:30:12.804001",
+    "last_updated": "2026-09-16T10:12:49.853313",
     "conference": "East",
     "pillars": [
       {
@@ -662,26 +852,26 @@
       {
         "date": "09/04/26",
         "opponent": "CHA",
-        "home": true,
+        "home": false,
         "result": "W",
-        "team_score": 122,
-        "opponent_score": 120
+        "team_score": 104,
+        "opponent_score": 103
       },
       {
         "date": "11/04/26",
-        "opponent": "TOR",
-        "home": false,
+        "opponent": "MIN",
+        "home": true,
         "result": "L",
-        "team_score": 113,
-        "opponent_score": 119
+        "team_score": 95,
+        "opponent_score": 102
       },
       {
         "date": "13/04/26",
-        "opponent": "CLE",
+        "opponent": "BOS",
         "home": false,
-        "result": "L",
-        "team_score": 125,
-        "opponent_score": 133
+        "result": "W",
+        "team_score": 97,
+        "opponent_score": 92
       }
     ],
     "upcoming_games": [
@@ -704,6 +894,44 @@
         "home": false
       }
     ],
+    "tanking_history": [
+      {
+        "month": "Oct",
+        "score": 18
+      },
+      {
+        "month": "Nov",
+        "score": 23
+      },
+      {
+        "month": "Dec",
+        "score": 21
+      },
+      {
+        "month": "Jan",
+        "score": 25
+      },
+      {
+        "month": "Feb",
+        "score": 24
+      },
+      {
+        "month": "Mar",
+        "score": 29
+      },
+      {
+        "month": "Apr",
+        "score": 31
+      },
+      {
+        "month": "May",
+        "score": 33
+      },
+      {
+        "month": "Jun",
+        "score": 65
+      }
+    ],
     "standings_rank": 12,
     "standings_total": 15
   },
@@ -715,7 +943,7 @@
     "status": "soft_tanking",
     "status_label": "Soft Tanking / Gray Zone",
     "season": "2025-26",
-    "last_updated": "2026-09-16T09:30:12.804001",
+    "last_updated": "2026-09-16T10:12:49.853313",
     "conference": "East",
     "pillars": [
       {
@@ -779,27 +1007,27 @@
     "recent_games": [
       {
         "date": "09/04/26",
-        "opponent": "LAC",
+        "opponent": "MIA",
         "home": false,
         "result": "L",
-        "team_score": 116,
-        "opponent_score": 128
+        "team_score": 119,
+        "opponent_score": 132
       },
       {
         "date": "11/04/26",
-        "opponent": "MEM",
-        "home": true,
+        "opponent": "LAC",
+        "home": false,
         "result": "L",
-        "team_score": 95,
-        "opponent_score": 109
+        "team_score": 104,
+        "opponent_score": 117
       },
       {
         "date": "13/04/26",
-        "opponent": "DEN",
+        "opponent": "PHI",
         "home": true,
-        "result": "L",
-        "team_score": 112,
-        "opponent_score": 123
+        "result": "W",
+        "team_score": 122,
+        "opponent_score": 109
       }
     ],
     "upcoming_games": [
@@ -822,6 +1050,44 @@
         "home": false
       }
     ],
+    "tanking_history": [
+      {
+        "month": "Oct",
+        "score": 19
+      },
+      {
+        "month": "Nov",
+        "score": 25
+      },
+      {
+        "month": "Dec",
+        "score": 35
+      },
+      {
+        "month": "Jan",
+        "score": 45
+      },
+      {
+        "month": "Feb",
+        "score": 45
+      },
+      {
+        "month": "Mar",
+        "score": 53
+      },
+      {
+        "month": "Apr",
+        "score": 61
+      },
+      {
+        "month": "May",
+        "score": 65
+      },
+      {
+        "month": "Jun",
+        "score": 62
+      }
+    ],
     "standings_rank": 11,
     "standings_total": 15
   },
@@ -833,7 +1099,7 @@
     "status": "soft_tanking",
     "status_label": "Soft Tanking / Gray Zone",
     "season": "2025-26",
-    "last_updated": "2026-09-16T09:30:12.804570",
+    "last_updated": "2026-09-16T10:12:49.854389",
     "conference": "West",
     "pillars": [
       {
@@ -897,27 +1163,27 @@
     "recent_games": [
       {
         "date": "09/04/26",
-        "opponent": "DAL",
+        "opponent": "BOS",
         "home": false,
         "result": "L",
-        "team_score": 100,
-        "opponent_score": 111
+        "team_score": 117,
+        "opponent_score": 123
       },
       {
         "date": "11/04/26",
-        "opponent": "GSW",
+        "opponent": "SAS",
         "home": true,
-        "result": "L",
-        "team_score": 125,
-        "opponent_score": 133
+        "result": "W",
+        "team_score": 101,
+        "opponent_score": 87
       },
       {
         "date": "13/04/26",
-        "opponent": "DAL",
+        "opponent": "DEN",
         "home": true,
         "result": "L",
-        "team_score": 111,
-        "opponent_score": 120
+        "team_score": 110,
+        "opponent_score": 114
       }
     ],
     "upcoming_games": [
@@ -940,6 +1206,44 @@
         "home": false
       }
     ],
+    "tanking_history": [
+      {
+        "month": "Oct",
+        "score": 11
+      },
+      {
+        "month": "Nov",
+        "score": 20
+      },
+      {
+        "month": "Dec",
+        "score": 25
+      },
+      {
+        "month": "Jan",
+        "score": 31
+      },
+      {
+        "month": "Feb",
+        "score": 32
+      },
+      {
+        "month": "Mar",
+        "score": 35
+      },
+      {
+        "month": "Apr",
+        "score": 42
+      },
+      {
+        "month": "May",
+        "score": 48
+      },
+      {
+        "month": "Jun",
+        "score": 60
+      }
+    ],
     "standings_rank": 13,
     "standings_total": 15
   },
@@ -951,7 +1255,7 @@
     "status": "soft_tanking",
     "status_label": "Soft Tanking / Gray Zone",
     "season": "2025-26",
-    "last_updated": "2026-09-16T09:30:12.804570",
+    "last_updated": "2026-09-16T10:12:49.853858",
     "conference": "West",
     "pillars": [
       {
@@ -1015,27 +1319,27 @@
     "recent_games": [
       {
         "date": "09/04/26",
-        "opponent": "ORL",
+        "opponent": "CLE",
         "home": true,
         "result": "L",
-        "team_score": 107,
-        "opponent_score": 122
+        "team_score": 117,
+        "opponent_score": 132
       },
       {
         "date": "11/04/26",
-        "opponent": "PHI",
+        "opponent": "LAL",
         "home": true,
         "result": "L",
-        "team_score": 111,
-        "opponent_score": 114
+        "team_score": 108,
+        "opponent_score": 111
       },
       {
         "date": "13/04/26",
-        "opponent": "BKN",
-        "home": false,
+        "opponent": "HOU",
+        "home": true,
         "result": "L",
-        "team_score": 104,
-        "opponent_score": 110
+        "team_score": 95,
+        "opponent_score": 96
       }
     ],
     "upcoming_games": [
@@ -1058,6 +1362,44 @@
         "home": true
       }
     ],
+    "tanking_history": [
+      {
+        "month": "Oct",
+        "score": 13
+      },
+      {
+        "month": "Nov",
+        "score": 23
+      },
+      {
+        "month": "Dec",
+        "score": 26
+      },
+      {
+        "month": "Jan",
+        "score": 31
+      },
+      {
+        "month": "Feb",
+        "score": 39
+      },
+      {
+        "month": "Mar",
+        "score": 47
+      },
+      {
+        "month": "Apr",
+        "score": 55
+      },
+      {
+        "month": "May",
+        "score": 57
+      },
+      {
+        "month": "Jun",
+        "score": 52
+      }
+    ],
     "standings_rank": 14,
     "standings_total": 15
   },
@@ -1069,7 +1411,7 @@
     "status": "soft_tanking",
     "status_label": "Soft Tanking / Gray Zone",
     "season": "2025-26",
-    "last_updated": "2026-09-16T09:30:12.804001",
+    "last_updated": "2026-09-16T10:12:49.853313",
     "conference": "East",
     "pillars": [
       {
@@ -1133,27 +1475,27 @@
     "recent_games": [
       {
         "date": "09/04/26",
-        "opponent": "BOS",
-        "home": false,
-        "result": "W",
-        "team_score": 112,
-        "opponent_score": 103
+        "opponent": "MIA",
+        "home": true,
+        "result": "L",
+        "team_score": 109,
+        "opponent_score": 118
       },
       {
         "date": "11/04/26",
-        "opponent": "DAL",
-        "home": true,
+        "opponent": "PHI",
+        "home": false,
         "result": "W",
-        "team_score": 122,
-        "opponent_score": 115
+        "team_score": 109,
+        "opponent_score": 105
       },
       {
         "date": "13/04/26",
-        "opponent": "LAL",
+        "opponent": "CLE",
         "home": false,
-        "result": "W",
-        "team_score": 105,
-        "opponent_score": 96
+        "result": "L",
+        "team_score": 102,
+        "opponent_score": 106
       }
     ],
     "upcoming_games": [
@@ -1176,6 +1518,44 @@
         "home": false
       }
     ],
+    "tanking_history": [
+      {
+        "month": "Oct",
+        "score": 18
+      },
+      {
+        "month": "Nov",
+        "score": 15
+      },
+      {
+        "month": "Dec",
+        "score": 24
+      },
+      {
+        "month": "Jan",
+        "score": 25
+      },
+      {
+        "month": "Feb",
+        "score": 27
+      },
+      {
+        "month": "Mar",
+        "score": 33
+      },
+      {
+        "month": "Apr",
+        "score": 40
+      },
+      {
+        "month": "May",
+        "score": 45
+      },
+      {
+        "month": "Jun",
+        "score": 40
+      }
+    ],
     "standings_rank": 9,
     "standings_total": 15
   },
@@ -1187,7 +1567,7 @@
     "status": "soft_tanking",
     "status_label": "Soft Tanking / Gray Zone",
     "season": "2025-26",
-    "last_updated": "2026-09-16T09:30:12.804001",
+    "last_updated": "2026-09-16T10:12:49.852763",
     "conference": "East",
     "pillars": [
       {
@@ -1251,27 +1631,27 @@
     "recent_games": [
       {
         "date": "09/04/26",
-        "opponent": "PHX",
-        "home": false,
+        "opponent": "MIA",
+        "home": true,
         "result": "L",
-        "team_score": 111,
-        "opponent_score": 112
+        "team_score": 101,
+        "opponent_score": 104
       },
       {
         "date": "11/04/26",
-        "opponent": "ATL",
+        "opponent": "MIA",
         "home": true,
-        "result": "W",
-        "team_score": 117,
-        "opponent_score": 110
+        "result": "L",
+        "team_score": 111,
+        "opponent_score": 125
       },
       {
         "date": "13/04/26",
-        "opponent": "PHX",
+        "opponent": "IND",
         "home": true,
         "result": "L",
-        "team_score": 106,
-        "opponent_score": 117
+        "team_score": 122,
+        "opponent_score": 136
       }
     ],
     "upcoming_games": [
@@ -1294,6 +1674,44 @@
         "home": false
       }
     ],
+    "tanking_history": [
+      {
+        "month": "Oct",
+        "score": 18
+      },
+      {
+        "month": "Nov",
+        "score": 18
+      },
+      {
+        "month": "Dec",
+        "score": 19
+      },
+      {
+        "month": "Jan",
+        "score": 18
+      },
+      {
+        "month": "Feb",
+        "score": 21
+      },
+      {
+        "month": "Mar",
+        "score": 28
+      },
+      {
+        "month": "Apr",
+        "score": 36
+      },
+      {
+        "month": "May",
+        "score": 39
+      },
+      {
+        "month": "Jun",
+        "score": 38
+      }
+    ],
     "standings_rank": 7,
     "standings_total": 15
   },
@@ -1305,7 +1723,7 @@
     "status": "soft_tanking",
     "status_label": "Soft Tanking / Gray Zone",
     "season": "2025-26",
-    "last_updated": "2026-09-16T09:30:12.804001",
+    "last_updated": "2026-09-16T10:12:49.853313",
     "conference": "West",
     "pillars": [
       {
@@ -1369,27 +1787,27 @@
     "recent_games": [
       {
         "date": "09/04/26",
-        "opponent": "DET",
-        "home": false,
-        "result": "W",
-        "team_score": 113,
-        "opponent_score": 107
+        "opponent": "CLE",
+        "home": true,
+        "result": "L",
+        "team_score": 96,
+        "opponent_score": 97
       },
       {
         "date": "11/04/26",
-        "opponent": "CHI",
+        "opponent": "DAL",
         "home": false,
         "result": "L",
-        "team_score": 100,
-        "opponent_score": 106
+        "team_score": 107,
+        "opponent_score": 121
       },
       {
         "date": "13/04/26",
-        "opponent": "MIN",
-        "home": false,
+        "opponent": "SAC",
+        "home": true,
         "result": "W",
-        "team_score": 111,
-        "opponent_score": 97
+        "team_score": 120,
+        "opponent_score": 117
       }
     ],
     "upcoming_games": [
@@ -1412,6 +1830,44 @@
         "home": true
       }
     ],
+    "tanking_history": [
+      {
+        "month": "Oct",
+        "score": 13
+      },
+      {
+        "month": "Nov",
+        "score": 9
+      },
+      {
+        "month": "Dec",
+        "score": 5
+      },
+      {
+        "month": "Jan",
+        "score": 4
+      },
+      {
+        "month": "Feb",
+        "score": 2
+      },
+      {
+        "month": "Mar",
+        "score": 10
+      },
+      {
+        "month": "Apr",
+        "score": 13
+      },
+      {
+        "month": "May",
+        "score": 17
+      },
+      {
+        "month": "Jun",
+        "score": 38
+      }
+    ],
     "standings_rank": 9,
     "standings_total": 15
   },
@@ -1423,7 +1879,7 @@
     "status": "soft_tanking",
     "status_label": "Soft Tanking / Gray Zone",
     "season": "2025-26",
-    "last_updated": "2026-09-16T09:30:12.804570",
+    "last_updated": "2026-09-16T10:12:49.853858",
     "conference": "West",
     "pillars": [
       {
@@ -1487,27 +1943,27 @@
     "recent_games": [
       {
         "date": "09/04/26",
-        "opponent": "OKC",
-        "home": true,
-        "result": "W",
-        "team_score": 124,
-        "opponent_score": 115
+        "opponent": "SAS",
+        "home": false,
+        "result": "L",
+        "team_score": 117,
+        "opponent_score": 125
       },
       {
         "date": "11/04/26",
-        "opponent": "GSW",
+        "opponent": "MIN",
         "home": false,
         "result": "L",
-        "team_score": 107,
-        "opponent_score": 114
+        "team_score": 100,
+        "opponent_score": 110
       },
       {
         "date": "13/04/26",
-        "opponent": "NYK",
-        "home": true,
-        "result": "L",
-        "team_score": 106,
-        "opponent_score": 120
+        "opponent": "ORL",
+        "home": false,
+        "result": "W",
+        "team_score": 103,
+        "opponent_score": 94
       }
     ],
     "upcoming_games": [
@@ -1530,6 +1986,44 @@
         "home": true
       }
     ],
+    "tanking_history": [
+      {
+        "month": "Oct",
+        "score": 11
+      },
+      {
+        "month": "Nov",
+        "score": 21
+      },
+      {
+        "month": "Dec",
+        "score": 30
+      },
+      {
+        "month": "Jan",
+        "score": 33
+      },
+      {
+        "month": "Feb",
+        "score": 34
+      },
+      {
+        "month": "Mar",
+        "score": 40
+      },
+      {
+        "month": "Apr",
+        "score": 45
+      },
+      {
+        "month": "May",
+        "score": 49
+      },
+      {
+        "month": "Jun",
+        "score": 35
+      }
+    ],
     "standings_rank": 5,
     "standings_total": 15
   },
@@ -1541,7 +2035,7 @@
     "status": "soft_tanking",
     "status_label": "Soft Tanking / Gray Zone",
     "season": "2025-26",
-    "last_updated": "2026-09-16T09:30:12.804001",
+    "last_updated": "2026-09-16T10:12:49.852763",
     "conference": "East",
     "pillars": [
       {
@@ -1605,27 +2099,27 @@
     "recent_games": [
       {
         "date": "09/04/26",
-        "opponent": "PHX",
-        "home": true,
+        "opponent": "LAC",
+        "home": false,
         "result": "L",
-        "team_score": 122,
-        "opponent_score": 130
+        "team_score": 112,
+        "opponent_score": 125
       },
       {
         "date": "11/04/26",
-        "opponent": "PHX",
+        "opponent": "GSW",
         "home": false,
         "result": "W",
-        "team_score": 117,
-        "opponent_score": 111
+        "team_score": 110,
+        "opponent_score": 99
       },
       {
         "date": "13/04/26",
-        "opponent": "GSW",
+        "opponent": "DET",
         "home": false,
         "result": "L",
-        "team_score": 99,
-        "opponent_score": 101
+        "team_score": 116,
+        "opponent_score": 129
       }
     ],
     "upcoming_games": [
@@ -1648,6 +2142,44 @@
         "home": false
       }
     ],
+    "tanking_history": [
+      {
+        "month": "Oct",
+        "score": 8
+      },
+      {
+        "month": "Nov",
+        "score": 8
+      },
+      {
+        "month": "Dec",
+        "score": 9
+      },
+      {
+        "month": "Jan",
+        "score": 6
+      },
+      {
+        "month": "Feb",
+        "score": 7
+      },
+      {
+        "month": "Mar",
+        "score": 5
+      },
+      {
+        "month": "Apr",
+        "score": 3
+      },
+      {
+        "month": "May",
+        "score": 7
+      },
+      {
+        "month": "Jun",
+        "score": 34
+      }
+    ],
     "standings_rank": 5,
     "standings_total": 15
   },
@@ -1659,7 +2191,7 @@
     "status": "soft_tanking",
     "status_label": "Soft Tanking / Gray Zone",
     "season": "2025-26",
-    "last_updated": "2026-09-16T09:30:12.804001",
+    "last_updated": "2026-09-16T10:12:49.852763",
     "conference": "East",
     "pillars": [
       {
@@ -1723,11 +2255,11 @@
     "recent_games": [
       {
         "date": "09/04/26",
-        "opponent": "POR",
+        "opponent": "MIN",
         "home": true,
         "result": "W",
-        "team_score": 123,
-        "opponent_score": 110
+        "team_score": 113,
+        "opponent_score": 103
       },
       {
         "date": "11/04/26",
@@ -1735,15 +2267,15 @@
         "home": true,
         "result": "W",
         "team_score": 124,
-        "opponent_score": 112
+        "opponent_score": 113
       },
       {
         "date": "13/04/26",
-        "opponent": "LAC",
+        "opponent": "SAC",
         "home": false,
-        "result": "L",
+        "result": "W",
         "team_score": 111,
-        "opponent_score": 122
+        "opponent_score": 101
       }
     ],
     "upcoming_games": [
@@ -1766,6 +2298,44 @@
         "home": true
       }
     ],
+    "tanking_history": [
+      {
+        "month": "Oct",
+        "score": 1
+      },
+      {
+        "month": "Nov",
+        "score": 0
+      },
+      {
+        "month": "Dec",
+        "score": 0
+      },
+      {
+        "month": "Jan",
+        "score": 2
+      },
+      {
+        "month": "Feb",
+        "score": 1
+      },
+      {
+        "month": "Mar",
+        "score": 3
+      },
+      {
+        "month": "Apr",
+        "score": 6
+      },
+      {
+        "month": "May",
+        "score": 7
+      },
+      {
+        "month": "Jun",
+        "score": 32
+      }
+    ],
     "standings_rank": 6,
     "standings_total": 15
   },
@@ -1777,7 +2347,7 @@
     "status": "competing",
     "status_label": "Actively Competing",
     "season": "2025-26",
-    "last_updated": "2026-09-16T09:30:12.804570",
+    "last_updated": "2026-09-16T10:12:49.853858",
     "conference": "West",
     "pillars": [
       {
@@ -1841,27 +2411,27 @@
     "recent_games": [
       {
         "date": "09/04/26",
-        "opponent": "MIA",
-        "home": false,
+        "opponent": "CLE",
+        "home": true,
         "result": "W",
-        "team_score": 105,
-        "opponent_score": 101
+        "team_score": 122,
+        "opponent_score": 117
       },
       {
         "date": "11/04/26",
-        "opponent": "DET",
-        "home": false,
+        "opponent": "MIL",
+        "home": true,
         "result": "L",
-        "team_score": 108,
-        "opponent_score": 115
+        "team_score": 110,
+        "opponent_score": 121
       },
       {
         "date": "13/04/26",
-        "opponent": "HOU",
+        "opponent": "UTA",
         "home": true,
-        "result": "L",
-        "team_score": 125,
-        "opponent_score": 128
+        "result": "W",
+        "team_score": 115,
+        "opponent_score": 102
       }
     ],
     "upcoming_games": [
@@ -1884,6 +2454,44 @@
         "home": false
       }
     ],
+    "tanking_history": [
+      {
+        "month": "Oct",
+        "score": 2
+      },
+      {
+        "month": "Nov",
+        "score": 0
+      },
+      {
+        "month": "Dec",
+        "score": 0
+      },
+      {
+        "month": "Jan",
+        "score": 2
+      },
+      {
+        "month": "Feb",
+        "score": 6
+      },
+      {
+        "month": "Mar",
+        "score": 6
+      },
+      {
+        "month": "Apr",
+        "score": 7
+      },
+      {
+        "month": "May",
+        "score": 6
+      },
+      {
+        "month": "Jun",
+        "score": 30
+      }
+    ],
     "standings_rank": 15,
     "standings_total": 15
   },
@@ -1895,7 +2503,7 @@
     "status": "competing",
     "status_label": "Actively Competing",
     "season": "2025-26",
-    "last_updated": "2026-09-16T09:30:12.804001",
+    "last_updated": "2026-09-16T10:12:49.853313",
     "conference": "East",
     "pillars": [
       {
@@ -1959,27 +2567,27 @@
     "recent_games": [
       {
         "date": "09/04/26",
-        "opponent": "DET",
+        "opponent": "NYK",
         "home": true,
         "result": "W",
-        "team_score": 97,
-        "opponent_score": 92
+        "team_score": 117,
+        "opponent_score": 110
       },
       {
         "date": "11/04/26",
-        "opponent": "TOR",
+        "opponent": "SAC",
         "home": false,
-        "result": "W",
-        "team_score": 114,
-        "opponent_score": 113
+        "result": "L",
+        "team_score": 121,
+        "opponent_score": 133
       },
       {
         "date": "13/04/26",
-        "opponent": "PHX",
-        "home": true,
+        "opponent": "BKN",
+        "home": false,
         "result": "L",
-        "team_score": 97,
-        "opponent_score": 102
+        "team_score": 102,
+        "opponent_score": 113
       }
     ],
     "upcoming_games": [
@@ -2002,6 +2610,44 @@
         "home": true
       }
     ],
+    "tanking_history": [
+      {
+        "month": "Oct",
+        "score": 2
+      },
+      {
+        "month": "Nov",
+        "score": 5
+      },
+      {
+        "month": "Dec",
+        "score": 8
+      },
+      {
+        "month": "Jan",
+        "score": 12
+      },
+      {
+        "month": "Feb",
+        "score": 13
+      },
+      {
+        "month": "Mar",
+        "score": 15
+      },
+      {
+        "month": "Apr",
+        "score": 18
+      },
+      {
+        "month": "May",
+        "score": 15
+      },
+      {
+        "month": "Jun",
+        "score": 28
+      }
+    ],
     "standings_rank": 10,
     "standings_total": 15
   },
@@ -2013,7 +2659,7 @@
     "status": "competing",
     "status_label": "Actively Competing",
     "season": "2025-26",
-    "last_updated": "2026-09-16T09:30:12.804570",
+    "last_updated": "2026-09-16T10:12:49.853858",
     "conference": "West",
     "pillars": [
       {
@@ -2077,27 +2723,27 @@
     "recent_games": [
       {
         "date": "09/04/26",
-        "opponent": "PHX",
+        "opponent": "TOR",
         "home": false,
-        "result": "W",
-        "team_score": 107,
-        "opponent_score": 95
+        "result": "L",
+        "team_score": 102,
+        "opponent_score": 109
       },
       {
         "date": "11/04/26",
-        "opponent": "GSW",
-        "home": false,
-        "result": "L",
-        "team_score": 110,
-        "opponent_score": 123
+        "opponent": "PHX",
+        "home": true,
+        "result": "W",
+        "team_score": 105,
+        "opponent_score": 103
       },
       {
         "date": "13/04/26",
-        "opponent": "GSW",
-        "home": false,
-        "result": "W",
-        "team_score": 103,
-        "opponent_score": 102
+        "opponent": "NYK",
+        "home": true,
+        "result": "L",
+        "team_score": 99,
+        "opponent_score": 111
       }
     ],
     "upcoming_games": [
@@ -2120,6 +2766,44 @@
         "home": true
       }
     ],
+    "tanking_history": [
+      {
+        "month": "Oct",
+        "score": 3
+      },
+      {
+        "month": "Nov",
+        "score": 0
+      },
+      {
+        "month": "Dec",
+        "score": 1
+      },
+      {
+        "month": "Jan",
+        "score": 1
+      },
+      {
+        "month": "Feb",
+        "score": 4
+      },
+      {
+        "month": "Mar",
+        "score": 6
+      },
+      {
+        "month": "Apr",
+        "score": 4
+      },
+      {
+        "month": "May",
+        "score": 3
+      },
+      {
+        "month": "Jun",
+        "score": 25
+      }
+    ],
     "standings_rank": 4,
     "standings_total": 15
   },
@@ -2131,7 +2815,7 @@
     "status": "competing",
     "status_label": "Actively Competing",
     "season": "2025-26",
-    "last_updated": "2026-09-16T09:30:12.804001",
+    "last_updated": "2026-09-16T10:12:49.853313",
     "conference": "East",
     "pillars": [
       {
@@ -2195,27 +2879,27 @@
     "recent_games": [
       {
         "date": "09/04/26",
-        "opponent": "MIA",
+        "opponent": "DAL",
         "home": true,
-        "result": "L",
-        "team_score": 95,
-        "opponent_score": 102
+        "result": "W",
+        "team_score": 107,
+        "opponent_score": 93
       },
       {
         "date": "11/04/26",
-        "opponent": "MIN",
+        "opponent": "DET",
         "home": true,
         "result": "W",
-        "team_score": 103,
-        "opponent_score": 98
+        "team_score": 117,
+        "opponent_score": 102
       },
       {
         "date": "13/04/26",
-        "opponent": "IND",
-        "home": false,
+        "opponent": "NOP",
+        "home": true,
         "result": "W",
-        "team_score": 119,
-        "opponent_score": 115
+        "team_score": 111,
+        "opponent_score": 106
       }
     ],
     "upcoming_games": [
@@ -2238,6 +2922,44 @@
         "home": true
       }
     ],
+    "tanking_history": [
+      {
+        "month": "Oct",
+        "score": 1
+      },
+      {
+        "month": "Nov",
+        "score": 3
+      },
+      {
+        "month": "Dec",
+        "score": 6
+      },
+      {
+        "month": "Jan",
+        "score": 4
+      },
+      {
+        "month": "Feb",
+        "score": 1
+      },
+      {
+        "month": "Mar",
+        "score": 5
+      },
+      {
+        "month": "Apr",
+        "score": 2
+      },
+      {
+        "month": "May",
+        "score": 2
+      },
+      {
+        "month": "Jun",
+        "score": 24
+      }
+    ],
     "standings_rank": 8,
     "standings_total": 15
   },
@@ -2249,7 +2971,7 @@
     "status": "competing",
     "status_label": "Actively Competing",
     "season": "2025-26",
-    "last_updated": "2026-09-16T09:30:12.804570",
+    "last_updated": "2026-09-16T10:12:49.853858",
     "conference": "West",
     "pillars": [
       {
@@ -2313,27 +3035,27 @@
     "recent_games": [
       {
         "date": "09/04/26",
-        "opponent": "CLE",
-        "home": false,
+        "opponent": "PHI",
+        "home": true,
         "result": "W",
-        "team_score": 124,
-        "opponent_score": 119
+        "team_score": 101,
+        "opponent_score": 99
       },
       {
         "date": "11/04/26",
-        "opponent": "CHI",
-        "home": true,
-        "result": "L",
-        "team_score": 97,
-        "opponent_score": 106
+        "opponent": "MIN",
+        "home": false,
+        "result": "W",
+        "team_score": 107,
+        "opponent_score": 98
       },
       {
         "date": "13/04/26",
-        "opponent": "MIN",
+        "opponent": "DAL",
         "home": true,
-        "result": "W",
-        "team_score": 103,
-        "opponent_score": 92
+        "result": "L",
+        "team_score": 101,
+        "opponent_score": 115
       }
     ],
     "upcoming_games": [
@@ -2356,6 +3078,44 @@
         "home": false
       }
     ],
+    "tanking_history": [
+      {
+        "month": "Oct",
+        "score": 4
+      },
+      {
+        "month": "Nov",
+        "score": 3
+      },
+      {
+        "month": "Dec",
+        "score": 3
+      },
+      {
+        "month": "Jan",
+        "score": 4
+      },
+      {
+        "month": "Feb",
+        "score": 3
+      },
+      {
+        "month": "Mar",
+        "score": 1
+      },
+      {
+        "month": "Apr",
+        "score": 4
+      },
+      {
+        "month": "May",
+        "score": 7
+      },
+      {
+        "month": "Jun",
+        "score": 22
+      }
+    ],
     "standings_rank": 10,
     "standings_total": 15
   },
@@ -2367,7 +3127,7 @@
     "status": "competing",
     "status_label": "Actively Competing",
     "season": "2025-26",
-    "last_updated": "2026-09-16T09:30:12.804570",
+    "last_updated": "2026-09-16T10:12:49.853858",
     "conference": "West",
     "pillars": [
       {
@@ -2431,27 +3191,27 @@
     "recent_games": [
       {
         "date": "09/04/26",
-        "opponent": "DET",
-        "home": false,
-        "result": "L",
-        "team_score": 111,
-        "opponent_score": 116
+        "opponent": "CHA",
+        "home": true,
+        "result": "W",
+        "team_score": 100,
+        "opponent_score": 91
       },
       {
         "date": "11/04/26",
-        "opponent": "MEM",
-        "home": true,
+        "opponent": "BOS",
+        "home": false,
         "result": "L",
-        "team_score": 108,
-        "opponent_score": 109
+        "team_score": 118,
+        "opponent_score": 123
       },
       {
         "date": "13/04/26",
-        "opponent": "POR",
+        "opponent": "MIA",
         "home": false,
         "result": "W",
-        "team_score": 103,
-        "opponent_score": 90
+        "team_score": 113,
+        "opponent_score": 100
       }
     ],
     "upcoming_games": [
@@ -2474,6 +3234,44 @@
         "home": false
       }
     ],
+    "tanking_history": [
+      {
+        "month": "Oct",
+        "score": 5
+      },
+      {
+        "month": "Nov",
+        "score": 5
+      },
+      {
+        "month": "Dec",
+        "score": 4
+      },
+      {
+        "month": "Jan",
+        "score": 3
+      },
+      {
+        "month": "Feb",
+        "score": 6
+      },
+      {
+        "month": "Mar",
+        "score": 3
+      },
+      {
+        "month": "Apr",
+        "score": 2
+      },
+      {
+        "month": "May",
+        "score": 5
+      },
+      {
+        "month": "Jun",
+        "score": 18
+      }
+    ],
     "standings_rank": 11,
     "standings_total": 15
   },
@@ -2485,7 +3283,7 @@
     "status": "competing",
     "status_label": "Actively Competing",
     "season": "2025-26",
-    "last_updated": "2026-09-16T09:30:12.804570",
+    "last_updated": "2026-09-16T10:12:49.853858",
     "conference": "West",
     "pillars": [
       {
@@ -2549,27 +3347,27 @@
     "recent_games": [
       {
         "date": "09/04/26",
-        "opponent": "BOS",
+        "opponent": "LAL",
         "home": false,
-        "result": "W",
-        "team_score": 102,
-        "opponent_score": 90
+        "result": "L",
+        "team_score": 97,
+        "opponent_score": 108
       },
       {
         "date": "11/04/26",
-        "opponent": "WAS",
+        "opponent": "CLE",
         "home": false,
         "result": "L",
-        "team_score": 124,
-        "opponent_score": 137
+        "team_score": 123,
+        "opponent_score": 135
       },
       {
         "date": "13/04/26",
-        "opponent": "CHA",
+        "opponent": "SAC",
         "home": false,
-        "result": "W",
-        "team_score": 108,
-        "opponent_score": 107
+        "result": "L",
+        "team_score": 98,
+        "opponent_score": 106
       }
     ],
     "upcoming_games": [
@@ -2592,6 +3390,44 @@
         "home": true
       }
     ],
+    "tanking_history": [
+      {
+        "month": "Oct",
+        "score": 8
+      },
+      {
+        "month": "Nov",
+        "score": 6
+      },
+      {
+        "month": "Dec",
+        "score": 4
+      },
+      {
+        "month": "Jan",
+        "score": 3
+      },
+      {
+        "month": "Feb",
+        "score": 6
+      },
+      {
+        "month": "Mar",
+        "score": 10
+      },
+      {
+        "month": "Apr",
+        "score": 8
+      },
+      {
+        "month": "May",
+        "score": 12
+      },
+      {
+        "month": "Jun",
+        "score": 15
+      }
+    ],
     "standings_rank": 7,
     "standings_total": 15
   },
@@ -2603,7 +3439,7 @@
     "status": "competing",
     "status_label": "Actively Competing",
     "season": "2025-26",
-    "last_updated": "2026-09-16T09:30:12.804001",
+    "last_updated": "2026-09-16T10:12:49.853858",
     "conference": "West",
     "pillars": [
       {
@@ -2667,27 +3503,27 @@
     "recent_games": [
       {
         "date": "09/04/26",
-        "opponent": "DEN",
+        "opponent": "ATL",
         "home": true,
         "result": "L",
-        "team_score": 103,
-        "opponent_score": 118
+        "team_score": 110,
+        "opponent_score": 115
       },
       {
         "date": "11/04/26",
-        "opponent": "IND",
+        "opponent": "BKN",
         "home": true,
-        "result": "L",
-        "team_score": 112,
-        "opponent_score": 121
+        "result": "W",
+        "team_score": 117,
+        "opponent_score": 105
       },
       {
         "date": "13/04/26",
-        "opponent": "ORL",
-        "home": true,
+        "opponent": "MIN",
+        "home": false,
         "result": "L",
-        "team_score": 96,
-        "opponent_score": 106
+        "team_score": 120,
+        "opponent_score": 122
       }
     ],
     "upcoming_games": [
@@ -2710,6 +3546,44 @@
         "home": true
       }
     ],
+    "tanking_history": [
+      {
+        "month": "Oct",
+        "score": 3
+      },
+      {
+        "month": "Nov",
+        "score": 2
+      },
+      {
+        "month": "Dec",
+        "score": 4
+      },
+      {
+        "month": "Jan",
+        "score": 8
+      },
+      {
+        "month": "Feb",
+        "score": 9
+      },
+      {
+        "month": "Mar",
+        "score": 12
+      },
+      {
+        "month": "Apr",
+        "score": 12
+      },
+      {
+        "month": "May",
+        "score": 12
+      },
+      {
+        "month": "Jun",
+        "score": 14
+      }
+    ],
     "standings_rank": 12,
     "standings_total": 15
   },
@@ -2721,7 +3595,7 @@
     "status": "competing",
     "status_label": "Actively Competing",
     "season": "2025-26",
-    "last_updated": "2026-09-16T09:30:12.804001",
+    "last_updated": "2026-09-16T10:12:49.852763",
     "conference": "East",
     "pillars": [
       {
@@ -2785,27 +3659,27 @@
     "recent_games": [
       {
         "date": "09/04/26",
-        "opponent": "POR",
-        "home": false,
-        "result": "L",
-        "team_score": 110,
-        "opponent_score": 118
-      },
-      {
-        "date": "11/04/26",
-        "opponent": "MIN",
+        "opponent": "GSW",
         "home": false,
         "result": "W",
-        "team_score": 108,
+        "team_score": 107,
         "opponent_score": 99
       },
       {
-        "date": "13/04/26",
-        "opponent": "POR",
+        "date": "11/04/26",
+        "opponent": "TOR",
         "home": true,
+        "result": "W",
+        "team_score": 114,
+        "opponent_score": 109
+      },
+      {
+        "date": "13/04/26",
+        "opponent": "NOP",
+        "home": false,
         "result": "L",
-        "team_score": 95,
-        "opponent_score": 110
+        "team_score": 116,
+        "opponent_score": 127
       }
     ],
     "upcoming_games": [
@@ -2828,6 +3702,44 @@
         "home": false
       }
     ],
+    "tanking_history": [
+      {
+        "month": "Oct",
+        "score": 2
+      },
+      {
+        "month": "Nov",
+        "score": 0
+      },
+      {
+        "month": "Dec",
+        "score": 3
+      },
+      {
+        "month": "Jan",
+        "score": 7
+      },
+      {
+        "month": "Feb",
+        "score": 5
+      },
+      {
+        "month": "Mar",
+        "score": 4
+      },
+      {
+        "month": "Apr",
+        "score": 4
+      },
+      {
+        "month": "May",
+        "score": 3
+      },
+      {
+        "month": "Jun",
+        "score": 12
+      }
+    ],
     "standings_rank": 4,
     "standings_total": 15
   },
@@ -2839,7 +3751,7 @@
     "status": "competing",
     "status_label": "Actively Competing",
     "season": "2025-26",
-    "last_updated": "2026-09-16T09:30:12.804570",
+    "last_updated": "2026-09-16T10:12:49.853858",
     "conference": "West",
     "pillars": [
       {
@@ -2903,27 +3815,27 @@
     "recent_games": [
       {
         "date": "09/04/26",
-        "opponent": "SAS",
+        "opponent": "OKC",
         "home": true,
         "result": "W",
-        "team_score": 98,
-        "opponent_score": 95
+        "team_score": 116,
+        "opponent_score": 110
       },
       {
         "date": "11/04/26",
-        "opponent": "POR",
+        "opponent": "PHX",
         "home": false,
-        "result": "W",
-        "team_score": 114,
-        "opponent_score": 99
+        "result": "L",
+        "team_score": 101,
+        "opponent_score": 102
       },
       {
         "date": "13/04/26",
-        "opponent": "MIA",
-        "home": true,
-        "result": "W",
-        "team_score": 112,
-        "opponent_score": 97
+        "opponent": "IND",
+        "home": false,
+        "result": "L",
+        "team_score": 106,
+        "opponent_score": 114
       }
     ],
     "upcoming_games": [
@@ -2946,6 +3858,44 @@
         "home": false
       }
     ],
+    "tanking_history": [
+      {
+        "month": "Oct",
+        "score": 8
+      },
+      {
+        "month": "Nov",
+        "score": 8
+      },
+      {
+        "month": "Dec",
+        "score": 11
+      },
+      {
+        "month": "Jan",
+        "score": 15
+      },
+      {
+        "month": "Feb",
+        "score": 19
+      },
+      {
+        "month": "Mar",
+        "score": 19
+      },
+      {
+        "month": "Apr",
+        "score": 16
+      },
+      {
+        "month": "May",
+        "score": 19
+      },
+      {
+        "month": "Jun",
+        "score": 9
+      }
+    ],
     "standings_rank": 6,
     "standings_total": 15
   },
@@ -2957,7 +3907,7 @@
     "status": "competing",
     "status_label": "Actively Competing",
     "season": "2025-26",
-    "last_updated": "2026-09-16T09:30:12.803462",
+    "last_updated": "2026-09-16T10:12:49.852763",
     "conference": "East",
     "pillars": [
       {
@@ -3021,27 +3971,27 @@
     "recent_games": [
       {
         "date": "09/04/26",
-        "opponent": "OKC",
-        "home": true,
+        "opponent": "CHI",
+        "home": false,
         "result": "W",
-        "team_score": 102,
-        "opponent_score": 88
+        "team_score": 97,
+        "opponent_score": 90
       },
       {
         "date": "11/04/26",
-        "opponent": "OKC",
-        "home": true,
+        "opponent": "BKN",
+        "home": false,
         "result": "W",
-        "team_score": 98,
-        "opponent_score": 84
+        "team_score": 110,
+        "opponent_score": 97
       },
       {
         "date": "13/04/26",
-        "opponent": "OKC",
+        "opponent": "GSW",
         "home": true,
         "result": "W",
-        "team_score": 99,
-        "opponent_score": 98
+        "team_score": 121,
+        "opponent_score": 108
       }
     ],
     "upcoming_games": [
@@ -3064,6 +4014,44 @@
         "home": false
       }
     ],
+    "tanking_history": [
+      {
+        "month": "Oct",
+        "score": 6
+      },
+      {
+        "month": "Nov",
+        "score": 5
+      },
+      {
+        "month": "Dec",
+        "score": 3
+      },
+      {
+        "month": "Jan",
+        "score": 5
+      },
+      {
+        "month": "Feb",
+        "score": 2
+      },
+      {
+        "month": "Mar",
+        "score": 0
+      },
+      {
+        "month": "Apr",
+        "score": 4
+      },
+      {
+        "month": "May",
+        "score": 3
+      },
+      {
+        "month": "Jun",
+        "score": 8
+      }
+    ],
     "standings_rank": 1,
     "standings_total": 15
   },
@@ -3075,7 +4063,7 @@
     "status": "competing",
     "status_label": "Actively Competing",
     "season": "2025-26",
-    "last_updated": "2026-09-16T09:30:12.804570",
+    "last_updated": "2026-09-16T10:12:49.853858",
     "conference": "West",
     "pillars": [
       {
@@ -3139,27 +4127,27 @@
     "recent_games": [
       {
         "date": "09/04/26",
-        "opponent": "IND",
+        "opponent": "SAC",
         "home": true,
-        "result": "W",
+        "result": "L",
         "team_score": 123,
-        "opponent_score": 120
+        "opponent_score": 127
       },
       {
         "date": "11/04/26",
-        "opponent": "CHA",
+        "opponent": "POR",
         "home": true,
-        "result": "W",
-        "team_score": 107,
-        "opponent_score": 98
+        "result": "L",
+        "team_score": 109,
+        "opponent_score": 112
       },
       {
         "date": "13/04/26",
-        "opponent": "IND",
+        "opponent": "CLE",
         "home": false,
-        "result": "L",
-        "team_score": 124,
-        "opponent_score": 126
+        "result": "W",
+        "team_score": 97,
+        "opponent_score": 88
       }
     ],
     "upcoming_games": [
@@ -3182,6 +4170,44 @@
         "home": true
       }
     ],
+    "tanking_history": [
+      {
+        "month": "Oct",
+        "score": 3
+      },
+      {
+        "month": "Nov",
+        "score": 3
+      },
+      {
+        "month": "Dec",
+        "score": 1
+      },
+      {
+        "month": "Jan",
+        "score": 0
+      },
+      {
+        "month": "Feb",
+        "score": 4
+      },
+      {
+        "month": "Mar",
+        "score": 3
+      },
+      {
+        "month": "Apr",
+        "score": 1
+      },
+      {
+        "month": "May",
+        "score": 5
+      },
+      {
+        "month": "Jun",
+        "score": 8
+      }
+    ],
     "standings_rank": 3,
     "standings_total": 15
   },
@@ -3193,7 +4219,7 @@
     "status": "competing",
     "status_label": "Actively Competing",
     "season": "2025-26",
-    "last_updated": "2026-09-16T09:30:12.804001",
+    "last_updated": "2026-09-16T10:12:49.852763",
     "conference": "East",
     "pillars": [
       {
@@ -3257,27 +4283,27 @@
     "recent_games": [
       {
         "date": "09/04/26",
-        "opponent": "CHI",
-        "home": false,
+        "opponent": "TOR",
+        "home": true,
         "result": "W",
-        "team_score": 124,
-        "opponent_score": 120
+        "team_score": 117,
+        "opponent_score": 108
       },
       {
         "date": "11/04/26",
-        "opponent": "MIL",
+        "opponent": "SAC",
         "home": false,
         "result": "L",
-        "team_score": 109,
-        "opponent_score": 119
+        "team_score": 103,
+        "opponent_score": 113
       },
       {
         "date": "13/04/26",
-        "opponent": "BKN",
+        "opponent": "IND",
         "home": true,
         "result": "L",
-        "team_score": 111,
-        "opponent_score": 114
+        "team_score": 117,
+        "opponent_score": 121
       }
     ],
     "upcoming_games": [
@@ -3300,6 +4326,44 @@
         "home": true
       }
     ],
+    "tanking_history": [
+      {
+        "month": "Oct",
+        "score": 2
+      },
+      {
+        "month": "Nov",
+        "score": 3
+      },
+      {
+        "month": "Dec",
+        "score": 7
+      },
+      {
+        "month": "Jan",
+        "score": 10
+      },
+      {
+        "month": "Feb",
+        "score": 13
+      },
+      {
+        "month": "Mar",
+        "score": 17
+      },
+      {
+        "month": "Apr",
+        "score": 18
+      },
+      {
+        "month": "May",
+        "score": 21
+      },
+      {
+        "month": "Jun",
+        "score": 6
+      }
+    ],
     "standings_rank": 3,
     "standings_total": 15
   },
@@ -3311,7 +4375,7 @@
     "status": "competing",
     "status_label": "Actively Competing",
     "season": "2025-26",
-    "last_updated": "2026-09-16T09:30:12.804001",
+    "last_updated": "2026-09-16T10:12:49.852763",
     "conference": "East",
     "pillars": [
       {
@@ -3376,26 +4440,26 @@
       {
         "date": "09/04/26",
         "opponent": "NYK",
-        "home": false,
+        "home": true,
         "result": "W",
-        "team_score": 107,
-        "opponent_score": 101
+        "team_score": 123,
+        "opponent_score": 110
       },
       {
         "date": "11/04/26",
-        "opponent": "PHI",
-        "home": false,
+        "opponent": "MIN",
+        "home": true,
         "result": "W",
-        "team_score": 103,
-        "opponent_score": 102
+        "team_score": 118,
+        "opponent_score": 111
       },
       {
         "date": "13/04/26",
-        "opponent": "TOR",
-        "home": false,
+        "opponent": "SAS",
+        "home": true,
         "result": "L",
-        "team_score": 96,
-        "opponent_score": 97
+        "team_score": 112,
+        "opponent_score": 118
       }
     ],
     "upcoming_games": [
@@ -3418,6 +4482,44 @@
         "home": true
       }
     ],
+    "tanking_history": [
+      {
+        "month": "Oct",
+        "score": 1
+      },
+      {
+        "month": "Nov",
+        "score": 0
+      },
+      {
+        "month": "Dec",
+        "score": 0
+      },
+      {
+        "month": "Jan",
+        "score": 1
+      },
+      {
+        "month": "Feb",
+        "score": 4
+      },
+      {
+        "month": "Mar",
+        "score": 2
+      },
+      {
+        "month": "Apr",
+        "score": 3
+      },
+      {
+        "month": "May",
+        "score": 5
+      },
+      {
+        "month": "Jun",
+        "score": 4
+      }
+    ],
     "standings_rank": 2,
     "standings_total": 15
   },
@@ -3429,7 +4531,7 @@
     "status": "competing",
     "status_label": "Actively Competing",
     "season": "2025-26",
-    "last_updated": "2026-09-16T09:30:12.804001",
+    "last_updated": "2026-09-16T10:12:49.853313",
     "conference": "West",
     "pillars": [
       {
@@ -3493,27 +4595,27 @@
     "recent_games": [
       {
         "date": "09/04/26",
-        "opponent": "PHI",
-        "home": false,
-        "result": "L",
-        "team_score": 125,
-        "opponent_score": 138
+        "opponent": "DAL",
+        "home": true,
+        "result": "W",
+        "team_score": 106,
+        "opponent_score": 95
       },
       {
         "date": "11/04/26",
-        "opponent": "PHX",
-        "home": false,
+        "opponent": "WAS",
+        "home": true,
         "result": "L",
-        "team_score": 124,
-        "opponent_score": 134
+        "team_score": 112,
+        "opponent_score": 116
       },
       {
         "date": "13/04/26",
-        "opponent": "NYK",
+        "opponent": "UTA",
         "home": false,
         "result": "W",
-        "team_score": 98,
-        "opponent_score": 93
+        "team_score": 122,
+        "opponent_score": 114
       }
     ],
     "upcoming_games": [
@@ -3534,6 +4636,44 @@
         "date": "12/10/26",
         "opponent": "ATL",
         "home": false
+      }
+    ],
+    "tanking_history": [
+      {
+        "month": "Oct",
+        "score": 8
+      },
+      {
+        "month": "Nov",
+        "score": 10
+      },
+      {
+        "month": "Dec",
+        "score": 11
+      },
+      {
+        "month": "Jan",
+        "score": 15
+      },
+      {
+        "month": "Feb",
+        "score": 15
+      },
+      {
+        "month": "Mar",
+        "score": 14
+      },
+      {
+        "month": "Apr",
+        "score": 13
+      },
+      {
+        "month": "May",
+        "score": 17
+      },
+      {
+        "month": "Jun",
+        "score": 3
       }
     ],
     "standings_rank": 1,

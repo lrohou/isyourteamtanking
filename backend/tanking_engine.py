@@ -1,4 +1,4 @@
-﻿"""
+"""
 tanking_engine.py - Moteur de calcul du Tanking Score.
 
 Score composite de 0 Ã  100 basÃ© sur 4 piliers :
@@ -710,6 +710,52 @@ def _generate_demo_schedule(
     }
 
 
+def _generate_tanking_history(final_score: int, abbr: str) -> list[dict]:
+    """
+    Génère un historique réaliste de l'évolution du tanking score au fil de la saison.
+    Retourne une liste de {month, score} pour chaque mois d'oct à juin.
+    """
+    random.seed(hash(abbr))  # Deterministic per team
+    months = ["Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "May", "Jun"]
+
+    if final_score >= 70:
+        # High tanker: starts low-medium, ramps up sharply after trade deadline (Feb)
+        start = random.randint(15, 30)
+        history = [start]
+        for i in range(1, len(months)):
+            if i <= 2:  # Oct-Dec: slow rise
+                delta = random.randint(3, 8)
+            elif i <= 4:  # Jan-Feb: accelerating
+                delta = random.randint(6, 14)
+            else:  # Mar-Jun: full tank mode
+                delta = random.randint(5, 12)
+            history.append(min(100, history[-1] + delta))
+        # Force last value to match final score
+        history[-1] = final_score
+    elif final_score >= 35:
+        # Mid-range tanker: ambiguous, fluctuates
+        start = random.randint(10, 25)
+        history = [start]
+        for i in range(1, len(months)):
+            delta = random.randint(-5, 10)
+            if i >= 5:  # Late season push
+                delta = random.randint(2, 8)
+            history.append(max(0, min(100, history[-1] + delta)))
+        history[-1] = final_score
+    else:
+        # Contender: stays low, maybe slight bump
+        start = random.randint(1, 8)
+        history = [start]
+        for i in range(1, len(months)):
+            delta = random.randint(-3, 4)
+            history.append(max(0, min(50, history[-1] + delta)))
+        history[-1] = final_score
+
+    random.seed()  # Reset seed
+
+    return [{"month": months[i], "score": history[i]} for i in range(len(months))]
+
+
 def generate_demo_data() -> list[dict]:
     """
     GÃ©nÃ¨re les donnÃ©es pour l'intersaison.
@@ -896,6 +942,7 @@ def generate_demo_data() -> list[dict]:
             },
             "recent_games": recent_games,
             "upcoming_games": upcoming_games,
+            "tanking_history": _generate_tanking_history(score, abbr),
         })
 
     # Trier par tanking score dÃ©croissant

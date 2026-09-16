@@ -182,10 +182,10 @@ function selectTeam(teamId) {
   // UI state for selection
   const homeBtn = $("#home-btn");
   if (homeBtn) homeBtn.style.display = "inline-flex";
-  
+
   const rankings = $(".rankings-section");
   if (rankings) rankings.style.display = "none";
-  
+
   selectedTeam = result;
   renderResult(result);
 
@@ -325,6 +325,16 @@ function renderResult(data) {
         </div>
       </div>
 
+      <div class="chart-section">
+        <h3 class="chart-section__title">📈 Tanking Score Evolution</h3>
+        <p class="chart-section__subtitle">Score trajectory throughout the ${data.season} season</p>
+        <div class="chart-container">
+          <canvas id="tanking-chart"></canvas>
+        </div>
+      </div>
+
+      <br>
+      
       <h3 class="pillars-title">🔍 Why this score?</h3>
       <div class="pillars-grid">
         ${data.pillars.map((p) => renderPillarCard(p)).join("")}
@@ -338,6 +348,9 @@ function renderResult(data) {
   requestAnimationFrame(() => {
     setTimeout(() => animateGauge(data.tanking_score, scoreColor), 100);
     animatePillarBars(data.pillars);
+    if (data.tanking_history && data.tanking_history.length) {
+      renderTankingChart(data.tanking_history, scoreColor);
+    }
   });
 }
 
@@ -401,6 +414,114 @@ function animatePillarBars(pillars) {
     setTimeout(() => {
       bar.style.width = w + "%";
     }, 300);
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Tanking Score Evolution Chart
+// ---------------------------------------------------------------------------
+let tankingChartInstance = null;
+
+function renderTankingChart(history, scoreColor) {
+  const canvas = document.getElementById("tanking-chart");
+  if (!canvas || typeof Chart === "undefined") return;
+
+  // Destroy previous chart instance
+  if (tankingChartInstance) {
+    tankingChartInstance.destroy();
+    tankingChartInstance = null;
+  }
+
+  const ctx = canvas.getContext("2d");
+  const labels = history.map((h) => h.month);
+  const scores = history.map((h) => h.score);
+
+  // Create gradient fill
+  const gradient = ctx.createLinearGradient(0, 0, 0, canvas.parentElement.clientHeight || 300);
+  gradient.addColorStop(0, scoreColor + "66"); // 40% opacity at top
+  gradient.addColorStop(0.5, scoreColor + "22"); // 13% opacity at middle
+  gradient.addColorStop(1, "transparent");
+
+  // Glow color for point
+  const glowColor = scoreColor + "88";
+
+  tankingChartInstance = new Chart(ctx, {
+    type: "line",
+    data: {
+      labels,
+      datasets: [
+        {
+          label: "Tanking Score",
+          data: scores,
+          fill: true,
+          backgroundColor: gradient,
+          borderColor: scoreColor,
+          borderWidth: 3,
+          pointBackgroundColor: scoreColor,
+          pointBorderColor: "#1a1a2e",
+          pointBorderWidth: 2,
+          pointRadius: 5,
+          pointHoverRadius: 8,
+          pointHoverBackgroundColor: "#fff",
+          pointHoverBorderColor: scoreColor,
+          pointHoverBorderWidth: 3,
+          tension: 0.4,
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: {
+        duration: 1500,
+        easing: "easeOutQuart",
+      },
+      interaction: {
+        intersect: false,
+        mode: "index",
+      },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: "rgba(15, 15, 35, 0.95)",
+          titleColor: "#fff",
+          bodyColor: "#fff",
+          borderColor: scoreColor + "55",
+          borderWidth: 1,
+          cornerRadius: 12,
+          padding: 14,
+          displayColors: false,
+          titleFont: { family: "'Outfit', sans-serif", size: 14, weight: "600" },
+          bodyFont: { family: "'Inter', sans-serif", size: 13 },
+          callbacks: {
+            title: (items) => items[0].label + " 2025",
+            label: (item) => `Tanking Score: ${item.raw}%`,
+          },
+        },
+      },
+      scales: {
+        x: {
+          grid: { color: "rgba(255,255,255,0.04)", drawBorder: false },
+          ticks: {
+            color: "rgba(255,255,255,0.5)",
+            font: { family: "'Inter', sans-serif", size: 12 },
+          },
+          border: { display: false },
+        },
+        y: {
+          min: 0,
+          max: 100,
+          grid: { color: "rgba(255,255,255,0.04)", drawBorder: false },
+          ticks: {
+            color: "rgba(255,255,255,0.5)",
+            font: { family: "'Inter', sans-serif", size: 12 },
+            stepSize: 25,
+            callback: (v) => v + "%",
+          },
+          border: { display: false },
+        },
+      },
+    },
   });
 }
 
@@ -498,17 +619,17 @@ function setupHomeButton() {
       section.classList.remove("visible");
       section.innerHTML = "";
     }
-    
+
     const rankings = $(".rankings-section");
     if (rankings) rankings.style.display = "block";
-    
+
     homeBtn.style.display = "none";
-    
+
     const input = $("#search-input");
     if (input) input.value = "";
-    
+
     selectedTeam = null;
-    
+
     // Scroll to top
     window.scrollTo({ top: 0, behavior: "smooth" });
   });
