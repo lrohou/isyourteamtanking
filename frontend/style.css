@@ -465,6 +465,210 @@ body {
   opacity: 0.8;
 }
 
+/* ---- Team Overview (Standings + Schedule) ---- */
+.team-overview {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: var(--space-md);
+  margin-bottom: var(--space-xl);
+  padding-bottom: var(--space-lg);
+  border-bottom: 1px solid var(--border-color);
+}
+
+/* ---- Standings Card ---- */
+.standings-card {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.standings-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent), var(--color-yellow));
+}
+
+.standings-card__icon {
+  font-size: 2rem;
+  margin-bottom: var(--space-xs);
+}
+
+.standings-card__info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.standings-card__rank {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 800;
+  font-size: 2.2rem;
+  color: var(--text-primary);
+  line-height: 1;
+}
+
+.standings-card__conf {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.standings-card__of {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  opacity: 0.7;
+}
+
+/* ---- Schedule Blocks ---- */
+.schedule-block {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+}
+
+.schedule-block__title {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 600;
+  font-size: 0.95rem;
+  margin-bottom: var(--space-sm);
+  color: var(--text-primary);
+}
+
+.games-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.no-data {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  opacity: 0.7;
+  text-align: center;
+  padding: var(--space-md);
+}
+
+/* ---- Game Cards ---- */
+.game-card {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-secondary);
+  border-left: 3px solid transparent;
+  transition: background var(--transition-fast);
+}
+
+.game-card:hover {
+  background: var(--bg-card-hover);
+}
+
+.game-card.game-win {
+  border-left-color: var(--color-green);
+}
+
+.game-card.game-loss {
+  border-left-color: var(--color-red);
+}
+
+.game-card.game-upcoming {
+  border-left-color: var(--text-secondary);
+  opacity: 0.9;
+}
+
+.game-card__date {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  min-width: 42px;
+  font-weight: 500;
+}
+
+.game-card__matchup {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
+}
+
+.game-card__opp-logo {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.game-card__opp-name {
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.game-card__location {
+  font-size: 0.75rem;
+  flex-shrink: 0;
+}
+
+.game-card__score {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.game-card__result-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.result-W {
+  background: rgba(76, 175, 80, 0.2);
+  color: var(--color-green);
+}
+
+.result-L {
+  background: rgba(229, 57, 53, 0.2);
+  color: var(--color-red);
+}
+
+.game-card__score-text {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--text-primary);
+}
+
+.game-card__vs {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  min-width: 24px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
 /* ---- Rankings Table ---- */
 .rankings-section {
   margin-top: var(--space-xl);
@@ -632,6 +836,10 @@ body {
   }
 
   .pillars-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .team-overview {
     grid-template-columns: 1fr;
   }
 

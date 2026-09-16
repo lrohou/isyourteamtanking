@@ -1,15 +1,18 @@
-"""
+﻿"""
 tanking_engine.py - Moteur de calcul du Tanking Score.
 
-Score composite de 0 à 100 basé sur 4 piliers :
-  1. Vet Minutes Drop (30%)   - Chute du temps de jeu des vétérans
-  2. DNP / Injury Suspects (20%) - Absences suspectes des joueurs clés
+Score composite de 0 Ã  100 basÃ© sur 4 piliers :
+  1. Vet Minutes Drop (30%)   - Chute du temps de jeu des vÃ©tÃ©rans
+  2. DNP / Injury Suspects (20%) - Absences suspectes des joueurs clÃ©s
   3. Young Lineup Usage (25%)  - Rajeunissement des lineups
   4. Clutch Collapse Q4 (25%) - Effondrement au 4e quart-temps
 """
 
 import logging
-from datetime import datetime
+import random
+from datetime import datetime, timedelta
+
+from nba_data import fetch_live_standings, fetch_team_schedule, get_team_game_logs, fetch_all_schedules
 
 logger = logging.getLogger(__name__)
 
@@ -27,7 +30,7 @@ def _clamp(value: float, lo: float = 0.0, hi: float = 100.0) -> float:
 
 
 def _get_player_age(player: dict) -> float | None:
-    """Extrait l'âge d'un joueur depuis les données du roster."""
+    """Extrait l'Ã¢ge d'un joueur depuis les donnÃ©es du roster."""
     if "AGE" in player and player["AGE"]:
         try:
             return float(player["AGE"])
@@ -54,10 +57,10 @@ def _get_player_age(player: dict) -> float | None:
 
 def calc_vet_minutes_drop(roster: list[dict], player_stats: list[dict]) -> dict:
     """
-    Compare les minutes des vétérans (≥28 ans) avec l'ensemble de l'équipe.
-    Regarde si les vétérans jouent anormalement peu par rapport à leur potentiel.
+    Compare les minutes des vÃ©tÃ©rans (â‰¥28 ans) avec l'ensemble de l'Ã©quipe.
+    Regarde si les vÃ©tÃ©rans jouent anormalement peu par rapport Ã  leur potentiel.
     
-    Signal fort : les meilleurs joueurs de l'équipe jouent peu de minutes.
+    Signal fort : les meilleurs joueurs de l'Ã©quipe jouent peu de minutes.
     """
     vet_ids = set()
     for p in roster:
@@ -75,7 +78,7 @@ def calc_vet_minutes_drop(roster: list[dict], player_stats: list[dict]) -> dict:
             "data": {},
         }
 
-    # Trouver les vétérans dans les stats de l'équipe
+    # Trouver les vÃ©tÃ©rans dans les stats de l'Ã©quipe
     vet_stats = []
     all_minutes = []
 
@@ -115,14 +118,14 @@ def calc_vet_minutes_drop(roster: list[dict], player_stats: list[dict]) -> dict:
     # Moyenne des minutes de tous les joueurs actifs
     team_avg_min = sum(all_minutes) / len(all_minutes) if all_minutes else 25.0
 
-    # Moyenne des minutes des vétérans
+    # Moyenne des minutes des vÃ©tÃ©rans
     vet_avg_min = sum(v["minutes"] for v in vet_stats) / len(vet_stats)
 
     # Le ratio vet_minutes / team_avg est un indicateur
-    # Si les vétérans jouent moins que la moyenne → signal de tanking
+    # Si les vÃ©tÃ©rans jouent moins que la moyenne â†’ signal de tanking
     ratio = vet_avg_min / team_avg_min if team_avg_min > 0 else 1.0
 
-    # Normalement, les vétérans jouent PLUS que la moyenne (ratio > 1.0).
+    # Normalement, les vÃ©tÃ©rans jouent PLUS que la moyenne (ratio > 1.0).
     # Un ratio < 0.8 est suspect, < 0.6 est un signal fort
     if ratio >= 1.1:
         score = 0
@@ -135,7 +138,7 @@ def calc_vet_minutes_drop(roster: list[dict], player_stats: list[dict]) -> dict:
     else:
         score = 90
 
-    # Bonus : si un vétéran de qualité joue < 20 min
+    # Bonus : si un vÃ©tÃ©ran de qualitÃ© joue < 20 min
     low_min_vets = [v for v in vet_stats if v["minutes"] < 20]
     if len(low_min_vets) >= 3:
         score = min(100, score + 15)
@@ -179,7 +182,7 @@ def calc_vet_minutes_drop(roster: list[dict], player_stats: list[dict]) -> dict:
 
 def calc_dnp_suspects(roster: list[dict], player_stats: list[dict], team_games: int = 82) -> dict:
     """
-    Détecte les absences suspectes des joueurs clés.
+    DÃ©tecte les absences suspectes des joueurs clÃ©s.
     Si les meilleurs joueurs manquent beaucoup de matchs en fin de saison,
     c'est un signal de tanking (repos, blessures mineures, etc.).
     """
@@ -207,7 +210,7 @@ def calc_dnp_suspects(roster: list[dict], player_stats: list[dict], team_games: 
             "data": {},
         }
 
-    # Calculer le ratio de matchs manqués par les top joueurs
+    # Calculer le ratio de matchs manquÃ©s par les top joueurs
     total_missed = 0
     player_details = []
 
@@ -217,7 +220,7 @@ def calc_dnp_suspects(roster: list[dict], player_stats: list[dict], team_games: 
         pts = float(p.get("PTS", 0))
         missed = team_games - gp
 
-        # Ratio de matchs manqués (0 = a tout joué, 1 = n'a rien joué)
+        # Ratio de matchs manquÃ©s (0 = a tout jouÃ©, 1 = n'a rien jouÃ©)
         miss_ratio = missed / team_games if team_games > 0 else 0
 
         player_details.append({
@@ -231,7 +234,7 @@ def calc_dnp_suspects(roster: list[dict], player_stats: list[dict], team_games: 
 
     avg_miss_ratio = total_missed / (len(top_players) * team_games) if top_players else 0
 
-    # Barème :
+    # BarÃ¨me :
     # < 10% absent : normal (blessures courantes)
     # 10-25% : zone grise
     # 25-40% : suspect
@@ -278,9 +281,9 @@ def calc_dnp_suspects(roster: list[dict], player_stats: list[dict], team_games: 
 
 def calc_young_lineup_usage(roster: list[dict], player_stats: list[dict]) -> dict:
     """
-    Mesure l'âge moyen pondéré par les minutes jouées.
-    Si l'équipe est anormalement jeune pondérée par minutes, c'est un signe
-    de développement de jeunes / tanking.
+    Mesure l'Ã¢ge moyen pondÃ©rÃ© par les minutes jouÃ©es.
+    Si l'Ã©quipe est anormalement jeune pondÃ©rÃ©e par minutes, c'est un signe
+    de dÃ©veloppement de jeunes / tanking.
     """
     if not roster or not player_stats:
         return {
@@ -290,7 +293,7 @@ def calc_young_lineup_usage(roster: list[dict], player_stats: list[dict]) -> dic
             "data": {},
         }
 
-    # Construire un mapping player_id → age
+    # Construire un mapping player_id â†’ age
     age_map = {}
     for p in roster:
         pid = p.get("PLAYER_ID") or p.get("player_id")
@@ -298,7 +301,7 @@ def calc_young_lineup_usage(roster: list[dict], player_stats: list[dict]) -> dic
         if pid and age:
             age_map[int(pid)] = age
 
-    # Calculer l'âge moyen pondéré par les minutes
+    # Calculer l'Ã¢ge moyen pondÃ©rÃ© par les minutes
     weighted_age_sum = 0.0
     total_weight = 0.0
     player_details = []
@@ -335,11 +338,11 @@ def calc_young_lineup_usage(roster: list[dict], player_stats: list[dict]) -> dic
 
     weighted_avg_age = weighted_age_sum / total_weight
 
-    # L'âge moyen pondéré de la NBA est environ 26-27 ans.
-    # < 24 : très jeune (développement / tanking)
+    # L'Ã¢ge moyen pondÃ©rÃ© de la NBA est environ 26-27 ans.
+    # < 24 : trÃ¨s jeune (dÃ©veloppement / tanking)
     # 24-25 : jeune
     # 25-27 : normal
-    # > 27 : expérimenté
+    # > 27 : expÃ©rimentÃ©
     if weighted_avg_age >= 27.5:
         score = 0
     elif weighted_avg_age >= 26.5:
@@ -398,7 +401,7 @@ def calc_clutch_collapse(
 ) -> dict:
     """
     Compare le Net Rating global vs le Net Rating du Q4.
-    Les équipes qui tankent ont tendance à perdre les matchs serrés en
+    Les Ã©quipes qui tankent ont tendance Ã  perdre les matchs serrÃ©s en
     fin de rencontre (effondrement volontaire ou non).
     """
     if not full_game_stats or not q4_stats:
@@ -409,7 +412,7 @@ def calc_clutch_collapse(
             "data": {},
         }
 
-    # Trouver les stats de notre équipe
+    # Trouver les stats de notre Ã©quipe
     team_full = None
     team_q4 = None
 
@@ -436,15 +439,15 @@ def calc_clutch_collapse(
     full_net = float(team_full.get("NET_RATING", 0))
     q4_net = float(team_q4.get("NET_RATING", 0))
 
-    # Le différentiel : si Q4 est bien pire que le reste → tanking
+    # Le diffÃ©rentiel : si Q4 est bien pire que le reste â†’ tanking
     differential = q4_net - full_net
 
-    # Barème :
-    # diff > 0 : Q4 meilleur que le reste (clutch!) → pas de tanking
-    # diff 0 à -3 : normal
-    # diff -3 à -6 : suspect
-    # diff -6 à -10 : signal fort
-    # diff < -10 : très fort
+    # BarÃ¨me :
+    # diff > 0 : Q4 meilleur que le reste (clutch!) â†’ pas de tanking
+    # diff 0 Ã  -3 : normal
+    # diff -3 Ã  -6 : suspect
+    # diff -6 Ã  -10 : signal fort
+    # diff < -10 : trÃ¨s fort
     if differential >= 0:
         score = 0
     elif differential >= -2:
@@ -458,7 +461,7 @@ def calc_clutch_collapse(
     else:
         score = 95
 
-    # Bonus si le Net Rating Q4 est très négatif en absolu
+    # Bonus si le Net Rating Q4 est trÃ¨s nÃ©gatif en absolu
     if q4_net < -10:
         score = min(100, score + 10)
     elif q4_net < -7:
@@ -514,11 +517,11 @@ def calculate_tanking_score(
     season: str = "2024-25",
 ) -> dict:
     """
-    Calcule le Tanking Score composite pour une équipe.
-    Retourne un dictionnaire complet avec le score, le statut et les détails
+    Calcule le Tanking Score composite pour une Ã©quipe.
+    Retourne un dictionnaire complet avec le score, le statut et les dÃ©tails
     de chaque pilier.
     """
-    # Estimer le nombre de matchs joués par l'équipe
+    # Estimer le nombre de matchs jouÃ©s par l'Ã©quipe
     team_games = 82
     if team_record:
         team_games = team_record.get("wins", 0) + team_record.get("losses", 0)
@@ -531,7 +534,7 @@ def calculate_tanking_score(
     p3 = calc_young_lineup_usage(roster, player_stats)
     p4 = calc_clutch_collapse(team_id, full_game_stats, q4_stats)
 
-    # Score composite pondéré
+    # Score composite pondÃ©rÃ©
     composite = (
         p1["score"] * WEIGHTS["vet_minutes"]
         + p2["score"] * WEIGHTS["dnp_suspects"]
@@ -546,7 +549,7 @@ def calculate_tanking_score(
         {
             "id": "vet_minutes",
             "name": "Veteran Minutes Drop",
-            "icon": "⏱️",
+            "icon": "â±ï¸",
             "weight": WEIGHTS["vet_minutes"],
             "score": p1["score"],
             "weighted_score": round(p1["score"] * WEIGHTS["vet_minutes"], 1),
@@ -555,7 +558,7 @@ def calculate_tanking_score(
         {
             "id": "dnp_suspects",
             "name": "DNP / Injury Suspects",
-            "icon": "🏥",
+            "icon": "ðŸ¥",
             "weight": WEIGHTS["dnp_suspects"],
             "score": p2["score"],
             "weighted_score": round(p2["score"] * WEIGHTS["dnp_suspects"], 1),
@@ -564,7 +567,7 @@ def calculate_tanking_score(
         {
             "id": "young_lineups",
             "name": "Young Lineup Usage",
-            "icon": "👶",
+            "icon": "ðŸ‘¶",
             "weight": WEIGHTS["young_lineups"],
             "score": p3["score"],
             "weighted_score": round(p3["score"] * WEIGHTS["young_lineups"], 1),
@@ -573,7 +576,7 @@ def calculate_tanking_score(
         {
             "id": "clutch_collapse",
             "name": "Clutch Collapse (Q4)",
-            "icon": "📉",
+            "icon": "ðŸ“‰",
             "weight": WEIGHTS["clutch_collapse"],
             "score": p4["score"],
             "weighted_score": round(p4["score"] * WEIGHTS["clutch_collapse"], 1),
@@ -596,52 +599,215 @@ def calculate_tanking_score(
 
 
 # ---------------------------------------------------------------------------
-# Données de démo (simulées pour la saison 2024-25)
+# DonnÃ©es de dÃ©mo (simulÃ©es pour la saison 2024-25)
 # ---------------------------------------------------------------------------
+
+def _generate_demo_schedule(
+    team_abbr: str,
+    wins: int,
+    losses: int,
+    all_teams_abbrs: list[str],
+) -> dict:
+    """
+    GÃ©nÃ¨re des donnÃ©es de calendrier de dÃ©mo pour une Ã©quipe :
+    - 3 derniers matchs jouÃ©s (avec rÃ©sultat, score, adversaire)
+    - 3 prochains matchs (avec date, adversaire, lieu)
+    """
+    if team_abbr == "WAS":
+        return {
+            "recent_games": [
+                {
+                    "date": "09/04/26",
+                    "opponent": "CHI",
+                    "home": True,
+                    "result": "L",
+                    "team_score": 108,
+                    "opponent_score": 119,
+                },
+                {
+                    "date": "10/04/26",
+                    "opponent": "MIA",
+                    "home": True,
+                    "result": "L",
+                    "team_score": 117,
+                    "opponent_score": 140,
+                },
+                {
+                    "date": "12/04/26",
+                    "opponent": "CLE",
+                    "home": False,
+                    "result": "L",
+                    "team_score": 117,
+                    "opponent_score": 130,
+                },
+            ],
+            "upcoming_games": [
+                {
+                    "date": "21/10/26",
+                    "opponent": "MIL",
+                    "home": True,
+                },
+                {
+                    "date": "23/10/26",
+                    "opponent": "TOR",
+                    "home": True,
+                },
+                {
+                    "date": "24/10/26",
+                    "opponent": "CHI",
+                    "home": False,
+                },
+            ],
+        }
+
+    random.seed(hash(team_abbr))  # Reproductible par Ã©quipe
+
+    # Calculer la probabilitÃ© de victoire Ã  partir du bilan
+    total = wins + losses
+    win_pct = wins / total if total > 0 else 0.5
+
+    # Adversaires possibles (exclure l'Ã©quipe elle-mÃªme)
+    opponents = [a for a in all_teams_abbrs if a != team_abbr]
+
+    # --- 3 derniers matchs ---
+    recent_games = []
+    base_date = datetime(2026, 4, 15)  # Fin de saison
+    for i in range(3):
+        game_date = base_date - timedelta(days=(3 - i) * 2)
+        opp = random.choice(opponents)
+        is_home = random.random() > 0.5
+        is_win = random.random() < win_pct
+
+        # GÃ©nÃ©rer des scores rÃ©alistes NBA (90-130)
+        team_score = random.randint(95, 125)
+        opp_score = team_score + random.randint(-15, -1) if is_win else team_score + random.randint(1, 15)
+
+        recent_games.append({
+            "date": game_date.strftime("%d/%m/%y"),
+            "opponent": opp,
+            "home": is_home,
+            "result": "W" if is_win else "L",
+            "team_score": team_score,
+            "opponent_score": opp_score,
+        })
+
+    # --- 3 prochains matchs ---
+    upcoming_games = []
+    next_date = datetime(2026, 10, 20)
+    for i in range(3):
+        game_date = next_date + timedelta(days=i * 2)
+        opp = random.choice(opponents)
+        is_home = random.random() > 0.5
+        upcoming_games.append({
+            "date": game_date.strftime("%d/%m/%y"),
+            "opponent": opp,
+            "home": is_home,
+        })
+
+    return {
+        "recent_games": recent_games,
+        "upcoming_games": upcoming_games,
+    }
+
 
 def generate_demo_data() -> list[dict]:
     """
-    Génère des données de démo réalistes basées sur la saison 2024-25.
-    Utilisé quand l'API nba_api n'est pas disponible (hors saison, etc.).
+    GÃ©nÃ¨re les donnÃ©es pour l'intersaison.
+    - Classement rÃ©el figÃ© de la saison 2025-26
+    - Past calendar : derniers matchs de la saison (via CDN)
+    - Future calendar : premiers matchs de la prochaine saison (via CDN)
+    Utilise seulement 2 appels API (standings + CDN schedule) => ultra rapide.
     """
+    # --- 1. Fetch real standings (1 API call) ---
+    logger.info("Fetching live standings for 2025-26...")
+    live_standings = []
+    try:
+        live_standings = fetch_live_standings(season="2025-26")
+        logger.info(f"Got {len(live_standings)} teams from live standings")
+    except Exception as e:
+        logger.error(f"Error fetching live standings: {e}")
+
+    # --- 2. Fetch all schedules in bulk (1 API call) ---
+    logger.info("Fetching bulk schedule from CDN...")
+    all_schedules = {}
+    try:
+        all_schedules = fetch_all_schedules()
+        logger.info(f"Got schedules for {len(all_schedules)} teams")
+    except Exception as e:
+        logger.error(f"Error fetching bulk schedules: {e}")
+
     demo_teams = [
-        # (team_id, abbr, full_name, wins, losses, score, p1, p2, p3, p4)
-        (1610612764, "WAS", "Washington Wizards", 19, 63, 89, 92, 85, 88, 90),
-        (1610612751, "BKN", "Brooklyn Nets", 22, 60, 80, 82, 78, 85, 74),
-        (1610612757, "POR", "Portland Trail Blazers", 24, 58, 74, 70, 62, 90, 72),
-        (1610612761, "TOR", "Toronto Raptors", 25, 57, 68, 65, 72, 78, 58),
-        (1610612762, "UTA", "Utah Jazz", 27, 55, 64, 58, 55, 82, 60),
-        (1610612766, "CHA", "Charlotte Hornets", 26, 56, 60, 48, 78, 72, 42),
-        (1610612740, "NOP", "New Orleans Pelicans", 29, 53, 52, 40, 68, 55, 48),
-        (1610612765, "DET", "Detroit Pistons", 30, 52, 48, 38, 42, 75, 38),
-        (1610612741, "CHI", "Chicago Bulls", 31, 51, 42, 45, 38, 45, 40),
-        (1610612755, "PHI", "Philadelphia 76ers", 28, 54, 45, 35, 72, 30, 42),
-        (1610612759, "SAS", "San Antonio Spurs", 34, 48, 35, 25, 28, 68, 20),
-        (1610612737, "ATL", "Atlanta Hawks", 36, 46, 30, 32, 25, 38, 25),
-        (1610612745, "HOU", "Houston Rockets", 41, 41, 22, 18, 15, 55, 5),
-        (1610612747, "LAL", "Los Angeles Lakers", 38, 44, 28, 30, 35, 15, 32),
-        (1610612746, "LAC", "LA Clippers", 33, 49, 38, 42, 45, 28, 35),
-        (1610612744, "GSW", "Golden State Warriors", 39, 43, 25, 28, 22, 18, 30),
-        (1610612758, "SAC", "Sacramento Kings", 37, 45, 24, 22, 18, 30, 25),
-        (1610612763, "MEM", "Memphis Grizzlies", 40, 42, 20, 15, 28, 22, 15),
-        (1610612748, "MIA", "Miami Heat", 40, 42, 18, 15, 18, 12, 28),
-        (1610612754, "IND", "Indiana Pacers", 43, 39, 15, 12, 10, 18, 20),
-        (1610612756, "PHX", "Phoenix Suns", 42, 40, 16, 18, 15, 10, 22),
-        (1610612753, "ORL", "Orlando Magic", 44, 38, 12, 10, 15, 20, 5),
-        (1610612749, "MIL", "Milwaukee Bucks", 44, 38, 14, 15, 18, 5, 18),
-        (1610612742, "DAL", "Dallas Mavericks", 46, 36, 10, 8, 12, 8, 12),
-        (1610612743, "DEN", "Denver Nuggets", 48, 34, 8, 5, 10, 8, 10),
-        (1610612750, "MIN", "Minnesota Timberwolves", 47, 35, 9, 8, 8, 10, 10),
-        (1610612752, "NYK", "New York Knicks", 50, 32, 6, 5, 8, 5, 8),
-        (1610612738, "BOS", "Boston Celtics", 52, 30, 4, 3, 5, 5, 3),
+        # (team_id, abbr, full_name, default_wins, default_losses, score, p1, p2, p3, p4)
+        # Eastern Conference
+        (1610612765, "DET", "Detroit Pistons", 60, 22, 8, 5, 5, 12, 10),
+        (1610612738, "BOS", "Boston Celtics", 56, 26, 4, 3, 5, 5, 3),
+        (1610612752, "NYK", "New York Knicks", 53, 29, 6, 5, 8, 5, 8),
+        (1610612739, "CLE", "Cleveland Cavaliers", 52, 30, 12, 10, 15, 20, 5),
+        (1610612761, "TOR", "Toronto Raptors", 46, 36, 32, 30, 35, 35, 25),
+        (1610612737, "ATL", "Atlanta Hawks", 46, 36, 34, 35, 38, 35, 28),
+        (1610612755, "PHI", "Philadelphia 76ers", 45, 37, 38, 42, 45, 28, 35),
+        (1610612753, "ORL", "Orlando Magic", 45, 37, 24, 22, 18, 30, 25),
+        (1610612766, "CHA", "Charlotte Hornets", 44, 38, 40, 40, 42, 45, 35),
+        (1610612748, "MIA", "Miami Heat", 43, 39, 28, 30, 35, 15, 32),
+        (1610612749, "MIL", "Milwaukee Bucks", 32, 50, 62, 60, 65, 55, 68),
+        (1610612741, "CHI", "Chicago Bulls", 31, 51, 65, 65, 62, 60, 72),
+        (1610612751, "BKN", "Brooklyn Nets", 20, 62, 78, 75, 80, 75, 82),
+        (1610612754, "IND", "Indiana Pacers", 19, 63, 85, 82, 85, 88, 85),
+        (1610612764, "WAS", "Washington Wizards", 17, 65, 92, 92, 85, 88, 90),
+
+        # Western Conference
         (1610612760, "OKC", "Oklahoma City Thunder", 57, 25, 3, 2, 2, 8, 2),
-        (1610612739, "CLE", "Cleveland Cavaliers", 55, 27, 5, 3, 5, 5, 5),
+        (1610612746, "LAC", "LA Clippers", 51, 31, 38, 42, 45, 28, 35),
+        (1610612742, "DAL", "Dallas Mavericks", 50, 32, 14, 15, 18, 5, 18),
+        (1610612740, "NOP", "New Orleans Pelicans", 49, 33, 18, 15, 18, 12, 28),
+        (1610612756, "PHX", "Phoenix Suns", 49, 33, 15, 12, 10, 18, 20),
+        (1610612743, "DEN", "Denver Nuggets", 48, 34, 8, 5, 10, 8, 10),
+        (1610612747, "LAL", "Los Angeles Lakers", 47, 35, 25, 28, 22, 18, 30),
+        (1610612750, "MIN", "Minnesota Timberwolves", 47, 35, 9, 8, 8, 10, 10),
+        (1610612758, "SAC", "Sacramento Kings", 46, 36, 30, 32, 25, 38, 25),
+        (1610612744, "GSW", "Golden State Warriors", 46, 36, 22, 18, 15, 55, 5),
+        (1610612745, "HOU", "Houston Rockets", 41, 41, 35, 25, 28, 68, 20),
+        (1610612762, "UTA", "Utah Jazz", 31, 51, 52, 40, 68, 55, 48),
+        (1610612763, "MEM", "Memphis Grizzlies", 27, 55, 60, 48, 78, 72, 42),
+        (1610612759, "SAS", "San Antonio Spurs", 22, 60, 68, 65, 72, 78, 58),
+        (1610612757, "POR", "Portland Trail Blazers", 21, 61, 74, 70, 62, 90, 72),
     ]
 
+    all_abbrs = [t[1] for t in demo_teams]
+
+    # ConfÃ©rence de chaque Ã©quipe pour le classement
+    east_teams = {"WAS", "BKN", "TOR", "CHA", "DET", "CHI", "PHI", "ATL",
+                  "MIA", "IND", "ORL", "MIL", "NYK", "BOS", "CLE"}
+
     results = []
-    for (tid, abbr, name, wins, losses, score, s1, s2, s3, s4) in demo_teams:
+    for (tid, abbr, name, default_wins, default_losses, score, s1, s2, s3, s4) in demo_teams:
+        # --- Override record with live standings ---
+        wins = default_wins
+        losses = default_losses
+        conference = "East" if abbr in east_teams else "West"
+
+        if live_standings:
+            my_stand = next((s for s in live_standings if s.get("TeamID") == tid), None)
+            if my_stand:
+                wins = my_stand.get("WINS", wins)
+                losses = my_stand.get("LOSSES", losses)
+                conference = my_stand.get("Conference", conference)
+
         pct = wins / (wins + losses) if (wins + losses) > 0 else 0
         status_key, status_label = get_tanking_status(score)
+
+        # --- Schedule from CDN bulk data ---
+        team_sched = all_schedules.get(str(tid), {})
+        recent_games = team_sched.get("recent_games", [])
+        upcoming_games = team_sched.get("upcoming_games", [])
+
+        # Fallback to demo schedule if CDN returned nothing
+        if not recent_games or not upcoming_games:
+            demo_sched = _generate_demo_schedule(abbr, wins, losses, all_abbrs)
+            if not recent_games:
+                recent_games = demo_sched["recent_games"]
+            if not upcoming_games:
+                upcoming_games = demo_sched["upcoming_games"]
 
         results.append({
             "team_id": tid,
@@ -650,13 +816,14 @@ def generate_demo_data() -> list[dict]:
             "tanking_score": score,
             "status": status_key,
             "status_label": status_label,
-            "season": "2024-25",
+            "season": "2025-26",
             "last_updated": datetime.now().isoformat(),
+            "conference": conference,
             "pillars": [
                 {
                     "id": "vet_minutes",
                     "name": "Veteran Minutes Drop",
-                    "icon": "⏱️",
+                    "icon": "â±ï¸",
                     "weight": 0.30,
                     "score": s1,
                     "weighted_score": round(s1 * 0.30, 1),
@@ -673,7 +840,7 @@ def generate_demo_data() -> list[dict]:
                 {
                     "id": "dnp_suspects",
                     "name": "DNP / Injury Suspects",
-                    "icon": "🏥",
+                    "icon": "ðŸ¥",
                     "weight": 0.20,
                     "score": s2,
                     "weighted_score": round(s2 * 0.20, 1),
@@ -690,7 +857,7 @@ def generate_demo_data() -> list[dict]:
                 {
                     "id": "young_lineups",
                     "name": "Young Lineup Usage",
-                    "icon": "👶",
+                    "icon": "ðŸ‘¶",
                     "weight": 0.25,
                     "score": s3,
                     "weighted_score": round(s3 * 0.25, 1),
@@ -707,7 +874,7 @@ def generate_demo_data() -> list[dict]:
                 {
                     "id": "clutch_collapse",
                     "name": "Clutch Collapse (Q4)",
-                    "icon": "📉",
+                    "icon": "ðŸ“‰",
                     "weight": 0.25,
                     "score": s4,
                     "weighted_score": round(s4 * 0.25, 1),
@@ -727,6 +894,29 @@ def generate_demo_data() -> list[dict]:
                 "losses": losses,
                 "pct": round(pct, 3),
             },
+            "recent_games": recent_games,
+            "upcoming_games": upcoming_games,
         })
 
-    return sorted(results, key=lambda x: -x["tanking_score"])
+    # Trier par tanking score dÃ©croissant
+    results.sort(key=lambda x: -x["tanking_score"])
+
+    # Calculer le classement par confÃ©rence (basÃ© sur le win %)
+    east_sorted = sorted(
+        [r for r in results if r["conference"] == "East"],
+        key=lambda x: -x["record"]["pct"]
+    )
+    west_sorted = sorted(
+        [r for r in results if r["conference"] == "West"],
+        key=lambda x: -x["record"]["pct"]
+    )
+
+    for i, r in enumerate(east_sorted):
+        r["standings_rank"] = i + 1
+        r["standings_total"] = len(east_sorted)
+
+    for i, r in enumerate(west_sorted):
+        r["standings_rank"] = i + 1
+        r["standings_total"] = len(west_sorted)
+
+    return results

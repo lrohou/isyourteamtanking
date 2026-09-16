@@ -16,6 +16,7 @@ from fastapi.responses import FileResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 
 from tanking_engine import generate_demo_data
+from nba_data import fetch_live_standings, fetch_team_schedule
 
 # ---------------------------------------------------------------------------
 # Configuration
@@ -139,6 +140,18 @@ async def reload_data():
     global _results
     _results = load_results()
     return {"status": "reloaded", "teams": len(_results)}
+
+
+@app.get("/api/standings")
+async def get_live_standings():
+    """Récupère le classement en direct via l'API NBA."""
+    return fetch_live_standings()
+
+
+@app.get("/api/schedule/{team_id}")
+async def get_team_schedule(team_id: int, team_abbr: str):
+    """Récupère le calendrier en direct (3 derniers, 3 prochains) pour une équipe."""
+    return fetch_team_schedule(team_id, team_abbr)
 
 
 # ---------------------------------------------------------------------------

@@ -176,7 +176,6 @@ function selectTeam(teamId) {
   const result = allTeamResults.find((r) => r.team_id === teamId);
   if (!result) return;
 
-  selectedTeam = result;
   const input = $("#search-input");
   if (input) input.value = result.team_name;
 
@@ -186,7 +185,8 @@ function selectTeam(teamId) {
   
   const rankings = $(".rankings-section");
   if (rankings) rankings.style.display = "none";
-
+  
+  selectedTeam = result;
   renderResult(result);
 
   // Scroll to result
@@ -212,6 +212,61 @@ function renderResult(data) {
       .toString()
       .padStart(3, "0")})`
     : "";
+
+  // Standings info
+  const standingsRank = data.standings_rank || "—";
+  const standingsTotal = data.standings_total || 15;
+  const conference = data.conference || "—";
+
+  // Recent games HTML
+  const recentGamesHtml = (data.recent_games || [])
+    .map((g) => {
+      const isWin = g.result === "W";
+      const resultClass = isWin ? "game-win" : "game-loss";
+      const oppTeam = findTeam(g.opponent);
+      const oppLogo = oppTeam?.logo || "";
+      const oppName = oppTeam?.fullName || g.opponent;
+      const locationIcon = g.home ? "🏠" : "✈️";
+      const link = g.game_id ? `href="https://www.nba.com/game/${g.game_id}" target="_blank"` : `href="https://www.nba.com/games" target="_blank"`;
+      return `
+        <a ${link} class="game-card ${resultClass}" style="text-decoration: none; color: inherit;">
+          <div class="game-card__date">${g.date}</div>
+          <div class="game-card__matchup">
+            <img class="game-card__opp-logo" src="${oppLogo}" alt="${oppName}" onerror="this.style.display='none'" loading="lazy">
+            <span class="game-card__opp-name">${g.opponent}</span>
+            <span class="game-card__location" title="${g.home ? 'Home' : 'Away'}">${locationIcon}</span>
+          </div>
+          <div class="game-card__score">
+            <span class="game-card__result-badge result-${g.result}">${g.result}</span>
+            <span class="game-card__score-text">${g.team_score} - ${g.opponent_score}</span>
+          </div>
+        </a>
+      `;
+    })
+    .join("");
+
+  // Upcoming games HTML
+  const upcomingGamesHtml = (data.upcoming_games || [])
+    .map((g) => {
+      const oppTeam = findTeam(g.opponent);
+      const oppLogo = oppTeam?.logo || "";
+      const oppName = oppTeam?.fullName || g.opponent;
+      const locationIcon = g.home ? "🏠" : "✈️";
+      const teamSlug = team?.name ? team.name.toLowerCase() : "games";
+      const link = `href="https://www.nba.com/${teamSlug}/schedule" target="_blank"`;
+      return `
+        <a ${link} class="game-card game-upcoming" style="text-decoration: none; color: inherit;">
+          <div class="game-card__date">${g.date}</div>
+          <div class="game-card__matchup">
+            <img class="game-card__opp-logo" src="${oppLogo}" alt="${oppName}" onerror="this.style.display='none'" loading="lazy">
+            <span class="game-card__opp-name">${g.opponent}</span>
+            <span class="game-card__location" title="${g.home ? 'Home' : 'Away'}">${locationIcon}</span>
+          </div>
+          <div class="game-card__vs">${g.home ? "vs" : "@"}</div>
+        </a>
+      `;
+    })
+    .join("");
 
   section.innerHTML = `
     <div class="result-card">
@@ -241,6 +296,31 @@ function renderResult(data) {
           <div class="gauge-center">
             <span class="gauge-value score-${scoreClass}" id="gauge-value">0</span>
             <span class="gauge-label">Tanking Score</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="team-overview">
+        <div class="standings-card">
+          <div class="standings-card__icon">🏆</div>
+          <div class="standings-card__info">
+            <span class="standings-card__rank">#${standingsRank}</span>
+            <span class="standings-card__conf">${conference}ern Conference</span>
+            <span class="standings-card__of">out of ${standingsTotal} teams</span>
+          </div>
+        </div>
+
+        <div class="schedule-block">
+          <h3 class="schedule-block__title">📋 Last 3 Games</h3>
+          <div class="games-list">
+            ${recentGamesHtml || '<p class="no-data">No recent games data</p>'}
+          </div>
+        </div>
+
+        <div class="schedule-block">
+          <h3 class="schedule-block__title">📅 Next 3 Games</h3>
+          <div class="games-list">
+            ${upcomingGamesHtml || '<p class="no-data">No upcoming games data</p>'}
           </div>
         </div>
       </div>

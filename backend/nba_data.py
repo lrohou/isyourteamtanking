@@ -9,6 +9,7 @@ import json
 import os
 import time
 import logging
+import requests
 from datetime import datetime, timedelta
 from pathlib import Path
 
@@ -262,3 +263,253 @@ def get_team_game_logs(team_id: int, season: str = CURRENT_SEASON) -> list[dict]
     except Exception as e:
         logger.error(f"Failed to fetch game logs for team {team_id}: {e}")
         return []
+
+
+def fetch_live_standings(season: str = CURRENT_SEASON) -> list[dict]:
+    """
+    Récupère le classement en temps réel depuis stats.nba.com.
+    """
+    cache_key = f"live_standings_{season}"
+    cache = _read_cache(cache_key, max_age_hours=12)
+    if cache:
+        return cache
+
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Referer': 'https://www.nba.com/',
+        'Origin': 'https://www.nba.com',
+        'Accept': 'application/json, text/plain, */*',
+        'Accept-Language': 'en-US,en;q=0.9',
+        'Accept-Encoding': 'gzip, deflate, br',
+        'Connection': 'keep-alive',
+        'Sec-Fetch-Dest': 'empty',
+        'Sec-Fetch-Mode': 'cors',
+        'Sec-Fetch-Site': 'same-site',
+    }
+    url = f"https://stats.nba.com/stats/leaguestandingsv3?LeagueID=00&Season={season}&SeasonType=Regular+Season"
+    
+    try:
+        r = requests.get(url, headers=headers, timeout=30)
+        if r.status_code == 200:
+            data = r.json()
+            rs = data.get('resultSets', [])
+            if rs:
+                headers_list = rs[0].get('headers', [])
+                rows = rs[0].get('rowSet', [])
+                result = [dict(zip(headers_list, row)) for row in rows]
+                _write_cache(cache_key, result)
+                return result
+    except Exception as e:
+        logger.error(f"Failed to fetch live standings: {e}")
+    return []
+
+
+def fetch_team_schedule(team_id: int, team_abbr: str, season: str = CURRENT_SEASON) -> dict:
+    """
+    Récupère le calendrier de l'équipe (3 derniers, 3 prochains) via cdn.nba.com.
+    """
+    cache_key = f"team_schedule_{team_id}_{season}"
+    cache = _read_cache(cache_key, max_age_hours=12)
+    if cache:
+        return cache
+
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Referer': 'https://www.nba.com/',
+        'Origin': 'https://www.nba.com',
+        'Accept': 'application/json, text/plain, */*',
+        'Accept-Language': 'en-US,en;q=0.9',
+        'Accept-Encoding': 'gzip, deflate, br',
+        'Connection': 'keep-alive',
+        'Sec-Fetch-Dest': 'empty',
+        'Sec-Fetch-Mode': 'cors',
+        'Sec-Fetch-Site': 'same-site',
+    }
+    url = "https://cdn.nba.com/static/json/staticData/scheduleLeagueV2.json"
+    
+    try:
+        r = requests.get(url, headers=headers, timeout=30)
+        if r.status_code == 200:
+            data = r.json()
+            dates = data.get('leagueSchedule', {}).get('gameDates', [])
+            
+            team_games = []
+            for gd in dates:
+                for g in gd.get('games', []):
+                    ht = g.get('homeTeam', {})
+                    at = g.get('awayTeam', {})
+                    if ht.get('teamId') == team_id or at.get('teamId') == team_id or ht.get('teamTricode') == team_abbr or at.get('teamTricode') == team_abbr:
+                        is_home = ht.get('teamId') == team_id or ht.get('teamTricode') == team_abbr
+                        team_games.append({
+                            'game_id': g.get('gameId'),
+                            'date': gd.get('gameDate'), # MM/DD/YYYY 00:00:00
+                            'opponent': at.get('teamTricode') if is_home else ht.get('teamTricode'),
+                            'home': is_home,
+                            'team_score': ht.get('score', 0) if is_home else at.get('score', 0),
+                            'opponent_score': at.get('score', 0) if is_home else ht.get('score', 0),
+                            'status': g.get('gameStatus'), # 1=Scheduled, 2=Live, 3=Final
+                        })
+            
+            completed = [g for g in team_games if g['status'] == 3]
+            upcoming = [g for g in team_games if g['status'] in (1, 2)]
+            
+            # Format dates to DD/MM/YY
+            for g in team_games:
+                try:
+                    dt = datetime.strptime(g['date'].split(' ')[0], '%m/%d/%Y')
+                    g['date_fmt'] = dt.strftime('%d/%m/%y')
+                except:
+                    g['date_fmt'] = g['date']
+                    
+            recent_games = []
+            for g in completed[-3:]:
+                is_win = g['team_score'] > g['opponent_score']
+                recent_games.append({
+                    'game_id': g['game_id'],
+                    'date': g['date_fmt'],
+                    'opponent': g['opponent'],
+                    'home': g['home'],
+                    'result': 'W' if is_win else 'L',
+                    'team_score': g['team_score'],
+                    'opponent_score': g['opponent_score']
+                })
+                
+            upcoming_games = []
+            for g in upcoming[:3]:
+                upcoming_games.append({
+                    'game_id': g['game_id'],
+                    'date': g['date_fmt'],
+                    'opponent': g['opponent'],
+                    'home': g['home']
+                })
+                
+            result = {
+                'recent_games': recent_games,
+                'upcoming_games': upcoming_games
+            }
+            _write_cache(cache_key, result)
+            return result
+    except Exception as e:
+        logger.error(f"Failed to fetch schedule for team {team_id}: {e}")
+    return {}
+
+
+def fetch_all_schedules() -> dict:
+    """
+    Récupère le calendrier complet de la ligue en un seul appel CDN,
+    puis retourne un dict {team_id: {"recent_games": [...], "upcoming_games": [...]}}
+    pour les 30 équipes. Ultra rapide (~1 requête HTTP).
+    """
+    cache_key = "all_schedules_bulk"
+    cache = _read_cache(cache_key, max_age_hours=12)
+    if cache:
+        return cache
+
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Referer': 'https://www.nba.com/',
+        'Origin': 'https://www.nba.com',
+        'Accept': 'application/json, text/plain, */*',
+        'Accept-Language': 'en-US,en;q=0.9',
+        'Accept-Encoding': 'gzip, deflate, br',
+        'Connection': 'keep-alive',
+        'Sec-Fetch-Dest': 'empty',
+        'Sec-Fetch-Mode': 'cors',
+        'Sec-Fetch-Site': 'same-site',
+    }
+    url = "https://cdn.nba.com/static/json/staticData/scheduleLeagueV2.json"
+
+    try:
+        r = requests.get(url, headers=headers, timeout=30)
+        if r.status_code != 200:
+            logger.error(f"CDN schedule returned {r.status_code}")
+            return {}
+
+        data = r.json()
+        dates = data.get('leagueSchedule', {}).get('gameDates', [])
+
+        # Build per-team game lists
+        team_games: dict[int, list] = {}
+        for gd in dates:
+            for g in gd.get('games', []):
+                ht = g.get('homeTeam', {})
+                at = g.get('awayTeam', {})
+                home_id = ht.get('teamId')
+                away_id = at.get('teamId')
+
+                # Format date
+                raw_date = gd.get('gameDate', '')
+                try:
+                    dt = datetime.strptime(raw_date.split(' ')[0], '%m/%d/%Y')
+                    date_fmt = dt.strftime('%d/%m/%y')
+                except Exception:
+                    date_fmt = raw_date
+
+                game_status = g.get('gameStatus')  # 1=Scheduled 2=Live 3=Final
+                game_id = g.get('gameId')
+
+                # Home team entry
+                if home_id:
+                    team_games.setdefault(home_id, []).append({
+                        'game_id': game_id,
+                        'date': date_fmt,
+                        'opponent': at.get('teamTricode', ''),
+                        'home': True,
+                        'team_score': ht.get('score', 0),
+                        'opponent_score': at.get('score', 0),
+                        'status': game_status,
+                    })
+                # Away team entry
+                if away_id:
+                    team_games.setdefault(away_id, []).append({
+                        'game_id': game_id,
+                        'date': date_fmt,
+                        'opponent': ht.get('teamTricode', ''),
+                        'home': False,
+                        'team_score': at.get('score', 0),
+                        'opponent_score': ht.get('score', 0),
+                        'status': game_status,
+                    })
+
+        # Extract recent (last 3 completed) and upcoming (first 3 scheduled) per team
+        result = {}
+        for tid, games in team_games.items():
+            completed = [g for g in games if g['status'] == 3]
+            upcoming = [g for g in games if g['status'] in (1, 2)]
+
+            recent_games = []
+            for g in completed[-3:]:
+                is_win = (g['team_score'] or 0) > (g['opponent_score'] or 0)
+                recent_games.append({
+                    'game_id': g['game_id'],
+                    'date': g['date'],
+                    'opponent': g['opponent'],
+                    'home': g['home'],
+                    'result': 'W' if is_win else 'L',
+                    'team_score': g['team_score'],
+                    'opponent_score': g['opponent_score'],
+                })
+
+            upcoming_games = []
+            for g in upcoming[:3]:
+                upcoming_games.append({
+                    'game_id': g['game_id'],
+                    'date': g['date'],
+                    'opponent': g['opponent'],
+                    'home': g['home'],
+                })
+
+            result[str(tid)] = {
+                'recent_games': recent_games,
+                'upcoming_games': upcoming_games,
+            }
+
+        _write_cache(cache_key, result)
+        logger.info(f"Fetched bulk schedule for {len(result)} teams")
+        return result
+
+    except Exception as e:
+        logger.error(f"Failed to fetch bulk schedule: {e}")
+        return {}
+
+
