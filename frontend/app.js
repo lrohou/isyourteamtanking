@@ -408,18 +408,22 @@ function animatePillarBars(pillars) {
 // Rankings
 // ---------------------------------------------------------------------------
 function renderRankings() {
-  const container = $("#rankings-list");
-  if (!container || !allTeamResults.length) return;
+  const containerEast = $("#rankings-list-east");
+  const containerWest = $("#rankings-list-west");
+  if (!containerEast || !containerWest || !allTeamResults.length) return;
 
-  container.innerHTML = allTeamResults
-    .map((r, i) => {
+  const eastTeams = allTeamResults.filter(r => r.conference === "East").sort((a, b) => a.standings_rank - b.standings_rank);
+  const westTeams = allTeamResults.filter(r => r.conference === "West").sort((a, b) => a.standings_rank - b.standings_rank);
+
+  const generateHtml = (teams) => teams
+    .map((r) => {
       const team = findTeam(r.team_abbreviation);
       const logoUrl = team?.logo || "";
       const scoreClass = getScoreColorClass(r.tanking_score);
       const record = r.record ? `${r.record.wins}-${r.record.losses}` : "";
       return `
-        <div class="ranking-item" data-team-id="${r.team_id}">
-          <span class="ranking-item__rank">${i + 1}</span>
+        <div class="ranking-item glass-effect" data-team-id="${r.team_id}">
+          <span class="ranking-item__rank">${r.standings_rank}</span>
           <img class="ranking-item__logo" src="${logoUrl}" alt="${r.team_name}" loading="lazy" onerror="this.style.display='none'">
           <span class="ranking-item__name">${r.team_name}</span>
           <span class="ranking-item__record">${record}</span>
@@ -434,8 +438,11 @@ function renderRankings() {
     })
     .join("");
 
+  containerEast.innerHTML = generateHtml(eastTeams);
+  containerWest.innerHTML = generateHtml(westTeams);
+
   // Click to select team
-  container.querySelectorAll(".ranking-item").forEach((item) => {
+  document.querySelectorAll(".ranking-item").forEach((item) => {
     item.addEventListener("click", () => {
       const teamId = parseInt(item.dataset.teamId, 10);
       selectTeam(teamId);
