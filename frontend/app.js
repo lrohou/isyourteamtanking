@@ -17,6 +17,9 @@ const GAUGE_CIRCUMFERENCE = 2 * Math.PI * GAUGE_RADIUS;
 let allTeamResults = [];
 let selectedTeam = null;
 let autocompleteIndex = -1;
+let rankingView = "conferences";
+let rankingFilter = "all";
+let rankingSort = "score";
 
 // ---------------------------------------------------------------------------
 // DOM refs
@@ -33,6 +36,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   renderRankings();
   setupScrollToTop();
   setupHomeButton();
+  setupLeagueControls();
+  window.addEventListener("popstate", handleHistoryNavigation);
+  openTeamFromUrl();
 });
 
 // ---------------------------------------------------------------------------
@@ -49,6 +55,19 @@ async function loadData() {
     showError("Could not load tanking data. Is the server running?");
   }
   showLoading(false);
+}
+
+function openTeamFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  const queryAbbr = params.get("team");
+  const hashValue = window.location.hash.replace(/^#/, "");
+  const token = queryAbbr || (hashValue && !hashValue.startsWith("team-") ? hashValue : "");
+  if (!token) return;
+
+  const result = allTeamResults.find((team) =>
+    team.team_abbreviation?.toLowerCase() === token.toLowerCase()
+  );
+  if (result) selectTeam(result.team_id, { updateHistory: false });
 }
 
 function showLoading(on) {
@@ -172,9 +191,13 @@ function hideAutocomplete() {
 // ---------------------------------------------------------------------------
 // Team selection
 // ---------------------------------------------------------------------------
-function selectTeam(teamId) {
+function selectTeam(teamId, options = {}) {
   const result = allTeamResults.find((r) => r.team_id === teamId);
   if (!result) return;
+
+  if (options.updateHistory !== false) {
+    history.pushState({ teamId }, "", `?team=${encodeURIComponent(result.team_abbreviation)}`);
+  }
 
   const input = $("#search-input");
   if (input) input.value = result.team_name;
@@ -194,6 +217,15 @@ function selectTeam(teamId) {
   if (section) {
     section.scrollIntoView({ behavior: "smooth", block: "start" });
   }
+}
+
+function handleHistoryNavigation() {
+  const teamId = history.state?.teamId;
+  if (teamId) {
+    selectTeam(teamId, { updateHistory: false });
+    return;
+  }
+  resetHomeView(false);
 }
 
 // ---------------------------------------------------------------------------
@@ -217,6 +249,8 @@ function renderResult(data) {
   const standingsRank = data.standings_rank || "—";
   const standingsTotal = data.standings_total || 15;
   const conference = data.conference || "—";
+  const badges = data.badges || [];
+  const suspectTracker = data.suspect_tracker || { overall_suspicion: 0, players: [] };
 
   // Recent games HTML
   const recentGamesHtml = (data.recent_games || [])
@@ -278,6 +312,11 @@ function renderResult(data) {
         </div>
         <span class="result-card__status-badge status-${data.status}">${data.status_label}</span>
       </div>
+      <div class="sharing-actions" aria-label="Share team result">
+        <button class="share-button share-button--primary" id="share-card-btn" type="button">📲 Share my team</button>
+        <button class="share-button" id="share-x-btn" type="button">𝕏 Share on X</button>
+        <button class="share-button" id="share-reddit-btn" type="button">Reddit</button>
+      </div>
 
       <div class="gauge-section">
         <div class="gauge-container">
@@ -325,6 +364,48 @@ function renderResult(data) {
         </div>
       </div>
 
+      <section class="gamification-section" aria-label="Suspect tracker and team badges">
+        <div class="section-heading-row">
+          <div>
+            <h3 class="gamification-title">Trophées de la honte</h3>
+          </div>
+          <span class="suspicion-meter">${suspectTracker.overall_suspicion || 0}% suspect</span>
+        </div>
+        <div class="badges-grid count-${Math.min(badges.length, 4)}">
+          ${badges.map((badge) => `
+            <article class="humor-badge badge-type-${badge.type || "shame"}">
+              <span class="humor-badge__icon" aria-hidden="true">${badge.icon}</span>
+              <div>
+                <h4>${badge.name}</h4>
+                <p class="humor-badge__explanation">${getBadgeExplanation(badge)}</p>
+                <span class="humor-badge__metric">${badge.highlight}</span>
+              </div>
+            </article>
+          `).join("")}
+        </div>
+      </section>
+
+      <section class="gamification-section" aria-label="Suspect tracker and team badges">
+          <div>
+            <h3 class="gamification-title">Unavailable players</h3>
+          </div>
+        <div class="suspect-list count-${Math.min((suspectTracker.players || []).length, 4)}">
+          ${(suspectTracker.players || []).map((player) => `
+            <article class="suspect-player">
+              <div class="suspect-player__topline">
+                <div>
+                  <h4 title="${player.name}">${player.name}</h4>
+                  <p>${player.position || "Rotation"}</p>
+                </div>
+                <span class="player-status status-${player.status_code || "out"}">${player.status}</span>
+              </div>
+              <p class="suspect-player__reason">${player.reason}</p>
+              <span class="suspect-player__missed">${player.games_missed} · ${player.suspicion_level}% suspicion</span>
+            </article>
+          `).join("")}
+        </div>
+      </section>
+
       <div class="chart-section">
         <h3 class="chart-section__title">📈 Tanking Score Evolution</h3>
         <p class="chart-section__subtitle">Score trajectory throughout the ${data.season} season</p>
@@ -343,6 +424,7 @@ function renderResult(data) {
   `;
 
   section.classList.add("visible");
+  setupSharingActions(data);
 
   // Animate gauge after render
   requestAnimationFrame(() => {
@@ -352,6 +434,126 @@ function renderResult(data) {
       renderTankingChart(data.tanking_history, scoreColor);
     }
   });
+}
+
+function setupSharingActions(data) {
+  $("#share-card-btn")?.addEventListener("click", () => downloadTankingCard(data));
+  $("#share-x-btn")?.addEventListener("click", () => openSocialShare("x", data));
+  $("#share-reddit-btn")?.addEventListener("click", () => openSocialShare("reddit", data));
+}
+
+function getShareText(data) {
+  return `Mon équipe a un Tanking Score de ${data.tanking_score}%... Dégoûté mais vivement la lottery ! 🏀 #Tanking`;
+}
+
+function openSocialShare(network, data) {
+  const text = encodeURIComponent(getShareText(data));
+  const url = encodeURIComponent(window.location.href);
+  const target = network === "reddit"
+    ? `https://www.reddit.com/submit?title=${encodeURIComponent(`${data.team_name} Tanking Score: ${data.tanking_score}%`)}&text=${text}&url=${url}`
+    : `https://twitter.com/intent/tweet?text=${text}&url=${url}`;
+  window.open(target, "_blank", "noopener,noreferrer,width=680,height=620");
+}
+
+function downloadTankingCard(data) {
+  const canvas = document.createElement("canvas");
+  canvas.width = 1080;
+  canvas.height = 1920;
+  const ctx = canvas.getContext("2d");
+  const scoreColor = getScoreColor(data.tanking_score);
+  const badge = (data.badges || [])[0];
+  const pillars = data.pillars || [];
+  const suspicion = data.suspect_tracker?.overall_suspicion || 0;
+  const record = `${data.record?.wins || 0}-${data.record?.losses || 0}`;
+
+  ctx.fillStyle = "#252422";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = "#403d39";
+  ctx.beginPath();
+  ctx.roundRect(42, 42, 996, 1836, 32);
+  ctx.fill();
+  ctx.fillStyle = "#eb5e28";
+  ctx.fillRect(42, 42, 10, 1836);
+  ctx.fillStyle = "#ccc5b9";
+  ctx.font = "700 28px Arial";
+  ctx.fillText("IS YOUR TEAM TANKING?", 92, 125);
+  ctx.fillStyle = "#fffcf2";
+  ctx.font = "800 62px Arial";
+  ctx.fillText(data.team_name, 92, 225);
+  ctx.fillStyle = "#ccc5b9";
+  ctx.font = "500 28px Arial";
+  ctx.fillText(`${record}  ·  ${data.status_label}`, 96, 275);
+  ctx.strokeStyle = "#5b5751";
+  ctx.lineWidth = 24;
+  ctx.beginPath();
+  ctx.arc(540, 560, 190, 0, Math.PI * 2);
+  ctx.stroke();
+  ctx.strokeStyle = scoreColor;
+  ctx.beginPath();
+  ctx.arc(540, 560, 190, -Math.PI / 2, -Math.PI / 2 + (Math.PI * 2 * data.tanking_score / 100));
+  ctx.stroke();
+  ctx.fillStyle = scoreColor;
+  ctx.font = "800 78px Arial";
+  ctx.textAlign = "center";
+  ctx.fillText(`${data.tanking_score}%`, 540, 575);
+  ctx.fillStyle = "#fffcf2";
+  ctx.font = "700 26px Arial";
+  ctx.fillText("TANKING SCORE", 540, 625);
+  ctx.textAlign = "left";
+  ctx.fillStyle = "#252422";
+  ctx.beginPath();
+  ctx.roundRect(92, 820, 896, 170, 20);
+  ctx.fill();
+  ctx.fillStyle = "#eb5e28";
+  ctx.font = "700 28px Arial";
+  ctx.fillText(`${badge?.icon || "🏀"} ${badge?.name || "League watch"}`, 125, 875);
+  ctx.fillStyle = "#ccc5b9";
+  ctx.font = "500 22px Arial";
+  ctx.fillText("Primary signal detected", 125, 925);
+  ctx.fillStyle = "#fffcf2";
+  ctx.font = "800 30px Arial";
+  ctx.fillText("KEY INDICATORS", 92, 1085);
+  pillars.forEach((pillar, index) => {
+    const y = 1145 + index * 125;
+    ctx.fillStyle = "#5b5751";
+    ctx.beginPath();
+    ctx.roundRect(92, y, 896, 86, 16);
+    ctx.fill();
+    ctx.fillStyle = "#fffcf2";
+    ctx.font = "600 24px Arial";
+    ctx.fillText(pillar.name, 120, y + 37);
+    ctx.fillStyle = getScoreColor(pillar.score);
+    ctx.font = "800 28px Arial";
+    ctx.textAlign = "right";
+    ctx.fillText(`${pillar.score}%`, 955, y + 37);
+    ctx.textAlign = "left";
+  });
+  ctx.fillStyle = "#252422";
+  ctx.beginPath();
+  ctx.roundRect(92, 1690, 896, 110, 16);
+  ctx.fill();
+  ctx.fillStyle = "#fffcf2";
+  ctx.font = "600 25px Arial";
+  ctx.fillText(`Suspect Tracker: ${suspicion}%`, 125, 1758);
+  ctx.fillStyle = "#ccc5b9";
+  ctx.font = "500 20px Arial";
+  ctx.fillText("Statistical detector · isyourteamtanking.com", 92, 1840);
+  const link = document.createElement("a");
+  link.download = `${data.team_abbreviation.toLowerCase()}-tanking-story.png`;
+  link.href = canvas.toDataURL("image/png");
+  link.click();
+}
+
+function getBadgeExplanation(badge) {
+  const explanations = {
+    trust_the_process: "Score global supérieur à 85 %." ,
+    phantom_injury: "Absences suspectes des joueurs clés.",
+    brick_city: "Effondrements répétés dans le money time.",
+    daycare_lineup: "Lineup très jeune, sous le seuil de référence.",
+    anti_tank: "Aucun signal majeur de tanking détecté.",
+    limbo_alert: "Signaux partagés : la situation reste indécise.",
+  };
+  return explanations[badge.id] || "Signal notable dans les données de l'équipe.";
 }
 
 function renderPillarCard(pillar) {
@@ -533,8 +735,9 @@ function renderRankings() {
   const containerWest = $("#rankings-list-west");
   if (!containerEast || !containerWest || !allTeamResults.length) return;
 
-  const eastTeams = allTeamResults.filter(r => r.conference === "East").sort((a, b) => a.standings_rank - b.standings_rank);
-  const westTeams = allTeamResults.filter(r => r.conference === "West").sort((a, b) => a.standings_rank - b.standings_rank);
+  const teams = getFilteredTeams();
+  const eastTeams = teams.filter(r => r.conference === "East").sort((a, b) => a.standings_rank - b.standings_rank);
+  const westTeams = teams.filter(r => r.conference === "West").sort((a, b) => a.standings_rank - b.standings_rank);
 
   const generateHtml = (teams) => teams
     .map((r) => {
@@ -542,11 +745,15 @@ function renderRankings() {
       const logoUrl = team?.logo || "";
       const scoreClass = getScoreColorClass(r.tanking_score);
       const record = r.record ? `${r.record.wins}-${r.record.losses}` : "";
+      const featuredBadge = (r.badges || []).find((badge) => badge.type === "shame") || (r.badges || [])[0];
       return `
         <div class="ranking-item glass-effect" data-team-id="${r.team_id}">
           <span class="ranking-item__rank">${r.standings_rank}</span>
           <img class="ranking-item__logo" src="${logoUrl}" alt="${r.team_name}" loading="lazy" onerror="this.style.display='none'">
-          <span class="ranking-item__name">${r.team_name}</span>
+          <div class="ranking-item__identity">
+            <span class="ranking-item__name">${r.team_name}</span>
+            <span class="ranking-item__badge">${featuredBadge ? `${featuredBadge.icon} ${featuredBadge.name}` : "No badge"}</span>
+          </div>
           <span class="ranking-item__record">${record}</span>
           <div class="ranking-item__bar-wrapper">
             <div class="ranking-item__bar-track">
@@ -561,6 +768,7 @@ function renderRankings() {
 
   containerEast.innerHTML = generateHtml(eastTeams);
   containerWest.innerHTML = generateHtml(westTeams);
+  renderLeagueTable(teams);
 
   // Click to select team
   document.querySelectorAll(".ranking-item").forEach((item) => {
@@ -571,6 +779,92 @@ function renderRankings() {
       window.scrollTo({ top: 0, behavior: "smooth" });
     });
   });
+}
+
+function setupLeagueControls() {
+  document.querySelectorAll("[data-view]").forEach((button) => {
+    button.addEventListener("click", () => {
+      rankingView = button.dataset.view;
+      document.querySelectorAll("[data-view]").forEach((item) => item.classList.toggle("is-active", item === button));
+      $("#conference-view").hidden = rankingView !== "conferences";
+      $("#league-table-view").hidden = rankingView !== "table";
+    });
+  });
+  document.querySelectorAll("[data-filter]").forEach((button) => {
+    button.addEventListener("click", () => {
+      rankingFilter = button.dataset.filter;
+      document.querySelectorAll("[data-filter]").forEach((item) => item.classList.toggle("is-active", item === button));
+      renderRankings();
+    });
+  });
+  $("#league-sort")?.addEventListener("change", (event) => {
+    rankingSort = event.target.value;
+    renderRankings();
+  });
+  $("#reset-league-btn")?.addEventListener("click", resetLeagueControls);
+  document.querySelectorAll("[data-sort]").forEach((button) => {
+    button.addEventListener("click", () => {
+      rankingSort = button.dataset.sort;
+      $("#league-sort").value = rankingSort;
+      renderRankings();
+    });
+  });
+}
+
+function resetLeagueControls() {
+  rankingView = "conferences";
+  rankingFilter = "all";
+  rankingSort = "score";
+  document.querySelectorAll("[data-view]").forEach((item) => item.classList.toggle("is-active", item.dataset.view === "conferences"));
+  document.querySelectorAll("[data-filter]").forEach((item) => item.classList.toggle("is-active", item.dataset.filter === "all"));
+  const sort = $("#league-sort");
+  if (sort) sort.value = "score";
+  $("#conference-view").hidden = false;
+  $("#league-table-view").hidden = true;
+  renderRankings();
+}
+
+function getPillarScore(result, id) {
+  return result.pillars?.find((pillar) => pillar.id === id)?.score || 0;
+}
+
+function getFilteredTeams() {
+  return allTeamResults.filter((result) => {
+    if (rankingFilter === "tank") return result.tanking_score >= 66;
+    if (rankingFilter === "borderline") return result.tanking_score >= 31 && result.tanking_score < 66;
+    if (rankingFilter === "contender") return result.tanking_score < 31;
+    return true;
+  });
+}
+
+function getSortedTeams(teams) {
+  return [...teams].sort((a, b) => {
+    if (rankingSort === "record") {
+      return ((b.record?.pct || 0) - (a.record?.pct || 0)) || (b.tanking_score - a.tanking_score);
+    }
+    if (["vet_minutes", "dnp_suspects", "young_lineups", "clutch_collapse"].includes(rankingSort)) {
+      return getPillarScore(b, rankingSort) - getPillarScore(a, rankingSort);
+    }
+    return b.tanking_score - a.tanking_score;
+  });
+}
+
+function renderLeagueTable(teams) {
+  const body = $("#league-table-body");
+  if (!body) return;
+  body.innerHTML = getSortedTeams(teams).map((result, index) => `
+    <button class="league-table__row" data-team-id="${result.team_id}" type="button">
+      <span>${index + 1}</span>
+      <strong>${result.team_name}</strong>
+      <span>${result.record?.wins || 0}-${result.record?.losses || 0}</span>
+      <span class="score-${getScoreColorClass(result.tanking_score)}">${result.tanking_score}%</span>
+      <span>${getPillarScore(result, "vet_minutes")}</span>
+      <span>${getPillarScore(result, "dnp_suspects")}</span>
+      <span>${getPillarScore(result, "young_lineups")}</span>
+      <span>${getPillarScore(result, "clutch_collapse")}</span>
+    </button>
+  `).join("");
+  body.querySelectorAll("[data-team-id]").forEach((row) => row.addEventListener("click", () => selectTeam(Number(row.dataset.teamId))));
 }
 
 // ---------------------------------------------------------------------------
@@ -613,24 +907,30 @@ function setupHomeButton() {
   const homeBtn = $("#home-btn");
   if (!homeBtn) return;
   homeBtn.addEventListener("click", () => {
-    // Reset view
-    const section = $(".result-section");
-    if (section) {
-      section.classList.remove("visible");
-      section.innerHTML = "";
-    }
-
-    const rankings = $(".rankings-section");
-    if (rankings) rankings.style.display = "block";
-
-    homeBtn.style.display = "none";
-
-    const input = $("#search-input");
-    if (input) input.value = "";
-
-    selectedTeam = null;
-
-    // Scroll to top
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    history.replaceState(null, "", window.location.pathname);
+    resetHomeView(true);
   });
+}
+
+function resetHomeView(shouldScroll = true) {
+  const section = $(".result-section");
+  if (section) {
+    section.classList.remove("visible");
+    section.innerHTML = "";
+  }
+
+  const rankings = $(".rankings-section");
+  if (rankings) rankings.style.display = "block";
+
+  const homeBtn = $("#home-btn");
+  if (homeBtn) homeBtn.style.display = "none";
+
+  const input = $("#search-input");
+  if (input) input.value = "";
+
+  selectedTeam = null;
+
+  if (shouldScroll) {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
 }

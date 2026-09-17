@@ -15,7 +15,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 
-from tanking_engine import generate_demo_data
+from tanking_engine import compute_badges_and_suspects, generate_demo_data
 from nba_data import fetch_live_standings, fetch_team_schedule
 
 # ---------------------------------------------------------------------------
@@ -41,6 +41,14 @@ def load_results() -> list[dict]:
         try:
             with open(RESULTS_FILE, "r", encoding="utf-8") as f:
                 data = json.load(f)
+                for result in data:
+                    if "badges" not in result or "suspect_tracker" not in result:
+                        result.update(compute_badges_and_suspects(
+                            result.get("tanking_score", 0),
+                            result.get("pillars", []),
+                            result.get("team_abbreviation", ""),
+                            result.get("team_name", "Team"),
+                        ))
             logger.info(f"Loaded {len(data)} team results from {RESULTS_FILE}")
             return data
         except (json.JSONDecodeError, OSError) as e:

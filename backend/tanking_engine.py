@@ -279,11 +279,13 @@ def calc_dnp_suspects(roster: list[dict], player_stats: list[dict], team_games: 
 # Pilier 3 : Young Lineup Usage
 # ---------------------------------------------------------------------------
 
-def calc_young_lineup_usage(roster: list[dict], player_stats: list[dict]) -> dict:
+def calc_young_lineup_usage(roster: list[dict], player_stats: list[dict], win_pct: float | None = None) -> dict:
     """
     Mesure l'Ã¢ge moyen pondÃ©rÃ© par les minutes jouÃ©es.
     Si l'Ã©quipe est anormalement jeune pondÃ©rÃ©e par minutes, c'est un signe
     de dÃ©veloppement de jeunes / tanking.
+    Le malus est rÃ©duit si l'Ã©quipe gagne beaucoup (ex: Spurs, Thunder), car
+    faire jouer des jeunes tout en gagnant n'est pas du tanking.
     """
     if not roster or not player_stats:
         return {
@@ -339,10 +341,6 @@ def calc_young_lineup_usage(roster: list[dict], player_stats: list[dict]) -> dic
     weighted_avg_age = weighted_age_sum / total_weight
 
     # L'Ã¢ge moyen pondÃ©rÃ© de la NBA est environ 26-27 ans.
-    # < 24 : trÃ¨s jeune (dÃ©veloppement / tanking)
-    # 24-25 : jeune
-    # 25-27 : normal
-    # > 27 : expÃ©rimentÃ©
     if weighted_avg_age >= 27.5:
         score = 0
     elif weighted_avg_age >= 26.5:
@@ -363,9 +361,21 @@ def calc_young_lineup_usage(roster: list[dict], player_stats: list[dict]) -> dic
     elif len(young_starters) >= 2:
         score = min(100, score + 6)
 
+    # NOUVEAU: Réduire le score si l'équipe a un bon pourcentage de victoires
+    # Si win_pct >= 0.40, on commence à réduire. À 0.60, le score tombe à 0.
+    reduction_applied = False
+    if win_pct is not None and win_pct >= 0.40:
+        reduction_factor = (win_pct - 0.40) / 0.20
+        reduction_factor = min(1.0, max(0.0, reduction_factor))
+        if reduction_factor > 0:
+            score = score * (1.0 - reduction_factor)
+            reduction_applied = True
+
     score = _clamp(score)
 
-    if score >= 70:
+    if reduction_applied:
+        desc = "Young lineup, but penalty reduced due to high winning percentage."
+    elif score >= 70:
         desc = "Lineup is very young - heavy youth development focus."
     elif score >= 40:
         desc = "Team is trending younger than the league average."
@@ -505,6 +515,469 @@ def get_tanking_status(score: float) -> tuple[str, str]:
         return "competing", "Actively Competing"
 
 
+# ---------------------------------------------------------------------------
+# Badges & Suspect Tracker (Gamification)
+# ---------------------------------------------------------------------------
+
+TEAM_SUSPECT_PRESETS = {
+    "WAS": [
+        {
+            "name": "Jordan Poole",
+            "position": "SG / Tank Commander",
+            "status": "OUT",
+            "status_code": "out",
+            "reason": "Right ankle soreness",
+            "satirical_reason": "Douleur foudroyante apparue subitement en découvrant les probabilités du pick #1 de la Lottery.",
+            "suspicion_level": 98,
+            "games_missed": "Derniers 14 matchs",
+        },
+        {
+            "name": "Kyle Kuzma",
+            "position": "PF / Fashion Icon",
+            "status": "OUT",
+            "status_code": "out",
+            "reason": "General illness",
+            "satirical_reason": "Allergie foudroyante aux victoires dans le 4e quart-temps. Risque de réussite au tir trop élevé.",
+            "suspicion_level": 96,
+            "games_missed": "Derniers 10 matchs",
+        },
+        {
+            "name": "Malcolm Brogdon",
+            "position": "PG / Veteran Voice",
+            "status": "OUT",
+            "status_code": "out",
+            "reason": "Rest - Load Management",
+            "satirical_reason": "Épuisement psychologique après avoir rentré un tir clutch par inadvertance.",
+            "suspicion_level": 94,
+            "games_missed": "Derniers 16 matchs",
+        },
+        {
+            "name": "Jonas Valančiūnas",
+            "position": "C / Board Collector",
+            "status": "QUESTIONABLE",
+            "status_code": "questionable",
+            "reason": "Hamstring tightness",
+            "satirical_reason": "Le staff médical lui interdit formellement de capter plus de 4 rebonds par match.",
+            "suspicion_level": 89,
+            "games_missed": "Surveillance rapprochée",
+        },
+    ],
+    "POR": [
+        {
+            "name": "Jerami Grant",
+            "position": "PF / Vet Pillar",
+            "status": "OUT",
+            "status_code": "out",
+            "reason": "Lower back soreness",
+            "satirical_reason": "Lumbago aigu : trop lourd de porter les espoirs de loterie de toute la franchise.",
+            "suspicion_level": 97,
+            "games_missed": "Derniers 15 matchs",
+        },
+        {
+            "name": "Deandre Ayton",
+            "position": "C / DominAyton",
+            "status": "OUT",
+            "status_code": "out",
+            "reason": "Rest - Load Management",
+            "satirical_reason": "A raté le shootaround car son réveil est déjà synchronisé sur la draft 2026.",
+            "suspicion_level": 95,
+            "games_missed": "Derniers 8 matchs",
+        },
+        {
+            "name": "Anfernee Simons",
+            "position": "SG / Sharp Shooter",
+            "status": "OUT",
+            "status_code": "out",
+            "reason": "Right thumb contusion",
+            "satirical_reason": "Pouce endolori après avoir trop scrollé les mock drafts sur X (Twitter).",
+            "suspicion_level": 92,
+            "games_missed": "Derniers 11 matchs",
+        },
+    ],
+    "BKN": [
+        {
+            "name": "Cam Thomas",
+            "position": "SG / Bucket Getter",
+            "status": "OUT",
+            "status_code": "out",
+            "reason": "Hamstring strain",
+            "satirical_reason": "Danger critique de planter 40 points et de compromettre la défaite planifiée.",
+            "suspicion_level": 96,
+            "games_missed": "Derniers 12 matchs",
+        },
+        {
+            "name": "Nic Claxton",
+            "position": "C / Rim Protector",
+            "status": "OUT",
+            "status_code": "out",
+            "reason": "Personal reasons",
+            "satirical_reason": "Parti en stage intensif de méditation pour oublier le dernier quart-temps.",
+            "suspicion_level": 93,
+            "games_missed": "Derniers 9 matchs",
+        },
+        {
+            "name": "Ben Simmons",
+            "position": "PG / Mythic Quest",
+            "status": "OUT",
+            "status_code": "out",
+            "reason": "Lower back nerve impingement",
+            "satirical_reason": "Actuellement en tournage de sa vidéo estivale annuelle de tirs à trois points.",
+            "suspicion_level": 99,
+            "games_missed": "Saison régulière entière",
+        },
+    ],
+    "IND": [
+        {
+            "name": "Tyrese Haliburton",
+            "position": "PG / Floor General",
+            "status": "OUT",
+            "status_code": "out",
+            "reason": "General illness",
+            "satirical_reason": "Injonction de la direction après deux passes décisives de trop qui menaçaient le plan de jeu.",
+            "suspicion_level": 95,
+            "games_missed": "Derniers 8 matchs",
+        },
+        {
+            "name": "Myles Turner",
+            "position": "C / Block Master",
+            "status": "OUT",
+            "status_code": "out",
+            "reason": "Right ankle soreness",
+            "satirical_reason": "Pied douloureux après avoir sauté pour contester un shoot adverse non autorisé par le front-office.",
+            "suspicion_level": 91,
+            "games_missed": "Derniers 11 matchs",
+        },
+    ],
+    "UTA": [
+        {
+            "name": "Lauri Markkanen",
+            "position": "PF / Finnish Sniper",
+            "status": "OUT",
+            "status_code": "out",
+            "reason": "Right shoulder impingement",
+            "satirical_reason": "Épaule fatiguée après avoir porté toute la franchise de Salt Lake City pendant 4 mois.",
+            "suspicion_level": 98,
+            "games_missed": "Derniers 18 matchs",
+        },
+        {
+            "name": "Jordan Clarkson",
+            "position": "SG / Microwave",
+            "status": "OUT",
+            "status_code": "out",
+            "reason": "Rest",
+            "satirical_reason": "Interdiction formelle de dégainer à 9 mètres avec 18 secondes restantes sur la possession.",
+            "suspicion_level": 93,
+            "games_missed": "Derniers 13 matchs",
+        },
+        {
+            "name": "Collin Sexton",
+            "position": "PG / Pure Energy",
+            "status": "OUT",
+            "status_code": "out",
+            "reason": "Left foot soreness",
+            "satirical_reason": "Trop d'énergie communicative : risque de contaminer le reste du banc et de faire gagner l'équipe.",
+            "suspicion_level": 90,
+            "games_missed": "Derniers 7 matchs",
+        },
+    ],
+    "SAS": [
+        {
+            "name": "Devin Vassell",
+            "position": "SG / Secondary Option",
+            "status": "OUT",
+            "status_code": "out",
+            "reason": "Right foot management",
+            "satirical_reason": "Protocole de préservation maximale en vue de l'an prochain avec Wemby.",
+            "suspicion_level": 91,
+            "games_missed": "Derniers 10 matchs",
+        },
+        {
+            "name": "Keldon Johnson",
+            "position": "SF / Energy Guy",
+            "status": "QUESTIONABLE",
+            "status_code": "questionable",
+            "reason": "Rest",
+            "satirical_reason": "Assigné en bout de banc pour encourager les rookies à rater leurs lancers francs.",
+            "suspicion_level": 87,
+            "games_missed": "Derniers 5 matchs",
+        },
+    ],
+    "CHA": [
+        {
+            "name": "LaMelo Ball",
+            "position": "PG / Highlight Reel",
+            "status": "OUT",
+            "status_code": "out",
+            "reason": "Right ankle soreness",
+            "satirical_reason": "Cheville mystérieusement douloureuse dès que Charlotte mène de 2 points à 3 minutes du terme.",
+            "suspicion_level": 96,
+            "games_missed": "Derniers 17 matchs",
+        },
+        {
+            "name": "Miles Bridges",
+            "position": "SF / High Flyer",
+            "status": "OUT",
+            "status_code": "out",
+            "reason": "Rest - Load Management",
+            "satirical_reason": "Repos préventif pour protéger les balles de ping-pong de la draft lottery.",
+            "suspicion_level": 89,
+            "games_missed": "Derniers 8 matchs",
+        },
+    ],
+    "CHI": [
+        {
+            "name": "Zach LaVine",
+            "position": "SG / All-Star",
+            "status": "OUT",
+            "status_code": "out",
+            "reason": "Right foot soreness",
+            "satirical_reason": "Douleur persistante qui attend la trade deadline pour guérir miraculeusement.",
+            "suspicion_level": 94,
+            "games_missed": "Derniers 12 matchs",
+        },
+        {
+            "name": "Nikola Vučević",
+            "position": "C / Double-Double",
+            "status": "OUT",
+            "status_code": "out",
+            "reason": "Rest",
+            "satirical_reason": "Repos tactique pour laisser les intérieurs adverses dunker sans opposition.",
+            "suspicion_level": 88,
+            "games_missed": "Derniers 6 matchs",
+        },
+    ],
+    "MEM": [
+        {
+            "name": "Marcus Smart",
+            "position": "PG / Defensive Dog",
+            "status": "OUT",
+            "status_code": "out",
+            "reason": "Finger sprain",
+            "satirical_reason": "Doigt foulé en désignant le tableau noir où était écrit 'Opération Pick #1'.",
+            "suspicion_level": 92,
+            "games_missed": "Derniers 9 matchs",
+        },
+        {
+            "name": "Jaren Jackson Jr.",
+            "position": "PF / Block Collector",
+            "status": "OUT",
+            "status_code": "out",
+            "reason": "Rest - Knee Maintenance",
+            "satirical_reason": "Interdiction de sauter pour protéger les angles de tir des attaquants adverses.",
+            "suspicion_level": 89,
+            "games_missed": "Derniers 7 matchs",
+        },
+    ],
+    "BOS": [
+        {
+            "name": "Jayson Tatum",
+            "position": "SF / Superstar",
+            "status": "ACTIVE",
+            "status_code": "active",
+            "reason": "Healthy - Title Contender",
+            "satirical_reason": "Zéro tanking détecté : l'équipe joue pour détruire chaque adversaire de 25 points.",
+            "suspicion_level": 5,
+            "games_missed": "0 match",
+        }
+    ],
+    "OKC": [
+        {
+            "name": "Shai Gilgeous-Alexander",
+            "position": "PG / MVP Frontrunner",
+            "status": "ACTIVE",
+            "status_code": "active",
+            "reason": "Healthy - Competing",
+            "satirical_reason": "L'époque du tanking est révolue, la domination est désormais totale.",
+            "suspicion_level": 4,
+            "games_missed": "0 match",
+        }
+    ],
+    "NYK": [
+        {
+            "name": "Jalen Brunson",
+            "position": "PG / Floor Leader",
+            "status": "ACTIVE",
+            "status_code": "active",
+            "reason": "Healthy - 40 Mins/Game",
+            "satirical_reason": "Tom Thibodeau refuse physiquement de mettre ses joueurs au repos.",
+            "suspicion_level": 3,
+            "games_missed": "0 match",
+        }
+    ],
+    "CLE": [
+        {
+            "name": "Donovan Mitchell",
+            "position": "SG / Superstar",
+            "status": "ACTIVE",
+            "status_code": "active",
+            "reason": "Healthy - Top Seed Hunter",
+            "satirical_reason": "Objectif bague : le mot 'lottery' a été banni du vestiaire des Cavs.",
+            "suspicion_level": 6,
+            "games_missed": "0 match",
+        }
+    ],
+}
+
+DEFAULT_TANKING_SUSPECTS = [
+    {
+        "name": "Star Vétéran",
+        "position": "G/F / Pilier de l'équipe",
+        "status": "OUT",
+        "status_code": "out",
+        "reason": "Right ankle soreness",
+        "satirical_reason": "Gêne soudaine survenue lors de l'étude des simulations de la Draft Lottery.",
+        "suspicion_level": 94,
+        "games_missed": "Derniers 10 matchs",
+    },
+    {
+        "name": "Second Scoreur",
+        "position": "F/C / Option #2",
+        "status": "OUT",
+        "status_code": "out",
+        "reason": "Rest - Load Management",
+        "satirical_reason": "Protocole de préservation intensif afin d'offrir 35 minutes de jeu aux rookies.",
+        "suspicion_level": 91,
+        "games_missed": "Derniers 7 matchs",
+    },
+    {
+        "name": "Meneur Titulaire",
+        "position": "PG / Playmaker",
+        "status": "QUESTIONABLE",
+        "status_code": "questionable",
+        "reason": "General illness",
+        "satirical_reason": "Ressent un malaise persistant dès que l'équipe s'apprête à gagner un match serré.",
+        "suspicion_level": 86,
+        "games_missed": "Derniers 4 matchs",
+    },
+]
+
+DEFAULT_COMPETING_SUSPECTS = [
+    {
+        "name": "Franchise Player",
+        "position": "PG/SG / All-Star",
+        "status": "ACTIVE",
+        "status_code": "active",
+        "reason": "Healthy - En mission playoffs",
+        "satirical_reason": "Aucun camouflage médical décelé. Joue chaque match le couteau entre les dents.",
+        "suspicion_level": 8,
+        "games_missed": "0 match",
+    }
+]
+
+
+def compute_badges_and_suspects(
+    tanking_score: int,
+    pillars: list[dict],
+    team_abbr: str,
+    team_name: str,
+) -> dict:
+    """
+    Calcule les badges humoristiques / trophées de la honte
+    ainsi que la liste de joueurs suspects (Suspect Tracker).
+    """
+    pillar_map = {p.get("id"): p.get("score", 0) for p in pillars}
+    p_vet = pillar_map.get("vet_minutes", 0)
+    p_dnp = pillar_map.get("dnp_suspects", 0)
+    p_young = pillar_map.get("young_lineups", 0)
+    p_clutch = pillar_map.get("clutch_collapse", 0)
+
+    badges = []
+
+    # 1. 🦹‍♂️ "Trust The Process Award" (tanking assumé > 85%)
+    if tanking_score >= 85:
+        badges.append({
+            "id": "trust_the_process",
+            "name": "Trust The Process Award",
+            "icon": "🦹‍♂️",
+            "type": "shame",
+            "tagline": "Tanking assumé & décomplexé",
+            "description": "Tanking assumé à plus de 85%. Sam Hinkie a la larme à l'œil : les défaites s'enchaînent avec une perfection chirurgicale.",
+            "highlight": f"Score global {tanking_score}%",
+        })
+
+    # 2. 🏥 "Phantom Injury Ward" (score d'absences suspectes > 80%)
+    if p_dnp >= 80:
+        badges.append({
+            "id": "phantom_injury",
+            "name": "Phantom Injury Ward",
+            "icon": "🏥",
+            "type": "shame",
+            "tagline": "Épidémie médicale très opportune",
+            "description": "Score d'absences suspectes supérieur à 80%. L'infirmerie est plus bondée qu'un jour de soldes dès qu'un match devient gagnable.",
+            "highlight": f"DNP Suspects : {p_dnp}%",
+        })
+
+    # 3. 🧱 "Brick City / Q4 Melt" (clutch collapse record >= 70%)
+    if p_clutch >= 70:
+        badges.append({
+            "id": "brick_city",
+            "name": "Brick City / Q4 Melt",
+            "icon": "🧱",
+            "type": "shame",
+            "tagline": "Sabotage chirurgical du 4e quart-temps",
+            "description": "Effondrement record dans les 12 dernières minutes. Festival de briques sur la tranche et de pertes de balle spectaculaires.",
+            "highlight": f"Sabotage Q4 : {p_clutch}%",
+        })
+
+    # 4. 👶 "Daycare Lineup" (5 majeur avec une moyenne d'âge < 21 ans / young lineup score >= 70%)
+    if p_young >= 70:
+        badges.append({
+            "id": "daycare_lineup",
+            "name": "Daycare Lineup",
+            "icon": "👶",
+            "type": "shame",
+            "tagline": "Crèche municipale sur le parquet",
+            "description": "Effectif ultra-jeune en apprentissage accéléré. Les titulaires doivent finir leurs devoirs de maths pendant les temps-morts.",
+            "highlight": f"Score Jeunesse : {p_young}%",
+        })
+
+    # Badges complémentaires honorifiques ou neutres si aucun trophée de la honte
+    if not badges:
+        if tanking_score <= 25:
+            badges.append({
+                "id": "anti_tank",
+                "name": "Anti-Tank Division",
+                "icon": "🛡️",
+                "type": "honor",
+                "tagline": "Compétition pure et sans compromis",
+                "description": "Zéro trophée de la honte mérité. Cette franchise combat chaque possession avec l'intensité d'un Game 7 des Finals.",
+                "highlight": f"Tanking quasi-nul ({tanking_score}%)",
+            })
+        else:
+            badges.append({
+                "id": "limbo_alert",
+                "name": "Limbo Alert",
+                "icon": "🎭",
+                "type": "neutral",
+                "tagline": "Le ventre mou indécis",
+                "description": "Ni assez nuls pour décrocher le pick #1, ni assez forts pour viser le titre. Le grand mystère existentiel de la NBA.",
+                "highlight": f"Score intermédiaire ({tanking_score}%)",
+            })
+
+    # Suspect Tracker Players
+    if team_abbr in TEAM_SUSPECT_PRESETS:
+        suspect_players = TEAM_SUSPECT_PRESETS[team_abbr]
+    elif tanking_score >= 50 or p_dnp >= 60:
+        suspect_players = DEFAULT_TANKING_SUSPECTS
+    else:
+        suspect_players = DEFAULT_COMPETING_SUSPECTS
+
+    # Average suspicion
+    avg_suspicion = round(
+        sum(p.get("suspicion_level", 50) for p in suspect_players) / len(suspect_players)
+    ) if suspect_players else 0
+
+    return {
+        "badges": badges,
+        "suspect_tracker": {
+            "team_abbreviation": team_abbr,
+            "team_name": team_name,
+            "overall_suspicion": avg_suspicion,
+            "players": suspect_players,
+        }
+    }
+
+
 def calculate_tanking_score(
     team_id: int,
     team_name: str,
@@ -529,9 +1002,11 @@ def calculate_tanking_score(
             team_games = 82
 
     # Calculer chaque pilier
+    win_pct = team_record.get("pct", 0.0) if team_record else 0.0
+    
     p1 = calc_vet_minutes_drop(roster, player_stats)
     p2 = calc_dnp_suspects(roster, player_stats, team_games)
-    p3 = calc_young_lineup_usage(roster, player_stats)
+    p3 = calc_young_lineup_usage(roster, player_stats, win_pct)
     p4 = calc_clutch_collapse(team_id, full_game_stats, q4_stats)
 
     # Score composite pondÃ©rÃ©
@@ -594,6 +1069,7 @@ def calculate_tanking_score(
         "season": season,
         "last_updated": datetime.now().isoformat(),
         "pillars": pillars,
+        **compute_badges_and_suspects(composite, pillars, team_abbreviation, team_name),
         "record": team_record or {"wins": 0, "losses": 0, "pct": 0.0},
     }
 
@@ -826,7 +1302,7 @@ def generate_demo_data() -> list[dict]:
                   "MIA", "IND", "ORL", "MIL", "NYK", "BOS", "CLE"}
 
     results = []
-    for (tid, abbr, name, default_wins, default_losses, score, s1, s2, s3, s4) in demo_teams:
+    for (tid, abbr, name, default_wins, default_losses, score_orig, s1, s2, s3_orig, s4) in demo_teams:
         # --- Override record with live standings ---
         wins = default_wins
         losses = default_losses
@@ -840,6 +1316,21 @@ def generate_demo_data() -> list[dict]:
                 conference = my_stand.get("Conference", conference)
 
         pct = wins / (wins + losses) if (wins + losses) > 0 else 0
+        
+        # Apply the win_pct reduction to s3 (Young Lineups)
+        s3 = s3_orig
+        s3_reduction_applied = False
+        if pct >= 0.40:
+            reduction_factor = (pct - 0.40) / 0.20
+            reduction_factor = min(1.0, max(0.0, reduction_factor))
+            if reduction_factor > 0:
+                s3 = s3 * (1.0 - reduction_factor)
+                s3_reduction_applied = True
+                
+        # Recalculate overall score dynamically based on updated s3
+        score = (s1 * 0.30) + (s2 * 0.20) + (s3 * 0.25) + (s4 * 0.25)
+        score = round(score)
+
         status_key, status_label = get_tanking_status(score)
 
         # --- Schedule from CDN bulk data ---
@@ -903,18 +1394,20 @@ def generate_demo_data() -> list[dict]:
                 {
                     "id": "young_lineups",
                     "name": "Young Lineup Usage",
-                    "icon": "ðŸ‘¶",
+                    "icon": "👶",
                     "weight": 0.25,
-                    "score": s3,
+                    "score": round(s3),
                     "weighted_score": round(s3 * 0.25, 1),
                     "description": (
+                        "Young lineup, but penalty reduced due to high winning percentage."
+                        if s3_reduction_applied else
                         "Lineup is very young - heavy youth development focus."
                         if s3 >= 70 else
                         "Team is trending younger than the league average."
                         if s3 >= 40 else
                         "Team age profile is within normal NBA range."
                     ),
-                    "details": f"Youth lineup score: {s3}/100.",
+                    "details": f"Youth lineup score: {round(s3)}/100.",
                     "data": {"score_raw": s3},
                 },
                 {
