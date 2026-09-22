@@ -83,17 +83,19 @@
           <button class="filter-button" data-filter="borderline" type="button">Borderline</button>
           <button class="filter-button" data-filter="contender" type="button">Contenders</button>
         </div>
-        <label class="sort-control" for="league-sort">Sort
-          <select id="league-sort">
-            <option value="score">Global score</option>
-            <option value="record">W-L record</option>
-            <option value="vet_minutes">Veteran minutes</option>
-            <option value="dnp_suspects">DNP suspects</option>
-            <option value="young_lineups">Young lineups</option>
-            <option value="clutch_collapse">Q4 collapse</option>
-          </select>
-        </label>
-        <button class="reset-button" id="reset-league-btn" type="button">↺ Reset</button>
+        <div class="toolbar-actions">
+          <label class="sort-control" for="league-sort">Sort
+            <select id="league-sort">
+              <option value="score">Global score</option>
+              <option value="record">W-L record</option>
+              <option value="vet_minutes">Veteran minutes</option>
+              <option value="dnp_suspects">DNP suspects</option>
+              <option value="young_lineups">Young lineups</option>
+              <option value="clutch_collapse">Q4 collapse</option>
+            </select>
+          </label>
+          <button class="reset-button" id="reset-league-btn" type="button">↺ Reset</button>
+        </div>
       </div>
 
       <div id="conference-view" class="conferences-container">
@@ -106,6 +108,9 @@
           <div id="rankings-list-west" class="rankings-list"></div>
         </div>
       </div>
+
+      <br>
+
       <div id="league-table-view" class="league-table-wrap" hidden>
         <div class="league-table" role="table" aria-label="NBA league tanking table">
           <div class="league-table__head" role="row">
