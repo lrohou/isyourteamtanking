@@ -6,7 +6,9 @@ Toutes les fonctions retournent des dict/list Python prêts à être sérialisé
 """
 
 import json
+import html
 import os
+import re
 import time
 import logging
 import requests
@@ -23,8 +25,18 @@ CACHE_DIR.mkdir(parents=True, exist_ok=True)
 # Délai entre les requêtes nba_api pour éviter le rate limiting
 REQUEST_DELAY = 0.8  # secondes
 
-# Saison courante (à mettre à jour chaque année)
-CURRENT_SEASON = "2024-25"
+def get_current_season(reference: datetime | None = None) -> str:
+    """Retourne la saison NBA correspondant à la date courante.
+
+    L'intersaison appartient encore à la saison terminée : en septembre 2026,
+    les données de classement disponibles sont donc celles de 2025-26.
+    """
+    current = reference or datetime.now()
+    season_start = current.year if current.month >= 10 else current.year - 1
+    return f"{season_start}-{str(season_start + 1)[-2:]}"
+
+
+CURRENT_SEASON = get_current_season()
 
 
 def _get_cache_path(key: str) -> Path:
@@ -127,7 +139,7 @@ def get_team_player_stats(team_id: int, season: str = CURRENT_SEASON) -> list[di
     Utilise TeamPlayerDashboard.
     """
     cache_key = f"player_stats_{team_id}_{season}"
-    cache = _read_cache(cache_key, max_age_hours=12)
+    cache = _read_cache(cache_key, max_age_hours=1)
     if cache:
         return cache
 
@@ -302,6 +314,42 @@ def fetch_live_standings(season: str = CURRENT_SEASON) -> list[dict]:
     except Exception as e:
         logger.error(f"Failed to fetch live standings: {e}")
     return []
+
+
+def fetch_draft_prospects(limit: int = 10) -> list[dict]:
+    """Récupère le Big Board de la prochaine draft depuis Tankathon."""
+    cache_key = f"draft_prospects_{get_current_season()}"
+    cache = _read_cache(cache_key, max_age_hours=6)
+    if cache:
+        return cache[:limit]
+
+    headers = {"User-Agent": "Mozilla/5.0", "Accept": "text/html"}
+    try:
+        response = requests.get("https://www.tankathon.com/big_board", headers=headers, timeout=20)
+        response.raise_for_status()
+        matches = re.findall(
+            r'/players/[^"\']+"><div class="mock-row-name">([^<]+)</div>'
+            r'<div class="mock-row-school-position">([^<]+)</div>',
+            response.text,
+        )
+        prospects = []
+        seen = set()
+        for raw_name, raw_position_school in matches:
+            name = html.unescape(re.sub(r"\s+", " ", raw_name)).strip()
+            position_school = html.unescape(re.sub(r"\s+", " ", raw_position_school)).strip()
+            if " | " not in position_school or name in seen:
+                continue
+            position, school = position_school.split(" | ", 1)
+            seen.add(name)
+            prospects.append({"name": name, "school": school, "position": position, "note": "Current Tankathon Big Board"})
+            if len(prospects) == limit:
+                break
+        if prospects:
+            _write_cache(cache_key, prospects)
+        return prospects
+    except Exception as e:
+        logger.error(f"Failed to fetch draft prospects: {e}")
+        return []
 
 
 def fetch_team_schedule(team_id: int, team_abbr: str, season: str = CURRENT_SEASON) -> dict:

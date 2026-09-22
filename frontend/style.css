@@ -751,6 +751,163 @@ body {
 .league-table__row:hover { background: var(--bg-card-hover); border-color: var(--accent); }
 .league-table__row strong { color: var(--text-primary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
+/* ---- Tankathon ---- */
+.tankathon-section {
+  margin-top: var(--space-2xl);
+  padding-top: var(--space-xl);
+  border-top: 1px solid var(--border-color);
+}
+
+.section-kicker {
+  color: var(--accent);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+}
+
+.tankathon-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: var(--space-lg);
+  margin-bottom: var(--space-lg);
+}
+
+.tankathon-heading .rankings-title,
+.tankathon-heading .rankings-subtitle { margin-bottom: 0; }
+
+.lottery-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: var(--accent);
+  color: var(--text-primary);
+  cursor: pointer;
+  font: 700 0.82rem 'Inter', sans-serif;
+  padding: 10px 16px;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast), opacity var(--transition-fast);
+  white-space: nowrap;
+}
+
+.lottery-button:hover { box-shadow: 0 8px 20px rgba(235, 94, 40, 0.24); transform: translateY(-1px); }
+.lottery-button:disabled { cursor: wait; opacity: 0.78; }
+.lottery-button.is-drawing .lottery-button__icon { animation: lottery-shake 0.55s ease-in-out infinite; }
+
+@keyframes lottery-shake {
+  0%, 100% { transform: rotate(-8deg); }
+  50% { transform: rotate(8deg) scale(1.12); }
+}
+
+.tankathon-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(320px, 0.75fr);
+  gap: var(--space-lg);
+}
+
+.lottery-board,
+.prospects-panel {
+  min-width: 0;
+  padding: var(--space-lg);
+  border-radius: var(--radius-md);
+}
+
+.lottery-board__header,
+.prospects-panel__header {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: var(--space-md);
+  margin-bottom: var(--space-md);
+}
+
+.lottery-board h3,
+.prospects-panel h3 {
+  color: var(--text-primary);
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.05rem;
+}
+
+.lottery-board__header p,
+.prospects-panel__header p {
+  color: var(--text-secondary);
+  font-size: 0.76rem;
+  margin-top: 2px;
+}
+
+.lottery-status,
+.prospects-panel__badge {
+  flex-shrink: 0;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-full);
+  color: var(--accent);
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 5px 8px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.prospects-panel__badge { color: var(--text-secondary); text-decoration: none; }
+
+.lottery-board__list,
+.prospects-list { display: grid; gap: 5px; }
+
+.lottery-row {
+  display: grid;
+  grid-template-columns: 24px 28px minmax(0, 1fr) 52px 58px;
+  align-items: center;
+  gap: 8px;
+  min-height: 42px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  padding: 5px 8px;
+  transition: background var(--transition-fast), border-color var(--transition-fast), transform var(--transition-fast);
+}
+
+.lottery-row--winner {
+  background: rgba(235, 94, 40, 0.12);
+  border-color: rgba(235, 94, 40, 0.42);
+  color: var(--text-primary);
+  transform: translateX(3px);
+}
+
+.lottery-row__rank,
+.lottery-row__odds,
+.lottery-row__pick { font-size: 0.72rem; font-weight: 700; }
+.lottery-row__rank { color: var(--text-secondary); text-align: center; }
+.lottery-row__logo { width: 26px; height: 26px; object-fit: contain; }
+.lottery-row__team { display: flex; align-items: baseline; gap: 8px; min-width: 0; }
+.lottery-row__team strong { color: var(--text-primary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.lottery-row__team span { color: var(--text-secondary); font-size: 0.7rem; white-space: nowrap; }
+.lottery-row__odds { color: var(--color-yellow); text-align: right; }
+.lottery-row__pick { color: var(--accent); text-align: right; }
+
+.prospect-row {
+  display: grid;
+  grid-template-columns: 22px 34px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  min-height: 58px;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-secondary);
+}
+
+.prospect-row:last-child { border-bottom: 0; }
+.prospect-row__pick { color: var(--text-secondary); font: 700 0.78rem 'Outfit', sans-serif; text-align: center; }
+.prospect-row__avatar { display: grid; place-items: center; width: 32px; height: 32px; border: 1px solid rgba(235, 94, 40, 0.45); border-radius: 50%; color: var(--accent); font-size: 0.7rem; font-weight: 700; }
+.prospect-row__info { display: flex; flex-direction: column; min-width: 0; }
+.prospect-row__info strong { color: var(--text-primary); font-size: 0.82rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.prospect-row__info span { color: var(--text-secondary); font-size: 0.68rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.prospect-row__team { color: var(--text-secondary); font-size: 0.7rem; font-weight: 700; }
+.prospect-row--assigned .prospect-row__team { color: var(--accent); }
+
 .conferences-container {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -987,6 +1144,18 @@ body {
   .ranking-item__name { font-size: 0.83rem; }
   .ranking-item__badge { font-size: 0.62rem; }
   .conferences-container { gap: var(--space-lg); }
+
+  .tankathon-section { margin-top: var(--space-xl); padding-top: var(--space-lg); }
+  .tankathon-heading { align-items: stretch; flex-direction: column; gap: var(--space-md); }
+  .lottery-button { width: 100%; }
+  .tankathon-grid { grid-template-columns: 1fr; }
+  .lottery-board, .prospects-panel { padding: var(--space-md); }
+  .lottery-board__header, .prospects-panel__header { align-items: center; }
+  .lottery-row { grid-template-columns: 22px 26px minmax(0, 1fr) 45px 52px; gap: 6px; padding-inline: 4px; }
+  .lottery-row__team { display: block; }
+  .lottery-row__team span { display: block; }
+  .lottery-row__team strong { display: block; font-size: 0.76rem; }
+  .lottery-row__odds, .lottery-row__pick { font-size: 0.68rem; }
 
   .league-table__head,
   .league-table__row { grid-template-columns: 34px minmax(0, 1fr) 58px 58px; gap: 8px; padding: 10px 8px; }

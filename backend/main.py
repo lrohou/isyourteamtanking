@@ -15,8 +15,8 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 
-from tanking_engine import compute_badges_and_suspects, generate_demo_data
-from nba_data import fetch_live_standings, fetch_team_schedule
+from tanking_engine import compute_badges_and_suspects
+from nba_data import CURRENT_SEASON, fetch_draft_prospects, fetch_live_standings, fetch_team_schedule
 
 # ---------------------------------------------------------------------------
 # Configuration
@@ -36,7 +36,7 @@ FRONTEND_DIR = Path(__file__).parent.parent / "frontend"
 # ---------------------------------------------------------------------------
 
 def load_results() -> list[dict]:
-    """Charge les résultats depuis le fichier JSON, ou génère les données démo."""
+    """Charge les calculs persistés avant de les synchroniser avec l'API NBA."""
     if RESULTS_FILE.exists():
         try:
             with open(RESULTS_FILE, "r", encoding="utf-8") as f:
@@ -49,21 +49,47 @@ def load_results() -> list[dict]:
                             result.get("team_abbreviation", ""),
                             result.get("team_name", "Team"),
                         ))
-            logger.info(f"Loaded {len(data)} team results from {RESULTS_FILE}")
-            return data
+            logger.info(f"Loaded {len(data)} computed team results from {RESULTS_FILE}")
+            return sync_live_standings(data)
         except (json.JSONDecodeError, OSError) as e:
             logger.warning(f"Error loading results: {e}")
 
-    # Générer les données de démo
-    logger.info("No results file found. Generating demo data...")
-    demo = generate_demo_data()
-    try:
-        with open(RESULTS_FILE, "w", encoding="utf-8") as f:
-            json.dump(demo, f, ensure_ascii=False, indent=2, default=str)
-        logger.info(f"Demo data saved to {RESULTS_FILE}")
-    except OSError as e:
-        logger.warning(f"Could not save demo data: {e}")
-    return demo
+    logger.error("No computed results file available; refusing to serve demo data.")
+    return []
+
+
+def sync_live_standings(results: list[dict]) -> list[dict]:
+    """Synchronise les champs de classement depuis l'API NBA officielle."""
+    standings = fetch_live_standings(season=CURRENT_SEASON)
+    if not standings:
+        logger.warning("NBA standings API unavailable; serving last computed cache.")
+        return results
+
+    by_team_id = {row.get("TeamID"): row for row in standings}
+    synced = []
+    for result in results:
+        live = by_team_id.get(result.get("team_id"))
+        if not live:
+            continue
+        wins = int(live.get("WINS", result.get("record", {}).get("wins", 0)))
+        losses = int(live.get("LOSSES", result.get("record", {}).get("losses", 0)))
+        games = wins + losses
+        result["team_name"] = f"{live.get('TeamCity', '')} {live.get('TeamName', '')}".strip()
+        result["record"] = {"wins": wins, "losses": losses, "pct": round(wins / games, 3) if games else 0}
+        result["conference"] = live.get("Conference", result.get("conference"))
+        result["season"] = CURRENT_SEASON
+        result["last_updated"] = datetime.now().isoformat()
+        result["data_source"] = "NBA Stats API"
+        synced.append(result)
+
+    for conference in ("East", "West"):
+        teams = sorted(
+            [r for r in synced if r.get("conference") == conference],
+            key=lambda item: -item["record"]["pct"],
+        )
+        for rank, result in enumerate(teams, 1):
+            result["standings_rank"] = rank
+    return synced
 
 
 # Données en mémoire (rechargées au démarrage)
@@ -93,7 +119,7 @@ app.add_middleware(
 async def startup():
     global _results
     _results = load_results()
-    logger.info(f"Server started with {len(_results)} teams loaded.")
+    logger.info(f"Server started with {len(_results)} teams loaded for {CURRENT_SEASON}.")
 
 
 # ---------------------------------------------------------------------------
@@ -106,6 +132,10 @@ async def health():
     return {
         "status": "ok",
         "teams_loaded": len(_results),
+        "season": CURRENT_SEASON,
+        "data_source": "NBA Stats API + computed metrics",
+        "data_status": "live standings synchronized; tanking metrics computed from NBA stats",
+        "last_updated": max((r.get("last_updated", "") for r in _results), default=None),
         "timestamp": datetime.now().isoformat(),
     }
 
@@ -122,6 +152,8 @@ async def get_teams():
             "status": r["status"],
             "status_label": r["status_label"],
             "record": r.get("record", {}),
+            "data_source": r.get("data_source", "NBA Stats API + computed metrics"),
+            "last_updated": r.get("last_updated"),
         }
         for r in _results
     ]
@@ -130,6 +162,8 @@ async def get_teams():
 @app.get("/api/tanking/all")
 async def get_all_tanking():
     """Classement complet de toutes les équipes par tanking score."""
+    if not _results:
+        raise HTTPException(status_code=503, detail="NBA data is currently unavailable.")
     return sorted(_results, key=lambda x: -x["tanking_score"])
 
 
@@ -154,6 +188,15 @@ async def reload_data():
 async def get_live_standings():
     """Récupère le classement en direct via l'API NBA."""
     return fetch_live_standings()
+
+
+@app.get("/api/draft/prospects")
+async def get_draft_prospects():
+    """Retourne les prospects actuels du Big Board Tankathon."""
+    prospects = fetch_draft_prospects(limit=10)
+    if not prospects:
+        raise HTTPException(status_code=503, detail="Draft prospect data is currently unavailable.")
+    return {"season": CURRENT_SEASON, "source": "Tankathon Big Board", "prospects": prospects}
 
 
 @app.get("/api/schedule/{team_id}")

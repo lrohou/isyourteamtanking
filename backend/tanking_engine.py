@@ -589,7 +589,7 @@ TEAM_SUSPECT_PRESETS = {
             "status": "OUT",
             "status_code": "out",
             "reason": "Right thumb contusion",
-            "satirical_reason": "Pouce endolori après avoir trop scrollé les mock drafts sur X (Twitter).",
+            "satirical_reason": "Pouce endolori après avoir trop scrollé les mock drafts.",
             "suspicion_level": 92,
             "games_missed": "Derniers 11 matchs",
         },

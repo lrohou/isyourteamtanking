@@ -22,7 +22,7 @@
     href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏀</text></svg>" />
 
   <!-- Stylesheets -->
-  <link rel="stylesheet" href="/static/style.css?v=7" />
+  <link rel="stylesheet" href="/static/style.css?v=8" />
 
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.6/dist/chart.umd.min.js"></script>
@@ -121,6 +121,45 @@
       </div>
     </section>
 
+    <!-- ---- Tankathon ---- -->
+    <section class="tankathon-section" aria-labelledby="tankathon-title">
+      <div class="tankathon-heading">
+        <div>
+          <p class="section-kicker">Draft lottery lab</p>
+          <h2 id="tankathon-title" class="rankings-title">🎰 Tankathon</h2>
+          <p class="rankings-subtitle">Draft 2027 · Simule les dix premiers choix selon les probabilités officielles de la NBA.</p>
+        </div>
+        <button id="run-lottery-btn" class="lottery-button" type="button">
+          <span class="lottery-button__icon" aria-hidden="true">🎱</span>
+          <span>Run Lottery Sim</span>
+        </button>
+      </div>
+
+      <div class="tankathon-grid">
+        <div class="lottery-board glass-effect">
+          <div class="lottery-board__header">
+            <div>
+              <h3>Lottery odds · 2027</h3>
+              <p>Les 14 bilans les plus faibles sont éligibles.</p>
+            </div>
+            <span id="lottery-status" class="lottery-status" aria-live="polite">Ready to draw</span>
+          </div>
+          <div id="lottery-board-list" class="lottery-board__list"></div>
+        </div>
+
+        <aside class="prospects-panel glass-effect" aria-labelledby="prospects-title">
+          <div class="prospects-panel__header">
+            <div>
+              <h3 id="prospects-title">Mock Draft 2027</h3>
+              <p>Top 10 du Big Board Tankathon actuel.</p>
+            </div>
+            <a class="prospects-panel__badge" href="https://www.tankathon.com/big_board" target="_blank" rel="noopener">TOP 10 · SOURCE</a>
+          </div>
+          <div id="prospects-list" class="prospects-list"></div>
+        </aside>
+      </div>
+    </section>
+
     <!-- ---- Footer ---- -->
     <footer class="footer">
       <p>
@@ -139,7 +178,7 @@
 
   <!-- Scripts -->
   <script src="/static/teams.js?v=5"></script>
-  <script src="/static/app.js?v=6"></script>
+  <script src="/static/app.js?v=9"></script>
 
 </body>
 

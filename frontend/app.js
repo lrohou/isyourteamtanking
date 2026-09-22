@@ -10,6 +10,7 @@
 const API_BASE = window.location.origin; // Same-origin when served by FastAPI
 const GAUGE_RADIUS = 90;
 const GAUGE_CIRCUMFERENCE = 2 * Math.PI * GAUGE_RADIUS;
+const DRAFT_YEAR = 2027;
 
 // ---------------------------------------------------------------------------
 // State
@@ -20,6 +21,10 @@ let autocompleteIndex = -1;
 let rankingView = "conferences";
 let rankingFilter = "all";
 let rankingSort = "score";
+let lotteryResults = [];
+let draftProspects = [];
+
+const LOTTERY_ODDS = [14, 14, 14, 12.5, 10.5, 9, 7.5, 6, 4.5, 3, 2, 1.5, 1, 0.5];
 
 // ---------------------------------------------------------------------------
 // DOM refs
@@ -37,6 +42,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   setupScrollToTop();
   setupHomeButton();
   setupLeagueControls();
+  setupLottery();
   window.addEventListener("popstate", handleHistoryNavigation);
   openTeamFromUrl();
 });
@@ -779,6 +785,119 @@ function renderRankings() {
       window.scrollTo({ top: 0, behavior: "smooth" });
     });
   });
+}
+
+async function setupLottery() {
+  const button = $("#run-lottery-btn");
+  if (!button) return;
+  button.addEventListener("click", runLottery);
+  try {
+    const response = await fetch(`${API_BASE}/api/draft/prospects`);
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const payload = await response.json();
+    draftProspects = payload.prospects || [];
+  } catch (error) {
+    console.error("Failed to load draft prospects:", error);
+  }
+  renderLotteryBoard();
+  renderProspects();
+}
+
+function getLotteryTeams() {
+  return [...allTeamResults]
+    .sort((a, b) => {
+      const lossDifference = (b.record?.losses || 0) - (a.record?.losses || 0);
+      return lossDifference || ((a.record?.wins || 0) - (b.record?.wins || 0));
+    })
+    .slice(0, LOTTERY_ODDS.length);
+}
+
+function renderLotteryBoard() {
+  const board = $("#lottery-board-list");
+  if (!board || !allTeamResults.length) return;
+  const resultsByTeam = new Map(lotteryResults.map((result) => [result.teamId, result.pick]));
+  board.innerHTML = getLotteryTeams().map((team, index) => {
+    const pick = resultsByTeam.get(team.team_id);
+    const logo = findTeam(team.team_abbreviation)?.logo || "";
+    const record = `${team.record?.wins || 0}-${team.record?.losses || 0}`;
+    return `
+      <div class="lottery-row${pick ? " lottery-row--winner" : ""}">
+        <span class="lottery-row__rank">${index + 1}</span>
+        <img class="lottery-row__logo" src="${logo}" alt="" loading="lazy" onerror="this.style.display='none'">
+        <div class="lottery-row__team"><strong>${team.team_name}</strong><span>${record}</span></div>
+        <span class="lottery-row__odds">${formatOdds(LOTTERY_ODDS[index])}%</span>
+        <span class="lottery-row__pick">${pick ? `Pick ${pick}` : "—"}</span>
+      </div>
+    `;
+  }).join("");
+}
+
+function formatOdds(value) {
+  return Number.isInteger(value) ? value : value.toFixed(1);
+}
+
+function drawWeightedTeam(teams) {
+  const totalWeight = teams.reduce((sum, team) => sum + team.weight, 0);
+  let cursor = Math.random() * totalWeight;
+  for (const team of teams) {
+    cursor -= team.weight;
+    if (cursor <= 0) return team;
+  }
+  return teams[teams.length - 1];
+}
+
+function runLottery() {
+  const button = $("#run-lottery-btn");
+  const status = $("#lottery-status");
+  const teams = getLotteryTeams();
+  if (!button || !status || teams.length < LOTTERY_ODDS.length || button.disabled) return;
+
+  button.disabled = true;
+  button.classList.add("is-drawing");
+  lotteryResults = [];
+  renderLotteryBoard();
+  renderProspects();
+
+  let available = teams.map((team, index) => ({ team, weight: LOTTERY_ODDS[index] }));
+  let pick = 1;
+  status.textContent = "Opening envelopes...";
+
+  const revealPick = () => {
+    if (pick > 10) {
+      status.textContent = "Lottery complete";
+      button.disabled = false;
+      button.classList.remove("is-drawing");
+      return;
+    }
+    const winner = drawWeightedTeam(available);
+    lotteryResults.push({ teamId: winner.team.team_id, pick });
+    available = available.filter((team) => team.team.team_id !== winner.team.team_id);
+    status.textContent = `Pick ${pick} revealed`;
+    renderLotteryBoard();
+    renderProspects();
+    pick += 1;
+    window.setTimeout(revealPick, 850);
+  };
+
+  window.setTimeout(revealPick, 650);
+}
+
+function renderProspects() {
+  const list = $("#prospects-list");
+  if (!list) return;
+  const picksByTeam = new Map(lotteryResults.map((result) => [result.pick, result.teamId]));
+  list.innerHTML = draftProspects.map((prospect, index) => {
+    const teamId = picksByTeam.get(index + 1);
+    const team = allTeamResults.find((result) => result.team_id === teamId);
+    return `
+      <div class="prospect-row${team ? " prospect-row--assigned" : ""}">
+        <span class="prospect-row__pick">${index + 1}</span>
+        <div class="prospect-row__avatar" aria-hidden="true">${prospect.position}</div>
+        <div class="prospect-row__info"><strong>${prospect.name}</strong><span>${prospect.school} · ${prospect.note}</span></div>
+        <span class="prospect-row__team">${team ? team.team_abbreviation : "TBD"}</span>
+      </div>
+    `;
+  }).join("");
 }
 
 function setupLeagueControls() {
