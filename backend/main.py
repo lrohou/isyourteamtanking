@@ -12,23 +12,39 @@ from fastapi.staticfiles import StaticFiles
 
 from nba_data import CURRENT_SEASON, fetch_draft_prospects, fetch_live_league_results
 
+import json
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 FRONTEND_DIR = Path(__file__).parent.parent / "frontend"
+RESULTS_FILE = Path(__file__).parent / "data" / "results.json"
 _results: list[dict] = []
+if RESULTS_FILE.exists():
+    try:
+        with open(RESULTS_FILE, "r", encoding="utf-8") as f:
+            _results = json.load(f)
+            logger.info("Preloaded %s teams from results.json at startup.", len(_results))
+    except Exception as e:
+        logger.warning("Could not preload results.json: %s", e)
+
 _last_refresh_error: str | None = None
 _refresh_lock = asyncio.Lock()
 
 
 async def refresh_results() -> bool:
-    """Actualise classements et calendriers depuis ESPN."""
+    """Actualise classements, calendriers et scores de tanking depuis ESPN."""
     global _results, _last_refresh_error
     async with _refresh_lock:
         results = await asyncio.to_thread(fetch_live_league_results, CURRENT_SEASON)
         if len(results) == 30:
             _results = results
             _last_refresh_error = None
-            logger.info("Loaded current ESPN standings and schedules for all 30 teams.")
+            try:
+                with open(RESULTS_FILE, "w", encoding="utf-8") as f:
+                    json.dump(results, f, ensure_ascii=False, indent=2, default=str)
+            except Exception as e:
+                logger.warning("Could not cache to results.json: %s", e)
+            has_scores = sum(1 for r in results if r.get("tanking_score") is not None)
+            logger.info("Loaded ESPN data for all 30 teams (%s with tanking scores).", has_scores)
             return True
 
         _last_refresh_error = "ESPN did not return valid current-season data for all 30 teams."
@@ -46,8 +62,18 @@ async def refresh_loop():
         await asyncio.sleep(300)
 
 
-app = FastAPI(title="IsYourTeamTanking API", description="NBA standings and schedules from live ESPN data.", version="1.0.0")
-app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_credentials=True, allow_methods=["*"], allow_headers=["*"])
+app = FastAPI(
+    title="IsYourTeamTanking API",
+    description="NBA standings, schedules and tanking scores from live ESPN data.",
+    version="2.0.0",
+)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.on_event("startup")
@@ -59,6 +85,7 @@ async def startup():
 @app.get("/api/health")
 async def health():
     data_status = _results[0].get("data_status") if _results else None
+    has_scores = any(r.get("tanking_score") is not None for r in _results)
     status = "warming_up" if not _results else "stale" if _last_refresh_error else "ok"
     return {
         "status": status,
@@ -66,7 +93,7 @@ async def health():
         "season": CURRENT_SEASON,
         "data_status": data_status,
         "data_source": "ESPN NBA API",
-        "score_status": "unavailable",
+        "score_status": "available" if has_scores else "unavailable",
         "last_refresh_error": _last_refresh_error,
         "last_updated": _results[0].get("last_updated") if _results else None,
         "timestamp": datetime.now().astimezone().isoformat(),

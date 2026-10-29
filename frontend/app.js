@@ -93,11 +93,16 @@ function showDataNotice(data) {
 
   if (!data) return;
   const updated = data.last_updated ? new Date(data.last_updated).toLocaleString() : "unknown";
-  notice.textContent = data.data_status === "stale"
-    ? `ESPN live data refresh failed. Showing the last live update from ${updated}; the server is retrying.`
-    : `Live ${data.season} standings and schedules from ESPN · updated ${updated}. Tanking scores require player statistics and are not currently available.`;
+  if (data.data_status === "stale") {
+    notice.textContent = `ESPN live data refresh failed. Showing the last live update from ${updated}; the server is retrying.`;
+  } else if (data.score_status === "available") {
+    notice.textContent = `Live ${data.season} NBA stats & ESPN data · updated ${updated}. Tanking scores live from veteran minutes, availability, youth lineups & Q4 collapse.`;
+  } else {
+    notice.textContent = `Live ${data.season} standings and schedules from ESPN · updated ${updated}. Tanking scores require player statistics and are not currently available.`;
+  }
   notice.hidden = false;
 }
+
 
 function openTeamFromUrl() {
   const params = new URLSearchParams(window.location.search);
@@ -420,7 +425,7 @@ function renderResult(data) {
         <div class="badges-grid count-${Math.min(badges.length, 4)}">
           ${badges.map((badge) => `
             <article class="humor-badge badge-type-${badge.type || "shame"}">
-              <span class="humor-badge__icon" aria-hidden="true">${badge.icon}</span>
+              <span class="humor-badge__icon" aria-hidden="true">${getBadgeIcon(badge)}</span>
               <div>
                 <h4>${badge.name}</h4>
                 <p class="humor-badge__explanation">${getBadgeExplanation(badge)}</p>
@@ -446,7 +451,7 @@ function renderResult(data) {
                 <span class="player-status status-${player.status_code || "out"}">${player.status}</span>
               </div>
               <p class="suspect-player__reason">${player.reason}</p>
-              <span class="suspect-player__missed">${player.games_missed} · ${player.suspicion_level}% suspicion</span>
+              <span class="suspect-player__missed">${player.games_missed || 0} games missed · ${player.suspicion_level || 0}% suspicion</span>
             </article>
           `).join("")}
         </div>
@@ -591,6 +596,20 @@ function downloadTankingCard(data) {
   link.download = `${data.team_abbreviation.toLowerCase()}-tanking-story.png`;
   link.href = canvas.toDataURL("image/png");
   link.click();
+}
+
+function getBadgeIcon(badge) {
+  if (badge && badge.icon) return badge.icon;
+  const icons = {
+    trust_the_process: "💀",
+    phantom_injury: "🚑",
+    brick_city: "🧱",
+    daycare_lineup: "👶",
+    anti_tank: "🛡️",
+    limbo_alert: "⚖️",
+  };
+  const id = typeof badge === "string" ? badge : badge?.id;
+  return icons[id] || "🏆";
 }
 
 function getBadgeExplanation(badge) {
@@ -807,7 +826,7 @@ function renderRankings() {
           <img class="ranking-item__logo" src="${logoUrl}" alt="${r.team_name}" loading="lazy" onerror="this.style.display='none'">
           <div class="ranking-item__identity">
             <span class="ranking-item__name">${r.team_name}</span>
-            <span class="ranking-item__badge">${featuredBadge ? `${featuredBadge.icon} ${featuredBadge.name}` : hasLiveScores ? "No badge" : "Score unavailable"}</span>
+            <span class="ranking-item__badge">${featuredBadge ? `${getBadgeIcon(featuredBadge)} ${featuredBadge.name}` : hasLiveScores ? "No badge" : "Score unavailable"}</span>
           </div>
           <span class="ranking-item__record">${record}</span>
           <div class="ranking-item__bar-wrapper">

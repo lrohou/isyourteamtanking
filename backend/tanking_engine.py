@@ -34,7 +34,7 @@ def _get_player_age(player: dict) -> float | None:
 
 def calc_vet_minutes_drop(roster, player_stats):
     veteran_ids = {int(p.get("PLAYER_ID") or p.get("player_id")) for p in roster if _get_player_age(p) and _get_player_age(p) >= 28 and (p.get("PLAYER_ID") or p.get("player_id"))}
-    valid = [p for p in player_stats if _number(p.get("GP")) >= 5]
+    valid = [p for p in player_stats if _number(p.get("GP")) >= 1]
     veterans = [p for p in valid if _number(p.get("PLAYER_ID") or p.get("player_id")) in veteran_ids]
     if not valid or not veterans:
         return {"score": 0, "description": "Insufficient data to evaluate veteran minutes.", "details": "No live veteran minutes data available.", "data": {}}
@@ -63,7 +63,7 @@ def calc_dnp_suspects(roster, player_stats, team_games=82):
 
 def calc_young_lineup_usage(roster, player_stats, win_pct=0.0):
     ages = {int(p.get("PLAYER_ID") or p.get("player_id")): _get_player_age(p) for p in roster if (p.get("PLAYER_ID") or p.get("player_id")) and _get_player_age(p) is not None}
-    weighted = [(ages.get(int(p.get("PLAYER_ID") or p.get("player_id"))), _number(p.get("MIN")) * _number(p.get("GP")), p) for p in player_stats if (p.get("PLAYER_ID") or p.get("player_id")) and _number(p.get("GP")) >= 5 and _number(p.get("MIN")) > 0 and int(p.get("PLAYER_ID") or p.get("player_id")) in ages]
+    weighted = [(ages.get(int(p.get("PLAYER_ID") or p.get("player_id"))), _number(p.get("MIN")) * _number(p.get("GP")), p) for p in player_stats if (p.get("PLAYER_ID") or p.get("player_id")) and _number(p.get("GP")) >= 1 and _number(p.get("MIN")) > 0 and int(p.get("PLAYER_ID") or p.get("player_id")) in ages]
     if not weighted:
         return {"score": 0, "description": "Insufficient data for lineup age analysis.", "details": "No live roster age data available.", "data": {}}
     average = sum(age * minutes for age, minutes, _ in weighted) / sum(minutes for _, minutes, _ in weighted)
@@ -95,15 +95,15 @@ def compute_badges_and_suspects(tanking_score, pillars, team_abbr, team_name):
     pillar_map = {pillar.get("id"): pillar.get("score", 0) for pillar in pillars}
     badges = []
     if tanking_score >= 85:
-        badges.append({"id": "trust_the_process", "name": "Trust The Process Award", "type": "shame", "highlight": f"Score global {tanking_score}%"})
+        badges.append({"id": "trust_the_process", "name": "Trust The Process Award", "type": "shame", "icon": "💀", "highlight": f"Score global {tanking_score}%"})
     if pillar_map.get("dnp_suspects", 0) >= 80:
-        badges.append({"id": "phantom_injury", "name": "Phantom Injury Ward", "type": "shame", "highlight": f"DNP Suspects : {pillar_map['dnp_suspects']}%"})
+        badges.append({"id": "phantom_injury", "name": "Phantom Injury Ward", "type": "shame", "icon": "🚑", "highlight": f"DNP Suspects : {pillar_map['dnp_suspects']}%"})
     if pillar_map.get("clutch_collapse", 0) >= 70:
-        badges.append({"id": "brick_city", "name": "Brick City / Q4 Melt", "type": "shame", "highlight": f"Sabotage Q4 : {pillar_map['clutch_collapse']}%"})
+        badges.append({"id": "brick_city", "name": "Brick City / Q4 Melt", "type": "shame", "icon": "🧱", "highlight": f"Sabotage Q4 : {pillar_map['clutch_collapse']}%"})
     if pillar_map.get("young_lineups", 0) >= 70:
-        badges.append({"id": "daycare_lineup", "name": "Daycare Lineup", "type": "shame", "highlight": f"Score Jeunesse : {pillar_map['young_lineups']}%"})
+        badges.append({"id": "daycare_lineup", "name": "Daycare Lineup", "type": "shame", "icon": "👶", "highlight": f"Score Jeunesse : {pillar_map['young_lineups']}%"})
     if not badges:
-        badges.append({"id": "anti_tank" if tanking_score <= 25 else "limbo_alert", "name": "Anti-Tank Division" if tanking_score <= 25 else "Limbo Alert", "type": "honor" if tanking_score <= 25 else "neutral", "highlight": f"Tanking score {tanking_score}%"})
+        badges.append({"id": "anti_tank" if tanking_score <= 25 else "limbo_alert", "name": "Anti-Tank Division" if tanking_score <= 25 else "Limbo Alert", "type": "honor" if tanking_score <= 25 else "neutral", "icon": "🛡️" if tanking_score <= 25 else "⚖️", "highlight": f"Tanking score {tanking_score}%"})
     players = pillars[1].get("data", {}).get("top_players", []) if len(pillars) > 1 else []
     suspects = [{"name": p.get("name", "Unknown"), "status": "AVAILABILITY_SIGNAL" if p.get("games_missed") else "ACTIVE", "status_code": "availability_signal" if p.get("games_missed") else "active", "reason": "Games missed in current season", "games_missed": p.get("games_missed", 0), "suspicion_level": round(p.get("miss_ratio", 0) * 100)} for p in players]
     suspicion = round(sum(p["suspicion_level"] for p in suspects) / len(suspects)) if suspects else 0

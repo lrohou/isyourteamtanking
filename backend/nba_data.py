@@ -17,6 +17,8 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
+from tanking_engine import calculate_tanking_score
+
 logger = logging.getLogger(__name__)
 
 # Répertoire de cache
@@ -115,6 +117,223 @@ def get_all_teams() -> list[dict]:
         return []
 
 
+def _fetch_espn_roster(espn_abbr: str) -> list[dict]:
+    """Récupère le roster d'une équipe avec âges et blessures via ESPN (mis en cache 24h)."""
+    cache_key = f"espn_roster_{espn_abbr.lower()}"
+    cached = _read_cache(cache_key, max_age_hours=24)
+    if cached:
+        return cached
+    try:
+        r = requests.get(
+            f"https://site.api.espn.com/apis/site/v2/sports/basketball/nba/teams/{espn_abbr.lower()}/roster",
+            headers={"User-Agent": "Mozilla/5.0"},
+            timeout=15,
+        )
+        if r.status_code == 200:
+            athletes = r.json().get("athletes", [])
+            _write_cache(cache_key, athletes)
+            return athletes
+    except Exception as e:
+        logger.warning("Failed to fetch ESPN roster for %s: %s", espn_abbr, e)
+    return []
+
+
+def _fetch_league_player_stats() -> dict[str, dict]:
+    """Récupère les statistiques de tous les joueurs de la ligue via ESPN (1 seule requête, mis en cache 2h)."""
+    cache_key = "espn_league_player_stats"
+    cached = _read_cache(cache_key, max_age_hours=2)
+    if cached:
+        return cached
+
+    url = "https://site.web.api.espn.com/apis/common/v3/sports/basketball/nba/statistics/byathlete?limit=1000"
+    try:
+        r = requests.get(url, headers={"User-Agent": "Mozilla/5.0"}, timeout=20)
+        if r.status_code != 200:
+            logger.error("ESPN byathlete returned %s", r.status_code)
+            return {}
+        data = r.json()
+        stats = {}
+        for item in data.get("athletes", []):
+            ath = item.get("athlete", {})
+            ath_id = str(ath.get("id"))
+            gen = next((c for c in item.get("categories", []) if c.get("name") == "general"), {})
+            off = next((c for c in item.get("categories", []) if c.get("name") == "offensive"), {})
+            totals_gen = gen.get("totals", [])
+            totals_off = off.get("totals", [])
+            gp = float(totals_gen[0]) if totals_gen else 0.0
+            mpg = float(totals_gen[1]) if len(totals_gen) > 1 else 0.0
+            pts = float(totals_off[0]) if totals_off else 0.0
+            stats[ath_id] = {
+                "PLAYER_ID": ath_id,
+                "PLAYER_NAME": ath.get("displayName"),
+                "GP": gp,
+                "MIN": mpg,
+                "PTS": pts,
+                "AGE": ath.get("age"),
+            }
+        _write_cache(cache_key, stats)
+        logger.info("Loaded player statistics for %s NBA athletes from ESPN.", len(stats))
+        return stats
+    except Exception as e:
+        logger.error("Failed to fetch ESPN league player stats: %s", e)
+        return {}
+
+
+def _fetch_games_q4_scores(game_ids: set[str]) -> dict[str, dict[str, dict]]:
+    """Récupère les scores finaux et Q4 pour une liste de matches terminés."""
+    cache_key = "espn_q4_games"
+    cached = _read_cache(cache_key, max_age_hours=24) or {}
+    if not isinstance(cached, dict):
+        cached = {}
+
+    missing_ids = [gid for gid in game_ids if str(gid) not in cached]
+    if not missing_ids:
+        return cached
+
+    def fetch_game_q4(gid):
+        try:
+            r = requests.get(
+                f"https://site.api.espn.com/apis/site/v2/sports/basketball/nba/summary?event={gid}",
+                headers={"User-Agent": "Mozilla/5.0"},
+                timeout=12,
+            )
+            if r.status_code != 200:
+                return gid, None
+            comp = r.json().get("header", {}).get("competitions", [{}])[0]
+            game_res = {}
+            for c in comp.get("competitors", []):
+                abbr = c.get("team", {}).get("abbreviation")
+                linescores = [int(float(ls.get("displayValue", 0))) for ls in c.get("linescores", [])]
+                score = int(float(c.get("score", 0)))
+                q4 = linescores[3] if len(linescores) >= 4 else 0
+                game_res[abbr] = {"score": score, "q4": q4}
+            return gid, game_res
+        except Exception:
+            return gid, None
+
+    new_results = {}
+    with ThreadPoolExecutor(max_workers=15) as executor:
+        futures = [executor.submit(fetch_game_q4, gid) for gid in missing_ids]
+        for f in as_completed(futures):
+            gid, res = f.result()
+            if res:
+                new_results[str(gid)] = res
+
+    cached.update(new_results)
+    _write_cache(cache_key, cached)
+    logger.info("Updated Q4 cache with %s new games (total %s).", len(new_results), len(cached))
+    return cached
+
+
+def _calc_team_tanking(
+    nba_team_id: int,
+    team_name: str,
+    team_abbr: str,
+    espn_abbr: str,
+    completed: list[dict],
+    record: dict,
+    league_stats: dict,
+    q4_scores: dict,
+    season: str,
+) -> dict:
+    """Calcule le score de tanking et les 4 signaux pondérés à partir des stats ESPN réelles."""
+    roster_athletes = _fetch_espn_roster(espn_abbr)
+    roster = []
+    player_stats = []
+    for a in roster_athletes:
+        aid = str(a.get("id"))
+        age = a.get("age")
+        name = a.get("displayName", "Unknown")
+        position = a.get("position", {}).get("abbreviation", "Rotation")
+        injuries = a.get("injuries", [])
+        is_injured = bool(injuries)
+        status_text = injuries[0].get("status", "ACTIVE") if is_injured else "ACTIVE"
+
+        roster.append({
+            "PLAYER_ID": aid,
+            "PLAYER_NAME": name,
+            "AGE": age,
+            "POSITION": position,
+            "INJURED": is_injured,
+            "STATUS": status_text,
+        })
+
+        stat = league_stats.get(aid)
+        if stat:
+            player_stats.append({
+                **stat,
+                "POSITION": position,
+                "STATUS": status_text,
+            })
+        else:
+            player_stats.append({
+                "PLAYER_ID": aid,
+                "PLAYER_NAME": name,
+                "GP": 0,
+                "MIN": 0,
+                "PTS": 0,
+                "AGE": age,
+                "POSITION": position,
+                "STATUS": status_text if is_injured else "OUT",
+            })
+
+    total_full_diff = 0
+    total_q4_diff = 0
+    q4_count = 0
+    for g in completed:
+        gid = str(g.get("game_id"))
+        t_score = g.get("team_score", 0)
+        o_score = g.get("opponent_score", 0)
+        total_full_diff += (t_score - o_score)
+
+        game_q4 = q4_scores.get(gid, {})
+        t_q4 = None
+        o_q4 = None
+        for ab, cdata in game_q4.items():
+            if cdata.get("score") == t_score and t_q4 is None:
+                t_q4 = cdata.get("q4")
+            elif cdata.get("score") == o_score and o_q4 is None:
+                o_q4 = cdata.get("q4")
+        if t_q4 is not None and o_q4 is not None:
+            total_q4_diff += (t_q4 - o_q4)
+            q4_count += 1
+
+    games_num = len(completed) or 1
+    full_net = round(total_full_diff / games_num, 1)
+    q4_net = round(total_q4_diff / q4_count, 1) if q4_count else full_net
+
+    full_stats = [{"TEAM_ID": nba_team_id, "NET_RATING": full_net}]
+    q4_stats = [{"TEAM_ID": nba_team_id, "NET_RATING": q4_net}]
+
+    tanking = calculate_tanking_score(
+        team_id=nba_team_id,
+        team_name=team_name,
+        team_abbreviation=team_abbr,
+        roster=roster,
+        player_stats=player_stats,
+        full_game_stats=full_stats,
+        q4_stats=q4_stats,
+        team_record=record,
+        season=season,
+    )
+
+    if "suspect_tracker" in tanking and "players" in tanking["suspect_tracker"]:
+        for suspect in tanking["suspect_tracker"]["players"]:
+            r_match = next((p for p in roster if p["PLAYER_NAME"] == suspect["name"]), None)
+            if r_match:
+                suspect["position"] = r_match.get("POSITION", "Rotation")
+                if r_match.get("INJURED"):
+                    suspect["status"] = r_match.get("STATUS", "OUT")
+                    suspect["status_code"] = "out"
+                    suspect["reason"] = f"Reported injury ({r_match.get('STATUS')})"
+
+    tanking["score_status"] = "available"
+    tanking["tanking_history"] = [
+        {"month": "Oct", "score": tanking["tanking_score"]}
+    ]
+    return tanking
+
+
 def fetch_live_league_results(season: str = CURRENT_SEASON) -> list[dict]:
     """Construit le classement et les calendriers à partir des horaires ESPN live."""
     try:
@@ -204,16 +423,19 @@ def fetch_live_league_results(season: str = CURRENT_SEASON) -> list[dict]:
             conference = {"5": "East", "6": "West"}.get(conference_id)
             if not conference:
                 raise ValueError(f"Unknown ESPN conference for {nba_team['full_name']}: {conference_id}")
+            record = {"wins": wins, "losses": losses, "pct": round(wins / (wins + losses), 3) if wins + losses else 0}
             return {
                 "team_id": nba_team["id"],
                 "team_name": nba_team["full_name"],
                 "team_abbreviation": nba_team["abbreviation"],
                 "season": season,
                 "conference": conference,
-                "record": {"wins": wins, "losses": losses, "pct": round(wins / (wins + losses), 3) if wins + losses else 0},
+                "record": record,
                 "recent_games": list(reversed(completed[-3:])),
                 "upcoming_games": upcoming[:3],
                 "_point_difference": point_difference,
+                "_completed": completed,  # Temporary — used for tanking calc below
+                "_espn_abbr": espn_team["abbreviation"].lower(),
             }
 
         results = []
@@ -244,21 +466,38 @@ def fetch_live_league_results(season: str = CURRENT_SEASON) -> list[dict]:
                 team["standings_rank"] = rank
                 team["standings_total"] = 15
 
+        # Collect all completed game IDs across the league
+        all_completed_ids = set()
+        for res in results:
+            for g in res.get("_completed", []):
+                if g.get("game_id"):
+                    all_completed_ids.add(str(g["game_id"]))
+
+        # Fetch Q4 scores and league-wide player statistics
+        q4_scores = _fetch_games_q4_scores(all_completed_ids)
+        league_player_stats = _fetch_league_player_stats()
+
         updated_at = datetime.now().astimezone().isoformat()
         for result in results:
+            completed = result.pop("_completed")
+            espn_abbr = result.pop("_espn_abbr")
             result.pop("_point_difference")
+            tanking = _calc_team_tanking(
+                nba_team_id=result["team_id"],
+                team_name=result["team_name"],
+                team_abbr=result["team_abbreviation"],
+                espn_abbr=espn_abbr,
+                completed=completed,
+                record=result["record"],
+                league_stats=league_player_stats,
+                q4_scores=q4_scores,
+                season=season,
+            )
             result.update({
-                "tanking_score": None,
-                "status": "unavailable",
-                "status_label": "Tanking score unavailable",
-                "pillars": [],
-                "badges": [],
-                "suspect_tracker": {"overall_suspicion": None, "players": []},
-                "tanking_history": [],
+                **tanking,
                 "data_status": "live",
                 "data_source": "ESPN NBA API",
                 "last_updated": updated_at,
-                "score_status": "unavailable",
             })
         return results
     except (KeyError, TypeError, ValueError, requests.RequestException) as error:
