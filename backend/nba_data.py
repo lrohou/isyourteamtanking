@@ -12,8 +12,10 @@ import re
 import time
 import logging
 import requests
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timedelta
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 logger = logging.getLogger(__name__)
 
@@ -39,20 +41,26 @@ def get_current_season(reference: datetime | None = None) -> str:
 CURRENT_SEASON = get_current_season()
 
 
+def is_offseason(reference: datetime | None = None) -> bool:
+    """Indique si la date est dans l'intersaison NBA (mai à septembre)."""
+    current = reference or datetime.now()
+    return 5 <= current.month <= 9
+
+
 def _get_cache_path(key: str) -> Path:
     """Retourne le chemin du fichier cache pour une clé donnée."""
     safe_key = key.replace("/", "_").replace("\\", "_")
     return CACHE_DIR / f"{safe_key}.json"
 
 
-def _read_cache(key: str, max_age_hours: int = 12) -> dict | list | None:
+def _read_cache(key: str, max_age_hours: int = 12, allow_stale: bool = False) -> dict | list | None:
     """Lit le cache si le fichier existe et n'a pas expiré."""
     path = _get_cache_path(key)
     if not path.exists():
         return None
     try:
         mtime = datetime.fromtimestamp(path.stat().st_mtime)
-        if datetime.now() - mtime > timedelta(hours=max_age_hours):
+        if not allow_stale and datetime.now() - mtime > timedelta(hours=max_age_hours):
             return None
         with open(path, "r", encoding="utf-8") as f:
             return json.load(f)
@@ -104,6 +112,157 @@ def get_all_teams() -> list[dict]:
         return result
     except Exception as e:
         logger.error(f"Failed to fetch teams: {e}")
+        return []
+
+
+def fetch_live_league_results(season: str = CURRENT_SEASON) -> list[dict]:
+    """Construit le classement et les calendriers à partir des horaires ESPN live."""
+    try:
+        teams_response = requests.get(
+            "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/teams",
+            params={"limit": 1000},
+            headers={"User-Agent": "IsYourTeamTanking/1.0"},
+            timeout=20,
+        )
+        teams_response.raise_for_status()
+        league = teams_response.json()["sports"][0]["leagues"][0]
+        espn_teams = [entry["team"] for entry in league["teams"]]
+        nba_teams = get_all_teams()
+        if len(espn_teams) != 30 or len(nba_teams) != 30:
+            raise ValueError(f"Expected 30 NBA teams, got ESPN={len(espn_teams)}, NBA={len(nba_teams)}")
+
+        def normalize_name(name: str) -> str:
+            return re.sub(r"[^a-z0-9]", "", name.lower().replace("los angeles", "la"))
+
+        nba_by_name = {normalize_name(team["full_name"]): team for team in nba_teams}
+        espn_by_nba_id = {}
+        nba_abbr_by_espn_abbr = {}
+        for espn_team in espn_teams:
+            nba_team = nba_by_name.get(normalize_name(espn_team["displayName"]))
+            if not nba_team:
+                raise ValueError(f"Unable to match ESPN team {espn_team['displayName']} to an NBA team")
+            espn_by_nba_id[nba_team["id"]] = espn_team
+            nba_abbr_by_espn_abbr[espn_team["abbreviation"]] = nba_team["abbreviation"]
+
+        season_year = int(season[:4]) + 1
+
+        def fetch_team(nba_team: dict) -> dict:
+            espn_team = espn_by_nba_id[nba_team["id"]]
+            response = requests.get(
+                f"https://site.api.espn.com/apis/site/v2/sports/basketball/nba/teams/{espn_team['abbreviation'].lower()}/schedule",
+                params={"season": season_year},
+                headers={"User-Agent": "IsYourTeamTanking/1.0"},
+                timeout=25,
+            )
+            response.raise_for_status()
+            payload = response.json()
+            live_team = payload.get("team", {})
+            if int(payload.get("season", {}).get("year", 0)) != season_year:
+                raise ValueError(f"ESPN returned the wrong season for {nba_team['full_name']}")
+
+            completed = []
+            upcoming = []
+            for event in payload.get("events", []):
+                if int(event.get("seasonType", {}).get("type", 0)) != 2:
+                    continue
+                competition = (event.get("competitions") or [{}])[0]
+                competitors = competition.get("competitors", [])
+                current = next((item for item in competitors if item["team"]["id"] == live_team.get("id")), None)
+                opponent = next((item for item in competitors if item is not current), None)
+                if not current or not opponent:
+                    continue
+
+                try:
+                    game_time = datetime.fromisoformat(event["date"].replace("Z", "+00:00"))
+                    game_date = game_time.astimezone(ZoneInfo("America/New_York")).strftime("%d/%m/%y")
+                except (KeyError, ValueError):
+                    logger.warning("Skipping ESPN game with invalid date for %s.", nba_team["full_name"])
+                    continue
+
+                game = {
+                    "game_id": event.get("id"),
+                    "game_url": f"https://www.espn.com/nba/game/_/gameId/{event.get('id')}",
+                    "date": game_date,
+                    "opponent": nba_abbr_by_espn_abbr.get(opponent["team"]["abbreviation"], opponent["team"]["abbreviation"]),
+                    "home": current.get("homeAway") == "home",
+                }
+                if competition.get("status", {}).get("type", {}).get("completed"):
+                    game["team_score"] = int(float(current["score"]["value"]))
+                    game["opponent_score"] = int(float(opponent["score"]["value"]))
+                    game["result"] = "W" if current.get("winner") else "L"
+                    completed.append(game)
+                else:
+                    upcoming.append(game)
+
+            wins = sum(game["result"] == "W" for game in completed)
+            losses = len(completed) - wins
+            reported_record = re.fullmatch(r"(\d+)-(\d+)", live_team.get("recordSummary", ""))
+            if reported_record and (wins, losses) != tuple(map(int, reported_record.groups())):
+                raise ValueError(f"Schedule and ESPN record disagree for {nba_team['full_name']}")
+            point_difference = sum(game["team_score"] - game["opponent_score"] for game in completed)
+            conference_id = str(live_team.get("groups", {}).get("parent", {}).get("id", ""))
+            conference = {"5": "East", "6": "West"}.get(conference_id)
+            if not conference:
+                raise ValueError(f"Unknown ESPN conference for {nba_team['full_name']}: {conference_id}")
+            return {
+                "team_id": nba_team["id"],
+                "team_name": nba_team["full_name"],
+                "team_abbreviation": nba_team["abbreviation"],
+                "season": season,
+                "conference": conference,
+                "record": {"wins": wins, "losses": losses, "pct": round(wins / (wins + losses), 3) if wins + losses else 0},
+                "recent_games": list(reversed(completed[-3:])),
+                "upcoming_games": upcoming[:3],
+                "_point_difference": point_difference,
+            }
+
+        results = []
+        failures = []
+        with ThreadPoolExecutor(max_workers=10) as executor:
+            futures = {executor.submit(fetch_team, team): team for team in nba_teams}
+            for future in as_completed(futures):
+                team = futures[future]
+                try:
+                    results.append(future.result())
+                except (KeyError, TypeError, ValueError, requests.RequestException) as error:
+                    failures.append(team["full_name"])
+                    logger.error("Failed to load current ESPN data for %s: %s", team["full_name"], error)
+
+        if failures or len(results) != 30:
+            logger.error("Discarding incomplete live NBA refresh; loaded %s of 30 teams.", len(results))
+            return []
+
+        for conference in ("East", "West"):
+            conference_teams = sorted(
+                (team for team in results if team["conference"] == conference),
+                key=lambda team: (-team["record"]["pct"], -team["record"]["wins"], -team["_point_difference"], team["team_name"]),
+            )
+            if len(conference_teams) != 15:
+                logger.error("Expected 15 teams in %s, got %s.", conference, len(conference_teams))
+                return []
+            for rank, team in enumerate(conference_teams, 1):
+                team["standings_rank"] = rank
+                team["standings_total"] = 15
+
+        updated_at = datetime.now().astimezone().isoformat()
+        for result in results:
+            result.pop("_point_difference")
+            result.update({
+                "tanking_score": None,
+                "status": "unavailable",
+                "status_label": "Tanking score unavailable",
+                "pillars": [],
+                "badges": [],
+                "suspect_tracker": {"overall_suspicion": None, "players": []},
+                "tanking_history": [],
+                "data_status": "live",
+                "data_source": "ESPN NBA API",
+                "last_updated": updated_at,
+                "score_status": "unavailable",
+            })
+        return results
+    except (KeyError, TypeError, ValueError, requests.RequestException) as error:
+        logger.error("Failed to load live ESPN NBA data: %s", error)
         return []
 
 
@@ -313,6 +472,10 @@ def fetch_live_standings(season: str = CURRENT_SEASON) -> list[dict]:
                 return result
     except Exception as e:
         logger.error(f"Failed to fetch live standings: {e}")
+    stale_cache = _read_cache(cache_key, allow_stale=True)
+    if stale_cache:
+        logger.warning("Using the last available standings snapshot for %s.", season)
+        return stale_cache
     return []
 
 
@@ -559,5 +722,3 @@ def fetch_all_schedules() -> dict:
     except Exception as e:
         logger.error(f"Failed to fetch bulk schedule: {e}")
         return {}
-
-

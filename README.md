@@ -1,97 +1,49 @@
-# 🏀 IsYourTeamTanking
+# IsYourTeamTanking
 
-> **Is your NBA team secretly tanking?** Find out with statistical evidence.
+NBA tanking detection based on live NBA statistics and four weighted signals:
 
-Real-time NBA tanking detection powered by a composite **Tanking Score** (0-100%) built from 4 statistical pillars:
+- Veteran minutes drop: 30%
+- DNP and availability signal: 20%
+- Young lineup usage: 25%
+- Fourth-quarter collapse: 25%
 
-| Pillar | Weight | What it measures |
-|--------|--------|------------------|
-| ⏱️ Veteran Minutes Drop | 30% | Are experienced players being benched? |
-| 🏥 DNP / Injury Suspects | 20% | Are key players mysteriously "resting"? |
-| 👶 Young Lineup Usage | 25% | Is the team fielding abnormally young lineups? |
-| 📉 Clutch Collapse (Q4) | 25% | Does the team collapse in 4th quarters? |
+## Run locally
 
-## Quick Start
-
-### Prerequisites
-- Python 3.10+
-- pip
-
-### Install & Run
+Requirements: Python 3.10+.
 
 ```bash
-# 1. Install dependencies
 cd backend
 pip install -r requirements.txt
-
-# 2. Generate demo data (uses simulated 2024-25 season data)
-python update_data.py --demo
-
-# 3. Start the server
 uvicorn main:app --reload
-
-# 4. Open http://localhost:8000 in your browser
 ```
 
-### Update with real NBA data
+The server loads the current-season standings and game schedules from ESPN's live NBA API at startup and refreshes them every five minutes. It only publishes a refresh after receiving and validating schedules for all 30 teams; it never substitutes the old `results.json` snapshot. If ESPN is unavailable, the last successful live update is marked stale, or the API returns `503` until the first live update succeeds.
+
+The four-pillar tanking score requires current player-level statistics. Since the NBA Stats API is timing out in some environments, the app does not reuse an old score or infer tanking from wins alone; scores and player availability are explicitly shown as unavailable until those statistics can be fetched reliably.
+
+To force a refresh:
 
 ```bash
-# Fetch live data from stats.nba.com (takes ~5 min for all 30 teams)
-cd backend
-python update_data.py
+curl http://localhost:8000/api/reload
 ```
 
-> ⚠️ **Rate limiting**: The NBA API may throttle requests. The script includes automatic delays between calls. Run this at most 1-2x per day.
+Standings, records, recent results, and upcoming games are fetched from ESPN. Draft prospects are fetched separately from Tankathon.
 
-## Architecture
-
-```
-isyourteamtanking/
-├── backend/
-│   ├── main.py              # FastAPI server
-│   ├── tanking_engine.py     # Tanking Score algorithm
-│   ├── nba_data.py           # NBA API wrapper with caching
-│   ├── update_data.py        # Data refresh script
-│   ├── requirements.txt      # Python dependencies
-│   └── data/                 # Cached results (auto-generated)
-│       └── results.json
-├── frontend/
-│   ├── index.html            # Main page
-│   ├── style.css             # Premium dark mode design
-│   ├── app.js                # SPA logic
-│   └── teams.js              # NBA teams static data
-├── Dockerfile                # Container deployment
-├── render.yaml               # Render.com config
-└── README.md
-```
-
-## API Endpoints
+## API endpoints
 
 | Endpoint | Description |
-|----------|-------------|
-| `GET /api/health` | Health check |
-| `GET /api/teams` | All teams with summary scores |
-| `GET /api/tanking/all` | Full rankings with details |
-| `GET /api/tanking/{team_id}` | Detailed report for one team |
-| `GET /api/reload` | Reload data from disk |
+| --- | --- |
+| `GET /api/health` | Service and live-data status |
+| `GET /api/teams` | Team summaries |
+| `GET /api/tanking/all` | Full live rankings |
+| `GET /api/tanking/{team_id}` | Live team report |
+| `GET /api/standings` | NBA standings |
+| `GET /api/schedule/{team_id}?team_abbr=...` | Team schedule |
+| `GET /api/draft/prospects` | Current draft board |
+| `GET /api/reload` | Force a live recalculation |
 
-## Deployment (Render)
+## Deployment
 
-1. Push to GitHub
-2. Connect repo to [Render](https://render.com)
-3. Deploy as **Web Service** (free tier)
-4. The app auto-generates demo data on first startup
+The Render service installs `backend/requirements.txt` and starts FastAPI with Uvicorn. Configure the deployment with outbound network access to ESPN and Tankathon APIs.
 
-## Tech Stack
-
-- **Backend**: Python, FastAPI, nba_api, pandas
-- **Frontend**: Vanilla JS, CSS (dark mode, glassmorphism)
-- **Data**: JSON file cache (no database needed)
-
-## License
-
-MIT - Built for educational and entertainment purposes.
-
----
-
-*This tool is for entertainment purposes only. "Tanking" is inferred from publicly available statistical patterns and does not reflect any official NBA designation.*
+Tanking scores are statistical indicators for entertainment and do not represent an official NBA designation.

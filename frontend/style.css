@@ -116,6 +116,30 @@ body {
   color: var(--text-secondary);
 }
 
+.data-notice {
+  max-width: 900px;
+  margin: 0 auto var(--space-lg);
+  padding: 12px 16px;
+  border: 1px solid rgba(251, 192, 45, 0.4);
+  border-radius: var(--radius-md);
+  background: rgba(251, 192, 45, 0.08);
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+.data-unavailable {
+  margin: var(--space-lg) 0;
+  padding: var(--space-md);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+.score-neutral { color: var(--text-secondary); }
+.bar-neutral { background: var(--text-secondary); }
+.filter-switcher[hidden], .sort-control[hidden] { display: none; }
+
 /* ---- Autocomplete ---- */
 .autocomplete-list {
   position: absolute;

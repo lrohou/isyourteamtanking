@@ -45,22 +45,58 @@ document.addEventListener("DOMContentLoaded", async () => {
   setupLottery();
   window.addEventListener("popstate", handleHistoryNavigation);
   openTeamFromUrl();
+  window.setInterval(async () => {
+    const selectedTeamId = selectedTeam?.team_id;
+    await loadData(false);
+    renderRankings();
+    if (selectedTeamId) {
+      const updatedTeam = allTeamResults.find((team) => team.team_id === selectedTeamId);
+      if (updatedTeam) {
+        selectedTeam = updatedTeam;
+        renderResult(updatedTeam);
+      }
+    }
+  }, 5 * 60 * 1000);
 });
 
 // ---------------------------------------------------------------------------
 // Data fetching
 // ---------------------------------------------------------------------------
-async function loadData() {
-  showLoading(true);
-  try {
-    const res = await fetch(`${API_BASE}/api/tanking/all`);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    allTeamResults = await res.json();
-  } catch (err) {
-    console.error("Failed to fetch data:", err);
-    showError("Could not load tanking data. Is the server running?");
+async function loadData(showSpinner = true) {
+  if (showSpinner) showLoading(true);
+  let lastError;
+  for (let attempt = 0; attempt < 12; attempt += 1) {
+    try {
+      const res = await fetch(`${API_BASE}/api/tanking/all`);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      allTeamResults = await res.json();
+      showDataNotice(allTeamResults[0]);
+      const error = $("#error");
+      if (error) error.style.display = "none";
+      lastError = null;
+      break;
+    } catch (err) {
+      lastError = err;
+      if (attempt < 11) await new Promise((resolve) => setTimeout(resolve, 5000));
+    }
   }
-  showLoading(false);
+  if (lastError) {
+    console.error("Failed to fetch live NBA data:", lastError);
+    showError("Live NBA data is temporarily unavailable. The server will retry automatically.");
+  }
+  if (showSpinner) showLoading(false);
+}
+
+function showDataNotice(data) {
+  const notice = $("#data-notice");
+  if (!notice) return;
+
+  if (!data) return;
+  const updated = data.last_updated ? new Date(data.last_updated).toLocaleString() : "unknown";
+  notice.textContent = data.data_status === "stale"
+    ? `ESPN live data refresh failed. Showing the last live update from ${updated}; the server is retrying.`
+    : `Live ${data.season} standings and schedules from ESPN · updated ${updated}. Tanking scores require player statistics and are not currently available.`;
+  notice.hidden = false;
 }
 
 function openTeamFromUrl() {
@@ -159,12 +195,13 @@ function renderAutocomplete(results) {
       const logoUrl = team?.logo || "";
       const scoreClass = getScoreColorClass(r.tanking_score);
       const record = r.record ? `${r.record.wins}-${r.record.losses}` : "";
+      const scoreLabel = Number.isFinite(r.tanking_score) ? `${r.tanking_score}%` : "N/A";
       return `
         <div class="autocomplete-item" data-team-id="${r.team_id}">
           <img class="autocomplete-item__logo" src="${logoUrl}" alt="${r.team_name}" loading="lazy" onerror="this.style.display='none'">
           <span class="autocomplete-item__name">${r.team_name}</span>
           <span class="autocomplete-item__record">${record}</span>
-          <span class="autocomplete-item__score-badge badge-${scoreClass}">${r.tanking_score}%</span>
+          <span class="autocomplete-item__score-badge badge-${scoreClass}">${scoreLabel}</span>
         </div>
       `;
     })
@@ -243,7 +280,8 @@ function renderResult(data) {
 
   const team = findTeam(data.team_abbreviation);
   const logoUrl = team?.logo || "";
-  const scoreColor = getScoreColor(data.tanking_score);
+  const hasScore = Number.isFinite(data.tanking_score);
+  const scoreColor = hasScore ? getScoreColor(data.tanking_score) : "#ccc5b9";
   const scoreClass = getScoreColorClass(data.tanking_score);
   const record = data.record
     ? `${data.record.wins}-${data.record.losses} (.${Math.round(data.record.pct * 1000)
@@ -256,7 +294,8 @@ function renderResult(data) {
   const standingsTotal = data.standings_total || 15;
   const conference = data.conference || "—";
   const badges = data.badges || [];
-  const suspectTracker = data.suspect_tracker || { overall_suspicion: 0, players: [] };
+  const suspectTracker = data.suspect_tracker || { overall_suspicion: null, players: [] };
+  const pillars = data.pillars || [];
 
   // Recent games HTML
   const recentGamesHtml = (data.recent_games || [])
@@ -267,7 +306,7 @@ function renderResult(data) {
       const oppLogo = oppTeam?.logo || "";
       const oppName = oppTeam?.fullName || g.opponent;
       const locationIcon = g.home ? "🏠" : "✈️";
-      const link = g.game_id ? `href="https://www.nba.com/game/${g.game_id}" target="_blank"` : `href="https://www.nba.com/games" target="_blank"`;
+      const link = g.game_url ? `href="${g.game_url}" target="_blank" rel="noopener"` : `href="https://www.espn.com/nba/scoreboard" target="_blank" rel="noopener"`;
       return `
         <a ${link} class="game-card ${resultClass}" style="text-decoration: none; color: inherit;">
           <div class="game-card__date">${g.date}</div>
@@ -292,8 +331,9 @@ function renderResult(data) {
       const oppLogo = oppTeam?.logo || "";
       const oppName = oppTeam?.fullName || g.opponent;
       const locationIcon = g.home ? "🏠" : "✈️";
-      const teamSlug = team?.name ? team.name.toLowerCase() : "games";
-      const link = `href="https://www.nba.com/${teamSlug}/schedule" target="_blank"`;
+      const link = g.game_url
+        ? `href="${g.game_url}" target="_blank" rel="noopener"`
+        : `href="https://www.espn.com/nba/scoreboard" target="_blank" rel="noopener"`;
       return `
         <a ${link} class="game-card game-upcoming" style="text-decoration: none; color: inherit;">
           <div class="game-card__date">${g.date}</div>
@@ -318,11 +358,11 @@ function renderResult(data) {
         </div>
         <span class="result-card__status-badge status-${data.status}">${data.status_label}</span>
       </div>
-      <div class="sharing-actions" aria-label="Share team result">
+      ${hasScore ? `<div class="sharing-actions" aria-label="Share team result">
         <button class="share-button share-button--primary" id="share-card-btn" type="button">📲 Share my team</button>
         <button class="share-button" id="share-x-btn" type="button">𝕏 Share on X</button>
         <button class="share-button" id="share-reddit-btn" type="button">Reddit</button>
-      </div>
+      </div>` : ""}
 
       <div class="gauge-section">
         <div class="gauge-container">
@@ -339,8 +379,8 @@ function renderResult(data) {
             />
           </svg>
           <div class="gauge-center">
-            <span class="gauge-value score-${scoreClass}" id="gauge-value">0</span>
-            <span class="gauge-label">Tanking Score</span>
+            <span class="gauge-value score-${scoreClass}" id="gauge-value">${hasScore ? "0" : "N/A"}</span>
+            <span class="gauge-label">${hasScore ? "Tanking Score" : "Live score unavailable"}</span>
           </div>
         </div>
       </div>
@@ -370,7 +410,7 @@ function renderResult(data) {
         </div>
       </div>
 
-      <section class="gamification-section" aria-label="Suspect tracker and team badges">
+      ${hasScore ? `<section class="gamification-section" aria-label="Suspect tracker and team badges">
         <div class="section-heading-row">
           <div>
             <h3 class="gamification-title">Trophées de la honte</h3>
@@ -424,19 +464,22 @@ function renderResult(data) {
       
       <h3 class="pillars-title">🔍 Why this score?</h3>
       <div class="pillars-grid">
-        ${data.pillars.map((p) => renderPillarCard(p)).join("")}
+        ${pillars.map((p) => renderPillarCard(p)).join("")}
       </div>
+      ` : `<p class="data-unavailable">Standings and game results are live. A tanking score is not shown because current player-level statistics are unavailable; no old score is substituted.</p>`}
     </div>
   `;
 
   section.classList.add("visible");
-  setupSharingActions(data);
+  if (hasScore) setupSharingActions(data);
 
   // Animate gauge after render
   requestAnimationFrame(() => {
-    setTimeout(() => animateGauge(data.tanking_score, scoreColor), 100);
-    animatePillarBars(data.pillars);
-    if (data.tanking_history && data.tanking_history.length) {
+    if (hasScore) {
+      setTimeout(() => animateGauge(data.tanking_score, scoreColor), 100);
+      animatePillarBars(pillars);
+    }
+    if (hasScore && data.tanking_history?.length) {
       renderTankingChart(data.tanking_history, scoreColor);
     }
   });
@@ -744,6 +787,11 @@ function renderRankings() {
   const teams = getFilteredTeams();
   const eastTeams = teams.filter(r => r.conference === "East").sort((a, b) => a.standings_rank - b.standings_rank);
   const westTeams = teams.filter(r => r.conference === "West").sort((a, b) => a.standings_rank - b.standings_rank);
+  const hasLiveScores = allTeamResults.some((result) => Number.isFinite(result.tanking_score));
+  const filters = $(".filter-switcher");
+  const scoreSort = $(".sort-control");
+  if (filters) filters.hidden = !hasLiveScores;
+  if (scoreSort) scoreSort.hidden = !hasLiveScores;
 
   const generateHtml = (teams) => teams
     .map((r) => {
@@ -752,21 +800,22 @@ function renderRankings() {
       const scoreClass = getScoreColorClass(r.tanking_score);
       const record = r.record ? `${r.record.wins}-${r.record.losses}` : "";
       const featuredBadge = (r.badges || []).find((badge) => badge.type === "shame") || (r.badges || [])[0];
+      const scoreLabel = Number.isFinite(r.tanking_score) ? `${r.tanking_score}%` : "N/A";
       return `
         <div class="ranking-item glass-effect" data-team-id="${r.team_id}">
           <span class="ranking-item__rank">${r.standings_rank}</span>
           <img class="ranking-item__logo" src="${logoUrl}" alt="${r.team_name}" loading="lazy" onerror="this.style.display='none'">
           <div class="ranking-item__identity">
             <span class="ranking-item__name">${r.team_name}</span>
-            <span class="ranking-item__badge">${featuredBadge ? `${featuredBadge.icon} ${featuredBadge.name}` : "No badge"}</span>
+            <span class="ranking-item__badge">${featuredBadge ? `${featuredBadge.icon} ${featuredBadge.name}` : hasLiveScores ? "No badge" : "Score unavailable"}</span>
           </div>
           <span class="ranking-item__record">${record}</span>
           <div class="ranking-item__bar-wrapper">
             <div class="ranking-item__bar-track">
-              <div class="ranking-item__bar-fill bar-${scoreClass}" style="width:${r.tanking_score}%"></div>
+              <div class="ranking-item__bar-fill bar-${scoreClass}" style="width:${Number.isFinite(r.tanking_score) ? `${r.tanking_score}%` : "0%"}"></div>
             </div>
           </div>
-          <span class="ranking-item__score score-${scoreClass}">${r.tanking_score}%</span>
+          <span class="ranking-item__score score-${scoreClass}">${scoreLabel}</span>
         </div>
       `;
     })
@@ -949,6 +998,7 @@ function getPillarScore(result, id) {
 
 function getFilteredTeams() {
   return allTeamResults.filter((result) => {
+    if (!Number.isFinite(result.tanking_score)) return rankingFilter === "all";
     if (rankingFilter === "tank") return result.tanking_score >= 66;
     if (rankingFilter === "borderline") return result.tanking_score >= 31 && result.tanking_score < 66;
     if (rankingFilter === "contender") return result.tanking_score < 31;
@@ -957,8 +1007,9 @@ function getFilteredTeams() {
 }
 
 function getSortedTeams(teams) {
+  const hasLiveScores = teams.some((team) => Number.isFinite(team.tanking_score));
   return [...teams].sort((a, b) => {
-    if (rankingSort === "record") {
+    if (!hasLiveScores || rankingSort === "record") {
       return ((b.record?.pct || 0) - (a.record?.pct || 0)) || (b.tanking_score - a.tanking_score);
     }
     if (["vet_minutes", "dnp_suspects", "young_lineups", "clutch_collapse"].includes(rankingSort)) {
@@ -976,11 +1027,11 @@ function renderLeagueTable(teams) {
       <span>${index + 1}</span>
       <strong>${result.team_name}</strong>
       <span>${result.record?.wins || 0}-${result.record?.losses || 0}</span>
-      <span class="score-${getScoreColorClass(result.tanking_score)}">${result.tanking_score}%</span>
-      <span>${getPillarScore(result, "vet_minutes")}</span>
-      <span>${getPillarScore(result, "dnp_suspects")}</span>
-      <span>${getPillarScore(result, "young_lineups")}</span>
-      <span>${getPillarScore(result, "clutch_collapse")}</span>
+      <span class="score-${getScoreColorClass(result.tanking_score)}">${Number.isFinite(result.tanking_score) ? `${result.tanking_score}%` : "N/A"}</span>
+      <span>${Number.isFinite(result.tanking_score) ? getPillarScore(result, "vet_minutes") : "—"}</span>
+      <span>${Number.isFinite(result.tanking_score) ? getPillarScore(result, "dnp_suspects") : "—"}</span>
+      <span>${Number.isFinite(result.tanking_score) ? getPillarScore(result, "young_lineups") : "—"}</span>
+      <span>${Number.isFinite(result.tanking_score) ? getPillarScore(result, "clutch_collapse") : "—"}</span>
     </button>
   `).join("");
   body.querySelectorAll("[data-team-id]").forEach((row) => row.addEventListener("click", () => selectTeam(Number(row.dataset.teamId))));
@@ -1004,12 +1055,14 @@ function setupScrollToTop() {
 // Helpers
 // ---------------------------------------------------------------------------
 function getScoreColor(score) {
+  if (!Number.isFinite(score)) return "#ccc5b9";
   if (score >= 66) return "#ef4444";
   if (score >= 31) return "#eab308";
   return "#22c55e";
 }
 
 function getScoreColorClass(score) {
+  if (!Number.isFinite(score)) return "neutral";
   if (score >= 66) return "red";
   if (score >= 31) return "yellow";
   return "green";
